@@ -101,7 +101,7 @@ struct Issue: Identifiable, Decodable {
             return try AttributedString(markdown: self.reason, options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))
         } catch {
             // TODO: notify us somehow that markdown parsing failed
-            return AttributedString("Could not parse issue markdown, email [hello@5calls.org](mailto:hello@5calls.org)")
+            return AttributedString("Could not parse issue markdown, email [howdyxfa@gmail.com](mailto:howdyxfa@gmail.com)")
         }
     }
     
@@ -110,7 +110,7 @@ struct Issue: Identifiable, Decodable {
             return try AttributedString(markdown: ScriptReplacements.replacing(script: self.script, contact: contact, location: location), options: AttributedString.MarkdownParsingOptions(interpretedSyntax: .inlineOnlyPreservingWhitespace))
         } catch {
             // TODO: notify us somehow that markdown parsing failed
-            return AttributedString("Could not parse script markdown, email [hello@5calls.org](mailto:hello@5calls.org)")
+            return AttributedString("Could not parse script markdown, email [howdyxfa@gmail.com](mailto:howdyxfa@gmail.com)")
         }
     }
 }

@@ -35,11 +35,11 @@ struct AboutSheet: View {
                 Section {
                     AboutListItem(title: R.string.localizable.aboutItemWhyCall(),
                                   type: .action({
-                        openSocialLink("https://5calls.org/why-calling-works/")
+                        openSocialLink("https://actionforanimals.substack.com/p/why-calling-works")
                     }))
                     AboutListItem(title: R.string.localizable.aboutItemWhoWeAre(),
                                   type: .action({
-                        openSocialLink("https://5calls.org/about-us/")
+                        openSocialLink("https://actionforanimals.substack.com/p/about-us")
                     }))
                     AboutListItem(title: R.string.localizable.aboutItemFeedback(),
                                   type: .action({
@@ -92,19 +92,19 @@ struct AboutSheet: View {
                 Section {
                     AboutListItem(title: "Instagram",
                                   type: .action({
-                        openSocialLink("https://www.instagram.com/5calls")
+                        openSocialLink("https://www.instagram.com/xfaorg/")
                     }))
                     AboutListItem(title: "Bluesky",
                                   type: .action({
-                        openSocialLink("https://bsky.app/profile/5calls.org")
+                        openSocialLink("https://bsky.app/profile/xfaorg.bsky.social")
                     }))
                     AboutListItem(title: "Threads",
                                   type: .action({
-                        openSocialLink("https://www.threads.net/@5calls")
+                        openSocialLink("https://www.threads.com/@xfaorg")
                     }))
                     AboutListItem(title: "Mastodon",
                                   type: .action({
-                        openSocialLink("https://mastodon.social/@5calls")
+                        openSocialLink("https://mastodon.social/@xfaorg")
                     }))
                     if appUrl != nil {
                         AboutListItem(title: R.string.localizable.aboutItemShare(),

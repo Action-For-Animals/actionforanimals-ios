@@ -770,6 +770,7 @@
 				D05745832A53E34300A8534A /* XCRemoteSwiftPackageReference "PlausibleSwift" */,
 				E887304C2AF9E1B60053837B /* XCRemoteSwiftPackageReference "R" */,
 				4F07B2362B45E5ED00C575DF /* XCRemoteSwiftPackageReference "AcknowList" */,
+				70A29B342E427F9700E129A6 /* XCRemoteSwiftPackageReference "swift-algorithms" */,
 			);
 			productRefGroup = B52805121E3FA94D00EE832A /* Products */;
 			projectDirPath = "";
@@ -1378,6 +1379,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 3.0.1;
+			};
+		};
+		70A29B342E427F9700E129A6 /* XCRemoteSwiftPackageReference "swift-algorithms" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/apple/swift-algorithms.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.1;
 			};
 		};
 		D05745832A53E34300A8534A /* XCRemoteSwiftPackageReference "PlausibleSwift" */ = {

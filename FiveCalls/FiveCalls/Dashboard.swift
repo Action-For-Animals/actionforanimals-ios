@@ -36,7 +36,7 @@ struct Dashboard: View {
                 } onSubmit: { email in
                     var district = store.state.district
 #if !DEBUG
-                    var req = URLRequest(url: URL(string: "https://buttondown.com/api/emails/embed-subscribe/5calls")!)
+                    var req = URLRequest(url: URL(string: "https://subscribeuser-uabgeeameq-uc.a.run.app")!)
                     req.httpMethod = "POST"
                     req.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
                     var reqBody = "email=\(email)&tag=ios"

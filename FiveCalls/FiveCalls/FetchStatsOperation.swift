@@ -26,7 +26,7 @@ class FetchStatsOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        var urlComponents = URLComponents(url: URL(string: "https://api.5calls.org/v1/report")!, resolvingAgainstBaseURL: false)!
+        var urlComponents = URLComponents(url: URL(string: "https://reportcall-uabgeeameq-uc.a.run.app")!, resolvingAgainstBaseURL: false)!
         var queryItems: [URLQueryItem] = []
         
         if let issueID = self.issueID {
