@@ -78,4 +78,3 @@ class FetchUserStatsOperation: BaseOperation, @unchecked Sendable {
         }
     }
 }
-
