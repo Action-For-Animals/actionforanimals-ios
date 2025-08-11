@@ -139,7 +139,7 @@ struct ScheduleReminders: View {
                 for index in selectedDayIndices {
                     let notificationContent = UNMutableNotificationContent.notificationContent()
                     let notificationTrigger = UNCalendarNotificationTrigger.notificationTrigger(date: selectedTime, dayIndex: index)
-                    let request = UNNotificationRequest(identifier: "5calls-reminder-\(index)", content: notificationContent, trigger: notificationTrigger)
+                    let request = UNNotificationRequest(identifier: "actionforanimals-reminder-\(index)", content: notificationContent, trigger: notificationTrigger)
                     UNUserNotificationCenter.current().add(request)
                 }
             }
