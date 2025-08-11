@@ -6,7 +6,7 @@
   Copyright © 2017 5calls. All rights reserved.
 */
 
-"i-just-called-my-rep"                = "I just called my rep to %@ — you should too: https://5calls.org/issue/%@";
+"i-just-called-my-rep"                = "I just called my rep to %@ — you should too: https://actionforanimals.substack.com/p/getting-started";
 "ok-button-title"                     = "OK";
 "done-button-title"                   = "Done";
 "cancel-button-title"                 = "Cancel";
@@ -21,7 +21,7 @@
 "set-your-location"                   = "Set your location to find your representatives";
 "cant-send-email-title"               = "Can't send mail";
 "cant-send-email-message"             = "Please configure an e-mail address in the Settings app";
-"share-the-app-message"               = "Make 5 Calls to your elected officials and let your voice be heard!";
+"share-the-app-message"               = "Make calls to your elected officials on behalf of animals  and let your voice be heard!";
 "calls"                               = "Calls";
 "issue-load-failed-connection"        = "The issues failed to load. Please check your connection and try again.";
 "issue-load-failed-server"            = "We encountered an error loading issues. Please try again later.";
@@ -51,9 +51,9 @@
 "search-no-results-message"           = "Try a different search term";
 
 // scheduled reminders
-"scheduled-reminder-alert-body"       = "Tap here to open 5 Calls and get started";
+"scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
 "scheduled-reminder-alert-title"      = "Time to Make Some Calls";
-"scheduled-reminder-alert-body"       = "Tap here to open 5 Calls and get started";
+"scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
 "scheduled-reminders-title"           = "Enable reminder";
 "scheduled-reminders-description"     = "Turn these on to get a quick local reminder to make your 5 calls.";
 "scheduled-reminders-time-label"      = "Select what time of day you'd like to be reminded to make calls:";
@@ -158,18 +158,18 @@
 "about-title" = "About";
 "about-section-header-general"        = "General";
 "about-section-header-social"         = "Follow us on your favorite platform";
-"about-section-footer-social"         = "Sharing and Rating helps others find 5 Calls";
+"about-section-footer-social"         = "Sharing and Rating helps others find Action for Animals";
 "about-section-header-credits"        = "Credits";
 "about-item-why-call"                 = "Why Calling Works";
-"about-item-who-we-are"               = "Who Made 5 Calls?";
+"about-item-who-we-are"               = "Who Made Action for Animals?";
 "about-item-feedback"                 = "Feedback";
 "about-item-show-welcome"             = "Show Welcome Screen";
 "about-item-follow-twitter"           = "Follow on Twitter";
 "about-item-share"                    = "Share with Others";
-"about-item-rate"                     = "Please Rate 5 Calls";
+"about-item-rate"                     = "Please Rate Action for Animals";
 "about-item-open-source"              = "Open Source Libraries";
 "about-webview-title-why-call"        = "Why Calling Works";
-"about-webview-title-who-we-are"      = "Who Made 5 Calls";
+"about-webview-title-who-we-are"      = "Who Made Action for Animals";
 "about-acknowledgements-title"        = "Open Source";
 "about-callingGroup-header"           = "Calling Group";
 "about-callingGroup-placeholder"      = "Enter your calling group name";
@@ -183,7 +183,7 @@
 "your-weekly-streak-multiple"         = "Your current weekly call streak is %d weeks in a row. You're on a roll!";
 "your-weekly-streak-single"           = "Your current weekly call streak just started. Keep it going!";
 "your-weekly-streak-zero"             = "Your current weekly call streak is %d.";
-"community-calls"                     = "The 5 Calls community has contributed %@ calls!";
+"community-calls"                     = "The Action for Animals community has contributed %@ calls!";
 "made-contact"                        = "Made Contact";
 "unavailable"                         = "Unavailable";
 "left-voicemail"                      = "Left Voicemail";
@@ -192,9 +192,9 @@
 "impact-list-message"                 = "You're making a difference! Calling is the most effective way to influence your representatives, and here's what you've achieved:";
 
 // welcome
-"welcome-section-1-title"                = "Make your voice heard";
-"welcome-section-1-message"              = "Turn your passive participation into active resistance. Facebook likes and Twitter retweets can’t create the change you want to see. Calling your Government on the phone can.";
-"welcome-section-2-title"                = "Spend 5 minutes, make 5 calls";
+"welcome-section-1-title"                = "Make your voice heard—for the animals.";
+"welcome-section-1-message"              = "Turn your passive participation into active resistance. Action for Animals is the easiest and most effective way for U.S. constituents to make a political impact.";
+"welcome-section-2-title"                = "A minute for you. A life for them";
 "welcome-section-2-message"              = "Calling is the most effective way to influence your representative.";
 "welcome-section-3-calls"                = "Together we've made\n%@ calls";
 "welcome-button-title"                   = "Get Started";
@@ -211,8 +211,8 @@
 "done-title"                          = "You called on **%@**";
 "total-calls"                         = "Total calls";
 "total-issue-calls"                   = "Calls on this topic";
-"support-5calls"                      = "Support 5 Calls";
-"support-5calls-sub"                  = "Keep 5 Calls free and up-to-date";
+"support-5calls"                      = "Support Action for Animals";
+"support-5calls-sub"                  = "Keep Action for Animals free and up-to-date";
 "donate-today"                        = "Donate today";
 "share-this-topic"                    = "Share this topic";
 "done-screen-button"                  = "Done";
@@ -234,8 +234,8 @@
 "inbox-detail-readmore" = "Read more →";
 "inbox-contact-alert" = "Select an issue on the topics tab to show relevant reps and phone numbers";
 // Newsletter
-"newsletter-header" = "The easy way to keep up with Congress";
-"newsletter-subhead" = "Sign up for our newsletter, just one email a week";
+"newsletter-header" = "The easy way to keep up with animals rights issues";
+"newsletter-subhead" = "Sign up for our newsletter, just one email a quarter";
 "newsletter-email-placeholder" = "Enter your email";
 "newsletter-dismiss" = "No thanks";
 "newsletter-subscribe" = "Sign me up";
