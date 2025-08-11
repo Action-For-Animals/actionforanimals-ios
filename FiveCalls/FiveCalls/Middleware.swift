@@ -31,7 +31,7 @@ func appMiddleware() -> Middleware<AppState> {
             reportOutcome(log: contactLog, outcome: outcome)
         case let .LogSearch(searchQuery):
             logSearch(searchQuery: searchQuery)
-        case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts, 
+        case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
                 .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMessages, .SetMissingReps,
                 .SelectMessage(_), .SelectMessageIDWhenLoaded(_), .SetNavigateToInboxMessage(_), .FetchMessages:
