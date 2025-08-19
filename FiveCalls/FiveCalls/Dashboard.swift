@@ -29,7 +29,7 @@ struct Dashboard: View {
             MainHeader()
                 .padding(.horizontal, 10)
                 .padding(.bottom, 10)
-            
+/*
             if !shownNewsletterSignup {
                 NewsletterSignup {
                     shownNewsletterSignup = true
@@ -52,7 +52,7 @@ struct Dashboard: View {
                     shownNewsletterSignup = true
                 }
             }
-
+*/
             if usingRegularFonts() {
                 Text(R.string.localizable.whatsImportantTitle())
                     .font(.body)
@@ -125,9 +125,9 @@ struct MenuView: View {
             Button { showRemindersSheet.toggle() } label: {
                 Text(R.string.localizable.menuScheduledReminders())
             }
-            Button { showYourImpact.toggle() } label: {
-                Text(R.string.localizable.menuYourImpact())
-            }
+            // Button { showYourImpact.toggle() } label: {
+              //  Text(R.string.localizable.menuYourImpact())
+            // }
             Button { showAboutSheet.toggle() } label: {
                 Text(R.string.localizable.menuAbout())
             }
