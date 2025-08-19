@@ -24,11 +24,11 @@ struct Issue: Identifiable, Decodable {
     let createdAt: Date
     
     var shareImageURL: URL {
-        return URL(string: String(format: "https://api.5calls.org/v1/issue/%d/share/t",self.id))!
+        return URL(string: String(format: "https://actionforanimals.substack.com/p/"))!
     }
     
     var shareURL: URL {
-        return URL(string: String(format: "https://5calls.org/issue/%@/",self.slug.trimmingCharacters(in: .whitespacesAndNewlines)))!
+        return URL(string: String(format: "https://actionforanimals.substack.com/p/"))!
     }
     
     var hasHouse: Bool { contactAreas.contains("US House") }
