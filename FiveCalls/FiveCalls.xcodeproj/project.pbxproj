@@ -725,7 +725,6 @@
 					};
 					B52805101E3FA94D00EE832A = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 5A8RM3W5R7;
 						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -745,7 +744,6 @@
 					};
 					D0BA59A71F9546510069DA58 = {
 						CreatedOnToolsVersion = 9.0;
-						DevelopmentTeam = 5A8RM3W5R7;
 						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 						SystemCapabilities = {
@@ -1165,7 +1163,7 @@
 				CURRENT_PROJECT_VERSION = 71;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5A8RM3W5R7;
+				DEVELOPMENT_TEAM = Y2PQ84UJFL;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1180,7 +1178,7 @@
 				);
 				MARKETING_VERSION = 2.2.0;
 				ONE_SIGNAL_APP_ID = "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.fivecalls.FiveCalls-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riyapatel.testapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
@@ -1199,7 +1197,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 71;
 				DEVELOPMENT_ASSET_PATHS = "";
-				DEVELOPMENT_TEAM = 5A8RM3W5R7;
+				DEVELOPMENT_TEAM = Y2PQ84UJFL;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1214,7 +1212,7 @@
 				);
 				MARKETING_VERSION = 2.2.0;
 				ONE_SIGNAL_APP_ID = "5fd4ca41-9f6c-4149-a312-ae3e71b35c0e";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.fivecalls.FiveCalls-ios";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riyapatel.testapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -1276,7 +1274,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 71;
-				DEVELOPMENT_TEAM = 5A8RM3W5R7;
+				DEVELOPMENT_TEAM = Y2PQ84UJFL;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = NotificationsService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -1286,7 +1284,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.fivecalls.FiveCalls-ios.NotificationsService";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riyapatel.testapp.sub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -1303,7 +1301,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 71;
-				DEVELOPMENT_TEAM = 5A8RM3W5R7;
+				DEVELOPMENT_TEAM = Y2PQ84UJFL;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				INFOPLIST_FILE = NotificationsService/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
@@ -1313,7 +1311,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				MARKETING_VERSION = 2.2.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.fivecalls.FiveCalls-ios.NotificationsService";
+				PRODUCT_BUNDLE_IDENTIFIER = com.riyapatel.testapp.sub;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
