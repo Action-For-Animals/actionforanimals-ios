@@ -205,13 +205,13 @@
 		AF2A740FE5EBC6A70F2AB3CA /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		B50280531E46A91F00749ED7 /* AreaOffice.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AreaOffice.swift; sourceTree = "<group>"; };
 		B50280551E47875500749ED7 /* ContactLog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactLog.swift; sourceTree = "<group>"; };
-		B502805B1E478BC200749ED7 /* FiveCallsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FiveCallsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B502805B1E478BC200749ED7 /* ActionforAnimalsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ActionforAnimalsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B502805F1E478BC200749ED7 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B50280671E478BF500749ED7 /* ContactLogsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContactLogsTests.swift; sourceTree = "<group>"; };
 		B502807B1E498B9B00749ED7 /* ImpactViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImpactViewModel.swift; sourceTree = "<group>"; };
 		B512506921E6F762007D32DF /* FetchContactsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchContactsOperation.swift; sourceTree = "<group>"; };
 		B512506D21E701DE007D32DF /* ContactList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactList.swift; sourceTree = "<group>"; };
-		B52805111E3FA94D00EE832A /* FiveCalls.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FiveCalls.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B52805111E3FA94D00EE832A /* ActionforAnimals.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ActionforAnimals.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B52805141E3FA94D00EE832A /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B528051B1E3FA94D00EE832A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B528051E1E3FA94D00EE832A /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -399,8 +399,8 @@
 		B52805121E3FA94D00EE832A /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B52805111E3FA94D00EE832A /* FiveCalls.app */,
-				B502805B1E478BC200749ED7 /* FiveCallsTests.xctest */,
+				B52805111E3FA94D00EE832A /* ActionforAnimals.app */,
+				B502805B1E478BC200749ED7 /* ActionforAnimalsTests.xctest */,
 				B5A70A581E4C01A00031DF58 /* FiveCallsUITests.xctest */,
 				D0BA59A81F9546510069DA58 /* NotificationsService.appex */,
 			);
@@ -621,9 +621,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B502805A1E478BC200749ED7 /* FiveCallsTests */ = {
+		B502805A1E478BC200749ED7 /* ActionforAnimalsTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B50280621E478BC200749ED7 /* Build configuration list for PBXNativeTarget "FiveCallsTests" */;
+			buildConfigurationList = B50280621E478BC200749ED7 /* Build configuration list for PBXNativeTarget "ActionforAnimalsTests" */;
 			buildPhases = (
 				B50280571E478BC200749ED7 /* Sources */,
 				B50280581E478BC200749ED7 /* Frameworks */,
@@ -634,14 +634,14 @@
 			dependencies = (
 				B50280611E478BC200749ED7 /* PBXTargetDependency */,
 			);
-			name = FiveCallsTests;
+			name = ActionforAnimalsTests;
 			productName = FiveCallsTests;
-			productReference = B502805B1E478BC200749ED7 /* FiveCallsTests.xctest */;
+			productReference = B502805B1E478BC200749ED7 /* ActionforAnimalsTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		B52805101E3FA94D00EE832A /* FiveCalls */ = {
+		B52805101E3FA94D00EE832A /* ActionforAnimals */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B52805231E3FA94D00EE832A /* Build configuration list for PBXNativeTarget "FiveCalls" */;
+			buildConfigurationList = B52805231E3FA94D00EE832A /* Build configuration list for PBXNativeTarget "ActionforAnimals" */;
 			buildPhases = (
 				B528050D1E3FA94D00EE832A /* Sources */,
 				B528050E1E3FA94D00EE832A /* Frameworks */,
@@ -654,7 +654,7 @@
 				E88730502AF9E1ED0053837B /* PBXTargetDependency */,
 				D0BA59AE1F9546510069DA58 /* PBXTargetDependency */,
 			);
-			name = FiveCalls;
+			name = ActionforAnimals;
 			packageProductDependencies = (
 				D0CFF332284A835F0082693E /* OneSignal */,
 				D05745842A53E34300A8534A /* PlausibleSwift */,
@@ -662,7 +662,7 @@
 				4F07B2372B45E5ED00C575DF /* AcknowList */,
 			);
 			productName = FiveCalls;
-			productReference = B52805111E3FA94D00EE832A /* FiveCalls.app */;
+			productReference = B52805111E3FA94D00EE832A /* ActionforAnimals.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B5A70A571E4C01A00031DF58 /* FiveCallsUITests */ = {
@@ -774,8 +774,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B52805101E3FA94D00EE832A /* FiveCalls */,
-				B502805A1E478BC200749ED7 /* FiveCallsTests */,
+				B52805101E3FA94D00EE832A /* ActionforAnimals */,
+				B502805A1E478BC200749ED7 /* ActionforAnimalsTests */,
 				B5A70A571E4C01A00031DF58 /* FiveCallsUITests */,
 				D0BA59A71F9546510069DA58 /* NotificationsService */,
 			);
@@ -952,12 +952,12 @@
 /* Begin PBXTargetDependency section */
 		B50280611E478BC200749ED7 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B52805101E3FA94D00EE832A /* FiveCalls */;
+			target = B52805101E3FA94D00EE832A /* ActionforAnimals */;
 			targetProxy = B50280601E478BC200749ED7 /* PBXContainerItemProxy */;
 		};
 		B5A70A5E1E4C01A00031DF58 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B52805101E3FA94D00EE832A /* FiveCalls */;
+			target = B52805101E3FA94D00EE832A /* ActionforAnimals */;
 			targetProxy = B5A70A5D1E4C01A00031DF58 /* PBXContainerItemProxy */;
 		};
 		D0BA59AE1F9546510069DA58 /* PBXTargetDependency */ = {
@@ -1170,7 +1170,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = FiveCalls/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "5 Calls";
+				INFOPLIST_KEY_CFBundleDisplayName = "Action for Animals";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1204,7 +1204,7 @@
 					"$(PROJECT_DIR)",
 				);
 				INFOPLIST_FILE = FiveCalls/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "5 Calls";
+				INFOPLIST_KEY_CFBundleDisplayName = "Action for Animals";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1323,7 +1323,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		B50280621E478BC200749ED7 /* Build configuration list for PBXNativeTarget "FiveCallsTests" */ = {
+		B50280621E478BC200749ED7 /* Build configuration list for PBXNativeTarget "ActionforAnimalsTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B50280631E478BC200749ED7 /* Debug */,
@@ -1341,7 +1341,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B52805231E3FA94D00EE832A /* Build configuration list for PBXNativeTarget "FiveCalls" */ = {
+		B52805231E3FA94D00EE832A /* Build configuration list for PBXNativeTarget "ActionforAnimals" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B52805241E3FA94D00EE832A /* Debug */,
