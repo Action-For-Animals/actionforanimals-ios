@@ -41,7 +41,7 @@ struct Welcome: View {
                 GridRow() {
                     Image(systemName: "phone.badge.waveform")
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.red, .blue)
+                        .foregroundStyle(.blue, .green)
                         .font(.title)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading) {
@@ -52,8 +52,8 @@ struct Welcome: View {
                     .accessibilityElement(children: .combine)
                 }
                 GridRow() {
-                    Image(systemName: "goforward.5")
-                        .foregroundStyle(.blue)
+                    Image(systemName: "1.circle.fill")
+                        .foregroundStyle(.green)
                         .font(.title)
                         .accessibilityHidden(true)
                     VStack(alignment: .leading) {
@@ -67,7 +67,7 @@ struct Welcome: View {
                     Image(systemName: "person.2")
                         .opacity(subMessageOpacity)
                         .symbolRenderingMode(.palette)
-                        .foregroundStyle(.blue, .red)
+                        .foregroundStyle(.blue, .green)
                         .font(.title)
                         .accessibilityHidden(true)
                     Text(subMessage)
@@ -87,7 +87,7 @@ struct Welcome: View {
                         .frame(maxWidth: .infinity)
                         .background {
                             RoundedRectangle(cornerRadius: 6)
-                                .foregroundColor(.blue)
+                                .foregroundColor(.green)
                         }
                 }
             }
