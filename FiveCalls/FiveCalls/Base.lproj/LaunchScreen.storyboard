@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="23727" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" launchScreen="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="01J-lp-oVM">
-    <device id="retina6_7" orientation="portrait" appearance="light"/>
+    <device id="retina6_7" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="23721"/>
@@ -28,7 +28,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" name="fivecallsDarkBlue"/>
+                        <color key="backgroundColor" name="BrightWhite"/>
                         <constraints>
                             <constraint firstItem="UTy-pW-PAa" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="BmV-7A-7fG"/>
                             <constraint firstItem="UTy-pW-PAa" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="JUx-Fp-Lim"/>
@@ -42,8 +42,8 @@
     </scenes>
     <resources>
         <image name="stars-blue" width="250" height="250"/>
-        <namedColor name="fivecallsDarkBlue">
-            <color red="0.25490196078431371" green="0.67843137254901964" blue="0.25490196078431371" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        <namedColor name="BrightWhite">
+            <color red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </namedColor>
     </resources>
 </document>

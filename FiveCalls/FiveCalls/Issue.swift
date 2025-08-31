@@ -24,11 +24,11 @@ struct Issue: Identifiable, Decodable {
     let createdAt: Date
     
     var shareImageURL: URL {
-        return URL(string: String(format: "https://actionforanimals.substack.com/p/"))!
+        return URL(string: String(format: "https://actionforanimals.substack.com/p/%@", self.slug.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? self.slug))!
     }
-    
+
     var shareURL: URL {
-        return URL(string: String(format: "https://actionforanimals.substack.com/p/"))!
+        return URL(string: String(format: "https://actionforanimals.substack.com/p/%@", self.slug.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? self.slug))!
     }
     
     var hasHouse: Bool { contactAreas.contains("US House") }

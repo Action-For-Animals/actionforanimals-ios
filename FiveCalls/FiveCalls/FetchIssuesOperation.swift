@@ -25,7 +25,7 @@ class FetchIssuesOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        var urlComponents = URLComponents(string: "https://testaction-19b48-default-rtdb.firebaseio.com/.json")!
+        var urlComponents = URLComponents(string: "https://getissues-wv7gpk3bya-uc.a.run.app")!
         var queryItems = [URLQueryItem(name: "includeHidden", value: "true")]
         
         // Add calling group if it exists

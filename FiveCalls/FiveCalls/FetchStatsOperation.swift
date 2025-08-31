@@ -26,11 +26,11 @@ class FetchStatsOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        var urlComponents = URLComponents(url: URL(string: "https://reportcall-uabgeeameq-uc.a.run.app")!, resolvingAgainstBaseURL: false)!
+        var urlComponents = URLComponents(url: URL(string: "https://reportcall-wv7gpk3bya-uc.a.run.app")!, resolvingAgainstBaseURL: false)!
         var queryItems: [URLQueryItem] = []
         
         if let issueID = self.issueID {
-            queryItems.append(URLQueryItem(name: "issueID", value: issueID))
+            queryItems.append(URLQueryItem(name: "issueid", value: issueID))
         }
         
         // Add calling group if it exists

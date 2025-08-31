@@ -29,7 +29,7 @@ class FetchContactsOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        var components = URLComponents(string: "https://getcontacts-uabgeeameq-uc.a.run.app")
+        var components = URLComponents(string: "https://getcontacts-wv7gpk3bya-uc.a.run.app")
         let locationQueryParam = URLQueryItem(name: "location", value: location.locationValue)
         components?.queryItems = [locationQueryParam]
         return components!.url!

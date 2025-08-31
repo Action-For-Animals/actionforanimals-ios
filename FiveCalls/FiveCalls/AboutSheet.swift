@@ -70,6 +70,8 @@ struct AboutSheet: View {
                         .foregroundStyle(.fivecallsDarkGray)
                 }
 
+                // Remove Calling Group functionality
+                /*
                 Section {
                     TextField(R.string.localizable.aboutCallingGroupPlaceholder(), text: $callingGroup)
                         .onChange(of: callingGroup) { newValue in
@@ -88,7 +90,8 @@ struct AboutSheet: View {
                         .font(.footnote)
                         .foregroundStyle(.fivecallsDarkGray)
                 }
-
+                */
+                
                 Section {
                     AboutListItem(title: "Instagram",
                                   type: .action({
@@ -125,6 +128,17 @@ struct AboutSheet: View {
                 }
 
                 Section {
+                    
+                    // Custom acknowledgement for 5 Calls
+                    AboutListItem(
+                        title: R.string.localizable.aboutItem5Calls(),
+                        type: .action({
+                            if let url = URL(string: "https://github.com/5calls") {
+                                UIApplication.shared.open(url)
+                            }
+                        })
+                    )
+                    
                     AboutListItem(title: R.string.localizable.aboutItemOpenSource(),
                                   type: .acknowledgements)
                 } header: {

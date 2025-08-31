@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>Action for Animals</string>
+	<string>Action For Animals</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,9 +38,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>5 Calls uses your location to find your representatives</string>
+	<string>Action For Animals uses your location to find your representatives</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>5 Calls uses your location to find your representatives</string>
+	<string>Action For Animals uses your location to find your representatives</string>
 	<key>OneSignalAppID</key>
 	<string>$(ONE_SIGNAL_APP_ID)</string>
 	<key>UILaunchStoryboardName</key>
