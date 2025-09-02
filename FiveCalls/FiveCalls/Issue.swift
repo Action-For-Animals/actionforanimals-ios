@@ -23,8 +23,9 @@ struct Issue: Identifiable, Decodable {
     let contactAreas: [String]
     let createdAt: Date
     
+    // Action For Animals - Not used for now - until we figure it out
     var shareImageURL: URL {
-        return URL(string: String(format: "https://actionforanimals.substack.com/p/%@", self.slug.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? self.slug))!
+        return URL(string: "")!
     }
 
     var shareURL: URL {

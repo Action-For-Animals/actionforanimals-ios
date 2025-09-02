@@ -87,6 +87,9 @@ struct IssueDone: View {
                     .padding(.bottom, 16)
                 }
 
+                // Action For Animals - Share topic for now
+                // Add local image and also need to share to open up to app
+                /*
                 Text(R.string.localizable.shareThisTopic())
                     .font(.caption).fontWeight(.bold)
                     .accessibilityAddTraits(.isHeader)
@@ -106,6 +109,7 @@ struct IssueDone: View {
                 .accessibilityElement(children: .ignore)
                 .accessibilityAddTraits(.isButton)
                 .accessibilityLabel(Text("\(R.string.localizable.shareThisTopic()): \(issue.name)"))
+                 */
 
                 Button(action: {
                     store.dispatch(action: .GoToRoot)

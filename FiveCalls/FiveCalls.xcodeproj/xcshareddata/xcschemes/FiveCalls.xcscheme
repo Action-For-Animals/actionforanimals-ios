@@ -117,6 +117,7 @@
    </AnalyzeAction>
    <ArchiveAction
       buildConfiguration = "Release"
+      customArchiveName = "Action For Animals"
       revealArchiveInOrganizer = "YES">
    </ArchiveAction>
 </Scheme>

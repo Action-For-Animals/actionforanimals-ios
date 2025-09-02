@@ -9,7 +9,7 @@
 import StoreKit
 import SwiftUI
 
-private let appId = "1202558609"
+private let appId = "6751785020"
 private let appUrl = URL(string: "https://itunes.apple.com/us/app/myapp/id\(appId)?ls=1&mt=8")
 
 struct AboutSheet: View {
