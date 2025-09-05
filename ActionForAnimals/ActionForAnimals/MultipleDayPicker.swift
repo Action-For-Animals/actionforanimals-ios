@@ -27,15 +27,15 @@ let days = [
 struct MultipleDayPicker: View {
     @Binding var selectedDayIndices: [Int]
 
-    var borderColor: Color { selectedDayIndices.isEmpty ? Color.fivecallsRedText : Color.fivecallsDarkBlue
+    var borderColor: Color { selectedDayIndices.isEmpty ? Color.afaRedText : Color.afaDarkBlue
     }
     
     var body: some View {
         DaysFlowLayout(spacing: -1) {
             ForEach(days, id: \.self) { day in
                 DayView(text: day.abbr)
-                    .background(isIndexSelected(day.index) ? Color.fivecallsDarkBlue : Color(.systemBackground))
-                    .foregroundColor(isIndexSelected(day.index) ? Color.fivecallsLightBlue : Color.fivecallsMediumDarkGray)
+                    .background(isIndexSelected(day.index) ? Color.afaDarkBlue : Color(.systemBackground))
+                    .foregroundColor(isIndexSelected(day.index) ? Color.afaLightBlue : Color.afaMediumDarkGray)
                     .border(borderColor)
                     .accessibilityLabel(Text("\(String(day.name)) \(isIndexSelected(day.index) ? R.string.localizable.scheduledRemindersDaySelected() : R.string.localizable.scheduledRemindersDayNotSelected())"))
                     .accessibilityAddTraits(.isButton)

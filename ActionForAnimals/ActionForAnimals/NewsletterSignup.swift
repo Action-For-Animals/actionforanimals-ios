@@ -36,7 +36,7 @@ struct NewsletterSignup: View {
                 "",
                 text: $email,
                 prompt: Text(R.string.localizable.newsletterEmailPlaceholder())
-                    .foregroundColor(.fivecallsDarkGray)
+                    .foregroundColor(.afaDarkGray)
             )
                 .font(.headline)
                 .padding(.horizontal, 4)
@@ -81,7 +81,7 @@ struct NewsletterSignup: View {
                 )
             }.padding(.top, 6)
         }.padding()
-        .background(.fivecallsDarkBlue)
+        .background(.afaDarkBlue)
         .clipShape(RoundedRectangle(cornerRadius: 10))
         .padding()
     }

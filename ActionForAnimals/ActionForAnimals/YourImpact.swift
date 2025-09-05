@@ -79,7 +79,7 @@ struct YourImpact: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbarBackground(.visible)
-            .toolbarBackground(Color.fivecallsDarkBlue)
+            .toolbarBackground(Color.afaDarkBlue)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

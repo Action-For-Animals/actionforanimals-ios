@@ -135,7 +135,7 @@ struct MenuView: View {
             Image(systemName: "gear")
                 .renderingMode(.template)
                 .font(.title)
-                .tint(Color.fivecallsDarkBlue)
+                .tint(Color.afaDarkBlue)
                 .accessibilityLabel(Text(R.string.localizable.menuName))
         }
         .sheet(isPresented: $showRemindersSheet) {
@@ -238,12 +238,12 @@ struct IssuesList: View {
                         NavigationLink(value: issue) {
                             IssueListItem(issue: issue, contacts: store.state.contacts)
                         }
-                        .listRowSeparatorTint(.fivecallsDarkGray)
+                        .listRowSeparatorTint(.afaDarkGray)
                     }
                 } header: {
                     if showAllIssues && !isSearching {
                         Text(section.name.uppercased()).font(.headline)
-                            .foregroundStyle(.fivecallsDarkGray)
+                            .foregroundStyle(.afaDarkGray)
                     }
                 } footer: {
                     if section == categorizedIssues.last && !isSearching {
@@ -257,15 +257,15 @@ struct IssuesList: View {
                                     R.string.localizable.moreIssuesTitle())
                                 .font(.title3)
                                 .fontWeight(.semibold)
-                                .foregroundColor(Color.fivecallsDarkBlueText)
+                                .foregroundColor(Color.afaDarkBlueText)
 
                         }
                         .padding(.vertical, 10)
-                        .listRowSeparatorTint(.fivecallsDarkGray)
+                        .listRowSeparatorTint(.afaDarkGray)
                     }
                 }
                 }
-                .tint(Color.fivecallsLightBG)
+                .tint(Color.afaLightBG)
                 .listStyle(.plain)
             }
         }

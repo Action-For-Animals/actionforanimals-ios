@@ -23,7 +23,7 @@ struct ContactCircle: View {
         if let issueID, store.state.issueCalledOn(issueID: issueID, contactID: contact.id) {
             Image(systemName: "checkmark.circle.fill")
                 .resizable()
-                .foregroundColor(.fivecallsGreen)
+                .foregroundColor(.afaGreen)
                 .background {
                     Circle().foregroundColor(.white)
                 }

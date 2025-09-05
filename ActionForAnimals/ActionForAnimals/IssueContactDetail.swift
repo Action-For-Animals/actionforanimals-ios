@@ -39,7 +39,7 @@ struct IssueContactDetail: View {
                 ContactListItem(contact: currentContact)
                     .background {
                         RoundedRectangle(cornerRadius: 10)
-                            .foregroundColor(Color.fivecallsLightBG)
+                            .foregroundColor(Color.afaLightBG)
                     }
                     .padding(.bottom)
                 VStack(alignment: .trailing) {
@@ -58,7 +58,7 @@ struct IssueContactDetail: View {
                         Text(currentContact.phone)
                             .font(.title)
                             .fontWeight(.semibold)
-                            .foregroundColor(Color.fivecallsDarkBlueText)
+                            .foregroundColor(Color.afaDarkBlueText)
                             .onTapGesture {
                                 self.call(phoneNumber: currentContact.phone)
                             }
@@ -100,7 +100,7 @@ struct IssueContactDetail: View {
                             } label: {
                                 Image(systemName: "ellipsis.circle")
                                     .font(.title2)
-                                    .foregroundColor(Color.fivecallsDarkBlue)
+                                    .foregroundColor(Color.afaDarkBlue)
                                     .padding(.leading, 4)
                             }
                             .accessibilityIdentifier("localNumbers")

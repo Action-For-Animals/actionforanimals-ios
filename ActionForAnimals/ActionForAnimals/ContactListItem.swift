@@ -39,7 +39,7 @@ struct ContactListItem: View {
                         Image(systemName: "checkmark.circle.fill")
                             .resizable()
                             .frame(width: completedCircleFrameSize, height: completedCircleFrameSize)
-                            .foregroundColor(.fivecallsGreen)
+                            .foregroundColor(.afaGreen)
                             .background {
                                 Circle().foregroundColor(.white)
                             }
@@ -166,7 +166,7 @@ struct ContactListItem: View {
         ContactListItem(contact: .housePreviewContact)
             .background {
                 RoundedRectangle(cornerRadius: 10)
-                    .foregroundColor(Color.fivecallsLightBG)
+                    .foregroundColor(Color.afaLightBG)
             }
         ContactListItem(contact: .housePreviewContact, showComplete: true)
         ContactListItem(contact: .housePreviewContact, showComplete: true, contactNote: "voicemail", listType: .compact)

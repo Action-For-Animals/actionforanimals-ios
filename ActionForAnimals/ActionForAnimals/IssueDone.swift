@@ -81,7 +81,7 @@ struct IssueDone: View {
                         Button(action: {
                             openURL(donateURL)
                         }) {
-                            PrimaryButton(title: R.string.localizable.donateToday(), systemImageName: "hand.thumbsup.circle.fill", bgColor: .fivecallsRed)
+                            PrimaryButton(title: R.string.localizable.donateToday(), systemImageName: "hand.thumbsup.circle.fill", bgColor: .afaRed)
                         }
                     }
                     .padding(.bottom, 16)
@@ -193,14 +193,14 @@ struct CountingView: View {
                 Canvas { context, size in
                     let drawRect = CGRect(origin: .zero, size: size)
 
-                    context.fill(Rectangle().size(size).path(in: drawRect), with: .color(.fivecallsLightBG))
-                    context.fill(Rectangle().size(width: progressWidth(size: size), height: size.height).path(in: drawRect), with: .color(.fivecallsDarkBlue))
+                    context.fill(Rectangle().size(size).path(in: drawRect), with: .color(.afaLightBG))
+                    context.fill(Rectangle().size(width: progressWidth(size: size), height: size.height).path(in: drawRect), with: .color(.afaDarkBlue))
                 }
                 .clipShape(RoundedRectangle(cornerRadius: 5.0))
                 Text("\(count)")
                     .foregroundStyle(.white)
                     // yes, blue background may be redundant, but it ensures that the white text can always be read, even with very large fonts
-                    .background(.fivecallsDarkBlue)
+                    .background(.afaDarkBlue)
                     .padding(.vertical, 2)
                     .padding(.horizontal, 6)
             }

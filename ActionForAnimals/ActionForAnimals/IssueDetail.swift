@@ -36,7 +36,7 @@ struct IssueDetail: View {
                     .padding(.bottom, 8)
                 Text(issue.markdownIssueReason)
                     .padding(.bottom, 16)
-                    .accentColor(.fivecallsDarkBlueText)
+                    .accentColor(.afaDarkBlueText)
                 if store.state.location != nil {
                     Text(R.string.localizable.repsListHeader())
                         .font(.caption)
@@ -61,7 +61,7 @@ struct IssueDetail: View {
                     }
                     .background {
                         RoundedRectangle(cornerRadius: 10)
-                            .foregroundColor(Color.fivecallsLightBG)
+                            .foregroundColor(Color.afaLightBG)
                     }
                     .padding(.bottom, 16)
                     

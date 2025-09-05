@@ -67,7 +67,7 @@ struct AboutSheet: View {
                 } header: {
                     Text(R.string.localizable.aboutSectionHeaderGeneral().uppercased())
                         .font(.footnote)
-                        .foregroundStyle(.fivecallsDarkGray)
+                        .foregroundStyle(.afaDarkGray)
                 }
 
                 // Remove Calling Group functionality
@@ -84,11 +84,11 @@ struct AboutSheet: View {
                 } header: {
                     Text(R.string.localizable.aboutCallingGroupHeader().uppercased())
                         .font(.footnote)
-                        .foregroundStyle(.fivecallsDarkGray)
+                        .foregroundStyle(.afaDarkGray)
                 } footer: {
                     Text(R.string.localizable.aboutCallingGroupFooter())
                         .font(.footnote)
-                        .foregroundStyle(.fivecallsDarkGray)
+                        .foregroundStyle(.afaDarkGray)
                 }
                 */
                 
@@ -120,11 +120,11 @@ struct AboutSheet: View {
                 } header: {
                     Text(R.string.localizable.aboutSectionHeaderSocial().uppercased())
                         .font(.footnote)
-                        .foregroundStyle(.fivecallsDarkGray)
+                        .foregroundStyle(.afaDarkGray)
                 } footer: {
                     Text(R.string.localizable.aboutSectionFooterSocial())
                         .font(.footnote)
-                        .foregroundStyle(.fivecallsDarkGray)
+                        .foregroundStyle(.afaDarkGray)
                 }
 
                 Section {
@@ -151,7 +151,7 @@ struct AboutSheet: View {
                             Spacer()
                             Text(versionString)
                                 .font(.footnote)
-                                .foregroundStyle(.fivecallsDarkGray)
+                                .foregroundStyle(.afaDarkGray)
                             Spacer()
                         },
                         content: {})
@@ -162,7 +162,7 @@ struct AboutSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbarBackground(.visible)
-            .toolbarBackground(Color.fivecallsDarkBlue)
+            .toolbarBackground(Color.afaDarkBlue)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
@@ -178,7 +178,7 @@ struct AboutSheet: View {
                     .navigationTitle(webViewContent.navigationTitle)
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbarBackground(.visible)
-                    .toolbarBackground(Color.fivecallsDarkBlue)
+                    .toolbarBackground(Color.afaDarkBlue)
                     .toolbarColorScheme(.dark, for: .navigationBar)
             }
 

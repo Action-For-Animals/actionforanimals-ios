@@ -32,7 +32,7 @@ struct MainHeader: View {
                     Spacer()
                 }
 
-            Image(.fivecallsStars)
+            Image(.afaStars)
                 .accessibilityHidden(true)
         }
     }

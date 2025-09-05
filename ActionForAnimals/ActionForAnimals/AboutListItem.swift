@@ -59,7 +59,7 @@ struct AboutListItem: View {
                             .navigationTitle(R.string.localizable.aboutAcknowledgementsTitle())
                             .navigationBarTitleDisplayMode(.inline)
                             .toolbarBackground(.visible)
-                            .toolbarBackground(Color.fivecallsDarkBlue)
+                            .toolbarBackground(Color.afaDarkBlue)
                             .toolbarColorScheme(.dark, for: .navigationBar)
                     } label: {
                         EmptyView()

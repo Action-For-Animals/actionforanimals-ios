@@ -33,7 +33,7 @@ struct Welcome: View {
     var body: some View {
         ScrollView {
             Grid(verticalSpacing: 30) {
-                Image(decorative: R.image.fivecallsLogotype)
+                Image(decorative: R.image.afaLogotype)
                     .resizable()
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 292)

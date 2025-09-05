@@ -75,7 +75,7 @@ struct ScheduleReminders: View {
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden()
             .toolbarBackground(.visible)
-            .toolbarBackground(Color.fivecallsDarkBlue)
+            .toolbarBackground(Color.afaDarkBlue)
             .toolbarColorScheme(.dark, for: .navigationBar)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
@@ -169,7 +169,7 @@ struct DayAndTimePickers: View {
             VStack(spacing: 0) {
                 Text(R.string.localizable.scheduledRemindersTimeLabel())
                     .font(.title3)
-                    .foregroundColor(Color.fivecallsDarkBlue)
+                    .foregroundColor(Color.afaDarkBlue)
                     .multilineTextAlignment(.center)
                     .padding(20)
                 DatePicker("", selection: $selectedTime, displayedComponents: .hourAndMinute)
@@ -180,7 +180,7 @@ struct DayAndTimePickers: View {
                 Spacer()
                 Text(R.string.localizable.scheduledRemindersDayLabel())
                     .font(.title3)
-                    .foregroundColor(Color.fivecallsDarkBlue)
+                    .foregroundColor(Color.afaDarkBlue)
                     .padding(.horizontal, 20)
                     .accessibilityAddTraits(.isHeader)
                 MultipleDayPicker(selectedDayIndices: $selectedDayIndices)
@@ -193,7 +193,7 @@ struct DayAndTimePickers: View {
                     }
                     .padding(.vertical, 5)
                 Text(R.string.localizable.scheduledRemindersNoDaysWarning())
-                    .foregroundColor(colorScheme == .light ? Color.fivecallsRed : Color.primary)
+                    .foregroundColor(colorScheme == .light ? Color.afaRed : Color.primary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
 
@@ -211,7 +211,7 @@ struct RemindersDisabledView: View {
     var body: some View {
         VStack {
             Text(R.string.localizable.scheduledRemindersDescription())
-                .foregroundColor(Color(R.color.fivecallsDarkGray()!))
+                .foregroundColor(Color(R.color.afaDarkGray()!))
 
                 .multilineTextAlignment(.center)
                 .opacity(remindersEnabled ? 0 : 1)
