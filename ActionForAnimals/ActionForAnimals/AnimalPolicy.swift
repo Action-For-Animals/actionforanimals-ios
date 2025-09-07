@@ -9,7 +9,7 @@
 import Foundation
 import RswiftResources
 
-struct Issue: Identifiable, Decodable {
+struct AnimalPolicy: Identifiable, Decodable {
     struct Stats: Decodable {
             let calls: Int
     }
@@ -125,8 +125,8 @@ struct Issue: Identifiable, Decodable {
     }
 }
 
-extension Issue: Equatable, Hashable {
-    static func == (lhs: Issue, rhs: Issue) -> Bool {
+extension AnimalPolicy: Equatable, Hashable {
+    static func == (lhs: AnimalPolicy, rhs: AnimalPolicy) -> Bool {
         return lhs.id == rhs.id
     }
     

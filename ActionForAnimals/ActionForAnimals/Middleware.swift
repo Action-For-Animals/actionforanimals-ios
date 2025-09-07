@@ -74,7 +74,7 @@ private func fetchStats(issueID: Int?, dispatch: @escaping Dispatcher) {
 
 private func fetchIssues(dispatch: @escaping Dispatcher) {
     let queue = OperationQueue.main
-    let operation = FetchIssuesOperation()
+    let operation = FetchAnimalPolicyOperation()
     operation.completionBlock = { [weak operation] in
         if let issues = operation?.issuesList {
             DispatchQueue.main.async {

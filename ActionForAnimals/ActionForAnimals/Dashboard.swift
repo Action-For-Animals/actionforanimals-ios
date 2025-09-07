@@ -12,7 +12,7 @@ struct Dashboard: View {
     @EnvironmentObject var store: Store
     
     @State var selectedIssueUrl: URL?
-    @Binding var selectedIssue: Issue?
+    @Binding var selectedIssue: AnimalPolicy?
 
     @State var searchText = ""
 
@@ -68,8 +68,8 @@ struct Dashboard_Previews: PreviewProvider {
     static let previewState = {
         var state = AppState()
         state.issues = [
-            Issue.basicPreviewIssue,
-            Issue.multilinePreviewIssue
+            AnimalPolicy.basicPreviewIssue,
+            AnimalPolicy.multilinePreviewIssue
         ]
         state.contacts = [
             Contact.housePreviewContact,
@@ -105,7 +105,6 @@ struct MenuView: View {
             Image(systemName: "gear")
                 .renderingMode(.template)
                 .font(.title)
-                .tint(Color.afaDarkBlue)
                 .accessibilityLabel(Text(R.string.localizable.menuName))
         }
         .sheet(isPresented: $showRemindersSheet) {
@@ -119,7 +118,7 @@ struct MenuView: View {
 
 struct IssuesList: View {
     @ObservedObject var store: Store
-    @Binding var selectedIssue: Issue?
+    @Binding var selectedIssue: AnimalPolicy?
     @Binding var searchText: String
     
     var isSearching: Bool {
@@ -127,7 +126,7 @@ struct IssuesList: View {
     }
 
     // Always show ALL issues (active + inactive) by default
-    var allIssues: [Issue] {
+    var allIssues: [AnimalPolicy] {
         if isSearching {
             let filtered = store.state.issues.filter { issue in
                 issue.name.localizedCaseInsensitiveContains(searchText) ||
@@ -165,7 +164,7 @@ struct IssuesList: View {
             // Flat list, no categories, no footer toggle
             List(allIssues, selection: $selectedIssue) { issue in
                 NavigationLink(value: issue) {
-                    IssueListItem(issue: issue, contacts: store.state.contacts)
+                    AnimalPolicyListItem(issue: issue, contacts: store.state.contacts)
                 }
                 .listRowSeparatorTint(.afaDarkGray)
             }

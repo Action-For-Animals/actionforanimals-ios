@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-struct IssueDetail: View {
+struct AnimalPolicyDetail: View {
     @EnvironmentObject var store: Store
     
-    let issue: Issue
+    let issue: AnimalPolicy
     
     @State var showLocationSheet = false
     @State private var forceRefreshID = UUID()
@@ -165,12 +165,12 @@ struct IssueDetail: View {
         return Store(state: state)
     }()
     
-    return IssueDetail(issue: .houseOnlyPreviewIssue)
+    return AnimalPolicyDetail(issue: .houseOnlyPreviewIssue)
         .environmentObject(store)
 }
 
 struct IssueDetailNavModel {
-    var issue: Issue
+    var issue: AnimalPolicy
     let contacts: [Contact]
 }
 

@@ -1,5 +1,5 @@
 //
-//  FetchIssuesOperation.swift
+//  FetchAnimalPolicyOperation.swift
 //  ActionForAnimals
 //
 //  Created by Ben Scheirman on 1/31/17.
@@ -8,13 +8,13 @@
 
 import Foundation
 
-class FetchIssuesOperation: BaseOperation, @unchecked Sendable {
+class FetchAnimalPolicyOperation: BaseOperation, @unchecked Sendable {
 
     // Output properties.
     // Once the job has finished consumers can check one or more of these for values.
     var httpResponse: HTTPURLResponse?
     var error: Error?
-    var issuesList: [Issue]?
+    var issuesList: [AnimalPolicy]?
     
     init(config: URLSessionConfiguration? = nil) {
         super.init()
@@ -78,9 +78,9 @@ class FetchIssuesOperation: BaseOperation, @unchecked Sendable {
         }
     }
     
-    private func parseIssues(data: Data) throws -> [Issue] {
+    private func parseIssues(data: Data) throws -> [AnimalPolicy] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
-        return try decoder.decode([Issue].self, from: data)
+        return try decoder.decode([AnimalPolicy].self, from: data)
     }
 }

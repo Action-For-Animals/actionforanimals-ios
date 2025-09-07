@@ -23,8 +23,8 @@
 "cant-send-email-message"             = "Please configure an e-mail address in the Settings app";
 "share-the-app-message"               = "Make calls to your elected officials on behalf of animals and let your voice be heard!";
 "calls"                               = "Calls";
-"issue-load-failed-connection"        = "The issues failed to load. Please check your connection and try again.";
-"issue-load-failed-server"            = "We encountered an error loading issues. Please try again later.";
+"policy-load-failed-connection"       = "The policies failed to load. Please check your connection and try again.";
+"policy-load-failed-server"           = "We encountered an error loading policies. Please try again later.";
 "fallback-user-location-desc"         = "My Location";
 "first-call-alert-title"              = "Ready?";
 "first-call-alert-message"            = "We're about to place the call. When it starts dialing, turn on Speaker phone, then double tap the home button and return to this app so you can read the script.";
@@ -33,9 +33,9 @@
 "place-call-failed-message"           = "Sorry, it looks like we can't place a call on this device. If you prefer to, you can use your phone to call, and read the script from this screen.";
 "line-busy"                           = "Local Offices ▼";
 "choose-a-number"                     = "Select a Different Office";
-"uncategorized-issues"                = "Uncategorized Issues";
-"choose-issue-placeholder"            = "Select an issue to get started";
-"choose-issue-subheading"             = "More details about this issue will appear here";
+"uncategorized-policies"              = "Uncategorized Policies";
+"choose-policy-placeholder"           = "Select a policy to get started";
+"choose-policy-subheading"            = "More details about this policy will appear here";
 
 // dashboard
 "menu-name"                           = "Menu";
@@ -43,12 +43,12 @@
 "menu-about"                          = "About";
 "menu-tip-title"                      = "New Settings Location";
 "menu-tip-message"                    = "Your Impact and About now reside in Settings menu along with Reminders";
-"more-issues-title"                   = "More Issues";
-"less-issues-title"                   = "Fewer Issues";
-"search-issues"                       = "Search all issues...";
-"search-no-results-title"             = "No issues found";
+"more-policies-title"                 = "More Policies";
+"less-policies-title"                 = "Fewer Policies";
+"search-policies"                     = "Search all policies...";
+"search-no-results-title"             = "No policies found";
 "search-no-results-message"           = "Try a different search term";
-"issue-item-calls-made"               = "%@ calls made";
+"policy-item-calls-made"              = "%@ calls made";
 
 // scheduled reminders
 "scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
@@ -87,14 +87,14 @@
 "title-attorney-general"              = "Attorney General";
 "title-secretary-of-state"            = "Secretary of State";
 
-// issue detail screen
+// policy detail screen
 "see-script"                          = "See your script";
 "next-contact"                        = "Next contact";
 "done-calling"                        = "Done calling";
 "no-contacts"                         = "No contacts";
 "call-areas"                          = "Call %@";
 
-// issue contact detail screen
+// policy contact detail screen
 "a11y-phone-call-copy-hint"           = "Double tap to call, triple tap to copy";
 "a11y-phone-call-hint"                = "Double tap to call";
 "a11y-phone-copy-hint"                = "Triple tap to copy";
@@ -128,7 +128,7 @@
 
 // notifications
 "notification-title" = "Nice work!";
-"notification-ask" = "Get alerts before your reps vote on important issues? Usually 1-2 messages per month.";
+"notification-ask" = "Get alerts before your reps vote on important policies? Usually 1-2 messages per month.";
 "notification-important" = "Yes, notify me";
 "notification-none" = "No, thanks";
 "notifications-denied-alert-title"    = "Notifications permissions denied.";
@@ -168,7 +168,7 @@
 "about-item-share"                    = "Share with Others";
 "about-item-rate"                     = "Please Rate Action for Animals";
 "about-item-open-source"              = "Open Source Libraries";
-"about-item-5-calls"                   = "5 Calls";
+"about-item-5-calls"                  = "5 Calls";
 "about-webview-title-why-call"        = "Why Calling Works";
 "about-webview-title-who-we-are"      = "Who Made Action for Animals";
 "about-acknowledgements-title"        = "Open Source";
@@ -184,18 +184,18 @@
 "welcome-section-3-calls"                = "Together we've made\n%@ calls";
 "welcome-button-title"                   = "Get Started";
 
-// issue detail
+// policy detail
 "set-location-header"                 = "We need a location to find your reps";
 "set-location-button"                 = "Set your location";
-"reps-list-header"                    = "Relevant representatives for this issue";
+"reps-list-header"                    = "Relevant representatives for this policy";
 "vacant-seat-title"                   = "Vacant Seat";
 "vacant-seat-message"                 = "This %@ seat is currently vacant.";
-"irrelevant-contact-message"         = "This representative is not currently relevant to this issue.";
+"irrelevant-contact-message"          = "This representative is not currently relevant to this policy.";
 
 // done
 "done-title"                          = "You called on **%@**";
 "total-calls"                         = "Total calls";
-"total-issue-calls"                   = "Calls on this topic";
+"total-policy-calls"                  = "Calls on this topic";
 "support-5calls"                      = "Support Action for Animals";
 "support-5calls-sub"                  = "Keep Action for Animals free and up-to-date";
 "donate-today"                        = "Donate today";
@@ -207,14 +207,10 @@
 // nav
 "back"                                = "Back";
 "share"                               = "Share";
-"tab-issues" = "Issues";
+"tab-policies" = "Policies";
 "tab-reps" = "Reps";
 
 // inbox
 "inbox-empty-state" = "Set your location\rto see your reps";
+"inbox-contact-alert" = "Select a policy on the policies tab to show relevant reps and phone numbers";
 "inbox-reps-header" = "Your National Reps";
-"inbox-votes-header" = "Recent messages";
-"inbox-push-button" = "Send me important votes";
-"inbox-push-detail" = "Get notified how your rep votes on your topics,\r1-2 notifications per month";
-"inbox-detail-readmore" = "Read more →";
-"inbox-contact-alert" = "Select an issue on the topics tab to show relevant reps and phone numbers";

@@ -26,7 +26,7 @@ class AppState: ObservableObject, ReduxState {
         }
     }
     @Published var donateOn = false
-    @Published var issues: [Issue] = []
+    @Published var issues: [AnimalPolicy] = []
     @Published var issueFetchTime: Date? = nil
     @Published var contacts: [Contact] = []
     @Published var district: String? = nil
@@ -53,7 +53,7 @@ class AppState: ObservableObject, ReduxState {
     // TODO: display this error on the dashboard (and location sheet?)
     @Published var contactsLoadingError: Error? = nil
     
-    @Published var issueRouter: IssueRouter = IssueRouter()
+    @Published var issueRouter: AnimalPolicyRouter = AnimalPolicyRouter()
     
     init() {
         // load user location cache

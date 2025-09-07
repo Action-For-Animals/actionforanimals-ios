@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-struct IssueSplitView: View {
+struct AnimalPolicySplitView: View {
     @EnvironmentObject var store: Store
     @Environment(\.horizontalSizeClass) private var originalSizeClass
     
@@ -19,21 +19,21 @@ struct IssueSplitView: View {
             } detail: {
                 NavigationStack(path: $store.state.issueRouter.path) {
                     if let selectedIssue = store.state.issueRouter.selectedIssue {
-                        IssueDetail(issue: selectedIssue)
+                        AnimalPolicyDetail(issue: selectedIssue)
                             .toolbar(.hidden, for: .tabBar)
                             .navigationDestination(for: IssueDetailNavModel.self) { idnm in
-                                IssueContactDetail(issue: idnm.issue, remainingContacts: idnm.contacts)
+                                AnimalPolicyContactDetail(issue: idnm.issue, remainingContacts: idnm.contacts)
                             }
                             .navigationDestination(for: IssueDoneNavModel.self) { inm in
-                                IssueDone(issue: inm.issue)
+                                AnimalPolicyDone(issue: inm.issue)
                             }
                     } else {
                         VStack(alignment: .leading) {
-                            Text(R.string.localizable.chooseIssuePlaceholder())
+                            Text(R.string.localizable.choosePolicyPlaceholder())
                                 .font(.title2)
                                 .fontWeight(.medium)
                                 .foregroundColor(.secondary)
-                            Text(R.string.localizable.chooseIssueSubheading())
+                            Text(R.string.localizable.choosePolicySubheading())
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
@@ -41,7 +41,7 @@ struct IssueSplitView: View {
                 }
             }
             .navigationSplitViewStyle(.balanced)
-            .tabItem({ Label(R.string.localizable.tabIssues(), systemImage: "phone.bubble.fill" ) })
+            .tabItem({ Label(R.string.localizable.tabPolicies(), systemImage: "phone.bubble.fill" ) })
             .tag("issues")
             // Set the inner size class for the navigation stack back to whatever it was originally since we override it for old tab bar behavior below
             .environment(\.horizontalSizeClass, originalSizeClass)
@@ -59,8 +59,8 @@ struct IssueSplitView_Previews: PreviewProvider {
     static let previewState = {
         var state = AppState()
         state.issues = [
-            Issue.basicPreviewIssue,
-            Issue.multilinePreviewIssue
+            AnimalPolicy.basicPreviewIssue,
+            AnimalPolicy.multilinePreviewIssue
         ]
         state.contacts = [
             Contact.housePreviewContact,
@@ -73,6 +73,6 @@ struct IssueSplitView_Previews: PreviewProvider {
     static let store = Store(state: previewState, middlewares: [appMiddleware()])
     
     static var previews: some View {
-        IssueSplitView().environmentObject(store)
+        AnimalPolicySplitView().environmentObject(store)
     }
 }

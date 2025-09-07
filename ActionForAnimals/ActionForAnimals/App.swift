@@ -19,7 +19,7 @@ struct ActionForAnimalsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            IssueSplitView()
+            AnimalPolicySplitView()
                 .environmentObject(store)
                 .sheet(isPresented: $store.state.showWelcomeScreen) {
                     Welcome().environmentObject(store)

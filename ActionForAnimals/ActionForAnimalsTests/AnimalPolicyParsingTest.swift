@@ -9,9 +9,9 @@
 import XCTest
 @testable import ActionForAnimals
 
-final class IssueParsingTest: XCTestCase {
+final class AnimalPolicyParsingTest: XCTestCase {
     override func setUpWithError() throws {
-        UserDefaults.standard.set(Bundle(for: IssueParsingTest.self).path(forResource: "GET-v1-issues", ofType: "json"), forKey: "mock-GET:/v1/issues")
+        UserDefaults.standard.set(Bundle(for: AnimalPolicyParsingTest.self).path(forResource: "GET-v1-issues", ofType: "json"), forKey: "mock-GET:/v1/issues")
     }
 
     override func tearDownWithError() throws {

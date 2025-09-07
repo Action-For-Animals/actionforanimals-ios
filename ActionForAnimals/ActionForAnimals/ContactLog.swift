@@ -58,11 +58,11 @@ struct ContactLogs {
         NotificationCenter.default.post(name: .callMade, object: log)
     }
 
-    func methodOfContact(to contactId: String, forIssue issue: Issue) -> String? {
+    func methodOfContact(to contactId: String, forIssue issue: AnimalPolicy) -> String? {
         return all.filter({$0.contactId == contactId && ($0.issueId == String(issue.id) || $0.issueId == issue.meta)}).last?.outcome
     }
 
-    func hasContacted(contact: Contact, forIssue issue: Issue) -> Bool {
+    func hasContacted(contact: Contact, forIssue issue: AnimalPolicy) -> Bool {
         guard let method = methodOfContact(to: contact.id, forIssue: issue) else {
             return false
         }

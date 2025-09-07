@@ -1,5 +1,5 @@
 //
-//  IssuesViewModel.swift
+//  AnimalPolicyViewModel.swift
 //  ActionForAnimals
 //
 //  Created by Indrajit on 17/10/17.
@@ -8,28 +8,28 @@
 
 import Foundation
 
-protocol IssuesViewModel {
+protocol AnimalPolicyViewModel {
 
-    var issues: [Issue] { get }
+    var issues: [AnimalPolicy] { get }
 
-    init(issues:[Issue])
+    init(issues:[AnimalPolicy])
     func numberOfSections() -> Int
     func numberOfRowsInSection(section: Int) -> Int
     func hasNoData() -> Bool
-    func issueForIndexPath(indexPath: IndexPath) -> Issue
+    func issueForIndexPath(indexPath: IndexPath) -> AnimalPolicy
     func titleForHeaderInSection(section: Int) -> String
 }
 
-extension IssuesViewModel {
-    var categorizedIssues: [CategorizedIssuesViewModel] {
-        var categoryViewModels = Set<CategorizedIssuesViewModel>()
+extension AnimalPolicyViewModel {
+    var categorizedIssues: [CategorizedAnimalPolicyViewModel] {
+        var categoryViewModels = Set<CategorizedAnimalPolicyViewModel>()
         for issue in issues {
             for category in issue.categories {
 
                 if let categorized = categoryViewModels.first(where: { $0.category == category }) {
                     categorized.issues.append(issue)
                 } else {
-                    categoryViewModels.insert(CategorizedIssuesViewModel(category: category, issues: [issue]))
+                    categoryViewModels.insert(CategorizedAnimalPolicyViewModel(category: category, issues: [issue]))
                 }
             }
         }
@@ -38,10 +38,10 @@ extension IssuesViewModel {
 }
 
 // Shows all issues - grouped by categories.
-struct AllIssuesViewModel: IssuesViewModel {
-    let issues: [Issue]
+struct AllIssuesViewModel: AnimalPolicyViewModel {
+    let issues: [AnimalPolicy]
 
-    init(issues: [Issue]) {
+    init(issues: [AnimalPolicy]) {
         self.issues = issues
     }
 
@@ -58,7 +58,7 @@ struct AllIssuesViewModel: IssuesViewModel {
         return categorizedIssues.count == 0
     }
 
-    func issueForIndexPath(indexPath: IndexPath) -> Issue {
+    func issueForIndexPath(indexPath: IndexPath) -> AnimalPolicy {
         return categorizedIssues[indexPath.section].issues[indexPath.row]
     }
 
@@ -69,11 +69,11 @@ struct AllIssuesViewModel: IssuesViewModel {
 }
 
 // Shows only the active issues.
-struct ActiveIssuesViewModel: IssuesViewModel {
-    private let activeIssues: [Issue]
-    let issues: [Issue]
+struct ActiveIssuesViewModel: AnimalPolicyViewModel {
+    private let activeIssues: [AnimalPolicy]
+    let issues: [AnimalPolicy]
 
-    init(issues: [Issue]) {
+    init(issues: [AnimalPolicy]) {
         self.issues = issues
         activeIssues = issues.filter { $0.active }
     }
@@ -90,7 +90,7 @@ struct ActiveIssuesViewModel: IssuesViewModel {
         return activeIssues.count == 0
     }
 
-    func issueForIndexPath(indexPath: IndexPath) -> Issue {
+    func issueForIndexPath(indexPath: IndexPath) -> AnimalPolicy {
         return activeIssues[indexPath.row]
     }
 

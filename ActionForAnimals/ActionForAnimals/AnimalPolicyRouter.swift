@@ -8,7 +8,7 @@
 
 import SwiftUI
 
-class IssueRouter {
+class AnimalPolicyRouter {
     var path = NavigationPath()
-    var selectedIssue: Issue?
+    var selectedIssue: AnimalPolicy?
 }

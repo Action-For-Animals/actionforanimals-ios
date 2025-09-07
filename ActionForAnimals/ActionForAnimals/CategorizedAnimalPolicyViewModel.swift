@@ -8,9 +8,9 @@
 
 import Foundation
 
-class CategorizedIssuesViewModel: Identifiable {
+class CategorizedAnimalPolicyViewModel: Identifiable {
     let category: Category
-    var issues: [Issue]
+    var issues: [AnimalPolicy]
 
     var name: String {
         return category.name
@@ -20,14 +20,14 @@ class CategorizedIssuesViewModel: Identifiable {
         return name.hashValue
     }
 
-    init(category: Category, issues: [Issue]) {
+    init(category: Category, issues: [AnimalPolicy]) {
         self.category = category
         self.issues = issues
     }
 }
 
-extension CategorizedIssuesViewModel : Hashable {
-    static func == (lhs: CategorizedIssuesViewModel, rhs: CategorizedIssuesViewModel) -> Bool {
+extension CategorizedAnimalPolicyViewModel : Hashable {
+    static func == (lhs: CategorizedAnimalPolicyViewModel, rhs: CategorizedAnimalPolicyViewModel) -> Bool {
         return lhs.category == rhs.category
     }
     

@@ -8,10 +8,10 @@
 
 import SwiftUI
 
-struct IssueContactDetail: View {
+struct AnimalPolicyContactDetail: View {
     @EnvironmentObject var store: Store
 
-    let issue: Issue
+    let issue: AnimalPolicy
     let remainingContacts: [Contact]
     
     var currentContact: Contact {
@@ -183,6 +183,6 @@ struct MenuButtonsView: View {
 }
 
 #Preview {
-    IssueContactDetail(issue: Issue.basicPreviewIssue, remainingContacts: [Contact.housePreviewContact, Contact.senatePreviewContact1])
+    AnimalPolicyContactDetail(issue: AnimalPolicy.basicPreviewIssue, remainingContacts: [Contact.housePreviewContact, Contact.senatePreviewContact1])
         .environmentObject(Store(state: AppState()))
 }

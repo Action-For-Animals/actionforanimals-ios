@@ -15,20 +15,20 @@ enum Action {
     case SetIssueContactCompletion(Int,String)
     case SetDonateOn(Bool)
     case FetchIssues
-    case SetIssues([Issue])
+    case SetIssues([AnimalPolicy])
     case FetchContacts(UserLocation)
     case SetContacts([Contact])
     case SetDistrict(String)
     case SetSplitDistrict(Bool)
     case SetLocation(UserLocation)
-    case ReportOutcome(Issue, ContactLog, Outcome)
+    case ReportOutcome(AnimalPolicy, ContactLog, Outcome)
     case SetFetchingContacts(Bool)
     case SetLoadingStatsError(Error)
     case SetLoadingIssuesError(Error)
     case SetLoadingContactsError(Error)
     case GoBack
     case GoToRoot
-    case GoToNext(Issue, [Contact])
+    case GoToNext(AnimalPolicy, [Contact])
     case SetMissingReps([String])
     case LogSearch(String)
 }

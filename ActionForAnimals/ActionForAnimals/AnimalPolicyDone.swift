@@ -10,15 +10,15 @@ import SwiftUI
 import StoreKit
 import OneSignal
 
-struct IssueDone: View {
+struct AnimalPolicyDone: View {
     @EnvironmentObject var store: Store
     @Environment(\.openURL) private var openURL
     
     @State var showNotificationAlert = false
     
-    let issue: Issue
+    let issue: AnimalPolicy
 
-    init(issue: Issue) {
+    init(issue: AnimalPolicy) {
         self.issue = issue
 
         if let titleString = try? AttributedString(markdown:  R.string.localizable.doneTitle(issue.name)) {
@@ -58,7 +58,7 @@ struct IssueDone: View {
                     CountingView(title: R.string.localizable.totalCalls(), count: store.state.globalCallCount)
                         .padding(.bottom, 14)
                     if let issueCalls = store.state.issueCallCounts[issue.id] {
-                        CountingView(title: R.string.localizable.totalIssueCalls(), count: issueCalls)
+                        CountingView(title: R.string.localizable.totalPolicyCalls(), count: issueCalls)
                             .padding(.bottom, 14)
                     }
                 }
@@ -162,7 +162,7 @@ struct IssueDone: View {
     }
 }
 
-extension IssueDone {
+extension AnimalPolicyDone {
     func checkForNotifications() {
             let deviceState = OneSignal.getDeviceState()
             let nextPrompt = nextNotificationPromptDate() ?? Date()
@@ -249,17 +249,17 @@ struct CountingView: View {
     let previewState = {
         let state = AppState()
         state.contacts = [.housePreviewContact, .senatePreviewContact1, .senatePreviewContact2]
-        state.issueCompletion[Issue.basicPreviewIssue.id] = ["\(Contact.housePreviewContact.id)-voicemail","\(Contact.senatePreviewContact1.id)-contact"]
+        state.issueCompletion[AnimalPolicy.basicPreviewIssue.id] = ["\(Contact.housePreviewContact.id)-voicemail","\(Contact.senatePreviewContact1.id)-contact"]
         return state
     }()
 
-    return IssueDone(issue: .basicPreviewIssue)
+    return AnimalPolicyDone(issue: .basicPreviewIssue)
 
         .environmentObject(Store(state: previewState, middlewares: [appMiddleware()]))
 }
 
 struct IssueDoneNavModel {
-    let issue: Issue
+    let issue: AnimalPolicy
     let type: String
 }
 

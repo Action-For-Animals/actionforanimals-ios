@@ -14,22 +14,22 @@ enum LoadResult {
     case offline
 }
 
-class IssuesManager {
+class AnimalPolicyManager {
 
     private let queue: OperationQueue
     
-    public var issues: [Issue] = []
+    public var issues: [AnimalPolicy] = []
     
     init() {
         queue = .main
     }
 
-    func issue(withId id: Int64) -> Issue? {
+    func issue(withId id: Int64) -> AnimalPolicy? {
         return issues.first(where: { $0.id == id })
     }
     
     func fetchIssues(completion: @escaping (LoadResult) -> Void) {
-        let operation = FetchIssuesOperation()
+        let operation = FetchAnimalPolicyOperation()
         operation.completionBlock = { [weak self, weak operation] in
             if let issues = operation?.issuesList {
                 self?.issues = issues
@@ -53,7 +53,7 @@ class IssuesManager {
         queue.addOperation(operation)
     }
     
-    public func issue(withSlug slug: String) -> Issue? {
+    public func issue(withSlug slug: String) -> AnimalPolicy? {
         return issues.first(where: {$0.slug == slug})
     }
 }

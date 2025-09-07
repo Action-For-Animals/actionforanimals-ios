@@ -5,8 +5,8 @@
 
 import SwiftUI
 
-struct IssueListItem: View {
-    let issue: Issue
+struct AnimalPolicyListItem: View {
+    let issue: AnimalPolicy
     let contacts: [Contact]
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -60,10 +60,10 @@ struct IssueListItem: View {
         .contentShape(Rectangle()) // full-row tap target when wrapped in NavigationLink
     }
 
-    private func callsSubtitle(for issue: Issue) -> String {
+    private func callsSubtitle(for issue: AnimalPolicy) -> String {
         let calls = issue.stats.calls
         let pretty = calls.formatted(.number.notation(.compactName)) // 1.2K, 12K, etc.
-        return String(format: R.string.localizable.issueItemCallsMade(pretty))
+        return String(format: R.string.localizable.policyItemCallsMade(pretty))
     }
     
     // unchanged
@@ -78,7 +78,7 @@ struct IssueListItem: View {
 }
 
 private struct CategoryBadge: View {
-    let issue: Issue
+    let issue: AnimalPolicy
     let dynamicTypeSize: DynamicTypeSize
     let status: String   // pass full status
 
@@ -113,7 +113,7 @@ private struct CategoryBadge: View {
     }
     
     // MARK: Visual mapping
-    private func categoryIconName(for issue: Issue) -> String {
+    private func categoryIconName(for issue: AnimalPolicy) -> String {
         // For now, hard-code farmed. Expand the switch as you add more categories.
         /*
         switch primaryCategoryKey(from: issue) {
@@ -127,7 +127,7 @@ private struct CategoryBadge: View {
         return "category-farmed"
     }
     
-    private func primaryCategoryKey(from issue: Issue) -> CategoryKey {
+    private func primaryCategoryKey(from issue: AnimalPolicy) -> CategoryKey {
            guard let raw = issue.categories.first?.name.lowercased() else { return .none }
 
            if raw.contains("farmed") { return .farmed }
@@ -143,7 +143,7 @@ private struct CategoryBadge: View {
         return words.compactMap { $0.first?.uppercased() }.joined()
     }
 
-    private func categoryAccessibilityLabel(for issue: Issue) -> String {
+    private func categoryAccessibilityLabel(for issue: AnimalPolicy) -> String {
         if let name = issue.categories.first?.name, !name.isEmpty {
             return name
         }
