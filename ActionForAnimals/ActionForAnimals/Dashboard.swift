@@ -90,7 +90,6 @@ struct Dashboard_Previews: PreviewProvider {
 
 struct MenuView: View {
     @State var showRemindersSheet = false
-    @State var showYourImpact = false
     @State var showAboutSheet = false
     var showingWelcomeScreen: Bool
 
@@ -99,9 +98,6 @@ struct MenuView: View {
             Button { showRemindersSheet.toggle() } label: {
                 Text(R.string.localizable.menuScheduledReminders())
             }
-            // Button { showYourImpact.toggle() } label: {
-              //  Text(R.string.localizable.menuYourImpact())
-            // }
             Button { showAboutSheet.toggle() } label: {
                 Text(R.string.localizable.menuAbout())
             }
@@ -114,9 +110,6 @@ struct MenuView: View {
         }
         .sheet(isPresented: $showRemindersSheet) {
             ScheduleReminders()
-        }
-        .sheet(isPresented: $showYourImpact) {
-            YourImpact()
         }
         .sheet(isPresented: $showAboutSheet) {
             AboutSheet()

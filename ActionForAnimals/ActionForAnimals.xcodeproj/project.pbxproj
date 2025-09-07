@@ -15,7 +15,6 @@
 		4F07B23E2B45F25E00C575DF /* Package.resolved in Resources */ = {isa = PBXBuildFile; fileRef = 4F07B23D2B45F25E00C575DF /* Package.resolved */; };
 		4F11A59E2AAB956C00AF30B9 /* ScheduleReminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F11A59D2AAB956C00AF30B9 /* ScheduleReminders.swift */; };
 		4F2178752B488CD70032D592 /* StoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2178742B488CD70032D592 /* StoreTests.swift */; };
-		4F2C1CA22AD5C1AC000AB39E /* YourImpact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F2C1CA12AD5C1AC000AB39E /* YourImpact.swift */; };
 		4F3A572B2B597C8E009D4616 /* UserLocationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A572A2B597C8E009D4616 /* UserLocationTests.swift */; };
 		4F3A572E2B598203009D4616 /* LocationSheetTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F3A572D2B598203009D4616 /* LocationSheetTests.swift */; };
 		4F4868B92AC222B300E1733A /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4868B82AC222B300E1733A /* WebView.swift */; };
@@ -45,7 +44,6 @@
 		B50280541E46A91F00749ED7 /* AreaOffice.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50280531E46A91F00749ED7 /* AreaOffice.swift */; };
 		B50280561E47875500749ED7 /* ContactLog.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50280551E47875500749ED7 /* ContactLog.swift */; };
 		B50280681E478BF500749ED7 /* ContactLogsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B50280671E478BF500749ED7 /* ContactLogsTests.swift */; };
-		B502807C1E498B9B00749ED7 /* ImpactViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B502807B1E498B9B00749ED7 /* ImpactViewModel.swift */; };
 		B512506A21E6F762007D32DF /* FetchContactsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = B512506921E6F762007D32DF /* FetchContactsOperation.swift */; };
 		B512506E21E701DE007D32DF /* ContactList.swift in Sources */ = {isa = PBXBuildFile; fileRef = B512506D21E701DE007D32DF /* ContactList.swift */; };
 		B52805151E3FA94D00EE832A /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52805141E3FA94D00EE832A /* AppDelegate.swift */; };
@@ -68,7 +66,6 @@
 		B5FFBB991E5EA60E00647121 /* Appearance.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5FFBB981E5EA60E00647121 /* Appearance.swift */; };
 		D0002E172A9DB34D0098973F /* ContactListItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0002E162A9DB34D0098973F /* ContactListItem.swift */; };
 		D0002E192A9DB5FB0098973F /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0002E182A9DB5FB0098973F /* PrimaryButton.swift */; };
-		D00E8B6A2CF056AF0028F935 /* NewsletterSignup.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00E8B682CF056A70028F935 /* NewsletterSignup.swift */; };
 		D01235BD2B8C5A7D00FEE7A0 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01235BC2B8C5A7D00FEE7A0 /* InboxView.swift */; };
 		D0176E8B2B3343150090E6B7 /* ContactParsingTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0176E8A2B3343150090E6B7 /* ContactParsingTest.swift */; };
 		D0176E8D2B33443D0090E6B7 /* GET-v1-reps.json in Resources */ = {isa = PBXBuildFile; fileRef = D0D169CC23BD999C00C695B7 /* GET-v1-reps.json */; };
@@ -854,7 +851,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D00E8B6A2CF056AF0028F935 /* NewsletterSignup.swift in Sources */,
 				D09AA8062B0497C70012FF45 /* UNNotification+ScheduleReminders.swift in Sources */,
 				D01235BD2B8C5A7D00FEE7A0 /* InboxView.swift in Sources */,
 				D0983DD92A8209DA00DC90A6 /* LocationCoordinator.swift in Sources */,
@@ -866,7 +862,6 @@
 				D0002E172A9DB34D0098973F /* ContactListItem.swift in Sources */,
 				B512506E21E701DE007D32DF /* ContactList.swift in Sources */,
 				D037F36B2BA5F9E600FEB0FB /* MainHeader.swift in Sources */,
-				B502807C1E498B9B00749ED7 /* ImpactViewModel.swift in Sources */,
 				9C46B1FA1E46EA58009B2C11 /* ReportOutcomeOperation.swift in Sources */,
 				D0EE101C2ACBD69300412128 /* IssueDone.swift in Sources */,
 				D0BFE9C72A7C9434007203A3 /* ContactCircle.swift in Sources */,
@@ -922,7 +917,6 @@
 				D0480AE52A4D462500502818 /* Dashboard.swift in Sources */,
 				4FF4ABB42AB23FC8001A064A /* MultipleDayPicker.swift in Sources */,
 				4F4868BD2AC3A3E900E1733A /* EmailComposerView.swift in Sources */,
-				4F2C1CA22AD5C1AC000AB39E /* YourImpact.swift in Sources */,
 				B5FFBB991E5EA60E00647121 /* Appearance.swift in Sources */,
 				4F504DF82AE46A1900F49EF3 /* Welcome.swift in Sources */,
 				D03A20582AC53C6C008BBA6E /* Store.swift in Sources */,

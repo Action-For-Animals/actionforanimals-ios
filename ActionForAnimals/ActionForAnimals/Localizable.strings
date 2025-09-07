@@ -40,7 +40,6 @@
 // dashboard
 "menu-name"                           = "Menu";
 "menu-scheduled-reminders"            = "Reminders";
-"menu-your-impact"                    = "Your Impact";
 "menu-about"                          = "About";
 "menu-tip-title"                      = "New Settings Location";
 "menu-tip-message"                    = "Your Impact and About now reside in Settings menu along with Reminders";
@@ -177,22 +176,6 @@
 "about-callingGroup-placeholder"      = "Enter your calling group name";
 "about-callingGroup-footer"           = "Set a calling group name to track calls with others";
 
-// your impact
-"your-impact-title"                   = "My Impact";
-"your-impact-multiple"                = "Your total impact is %d calls.";
-"your-impact-single"                  = "Your total impact is %d call.";
-"your-impact-zero"                    = "Your total impact is %d calls.";
-"your-weekly-streak-multiple"         = "Your current weekly call streak is %d weeks in a row. You're on a roll!";
-"your-weekly-streak-single"           = "Your current weekly call streak just started. Keep it going!";
-"your-weekly-streak-zero"             = "Your current weekly call streak is %d.";
-"community-calls"                     = "The Action for Animals community has contributed %@ calls!";
-"made-contact"                        = "Made Contact";
-"unavailable"                         = "Unavailable";
-"left-voicemail"                      = "Left Voicemail";
-"called-multiple"                     = "%d times";
-"called-single"                       = "%d time";
-"impact-list-message"                 = "You're making a difference! Calling is the most effective way to influence your representatives, and here's what you've achieved:";
-
 // welcome
 "welcome-section-1-title"                = "Make your voice heard—for the animals.";
 "welcome-section-1-message"              = "Don’t let animals suffer in silence. With Action for Animals, you can make quick calls that influence policies protecting billions of animals.";
@@ -235,10 +218,3 @@
 "inbox-push-detail" = "Get notified how your rep votes on your topics,\r1-2 notifications per month";
 "inbox-detail-readmore" = "Read more →";
 "inbox-contact-alert" = "Select an issue on the topics tab to show relevant reps and phone numbers";
-// Newsletter
-"newsletter-header" = "The easy way to keep up with animals rights issues";
-"newsletter-subhead" = "Sign up for our newsletter, just one email a quarter";
-"newsletter-email-placeholder" = "Enter your email";
-"newsletter-dismiss" = "No thanks";
-"newsletter-subscribe" = "Sign me up";
-"newsletter-invalid-email" = "This doesn't look like an email";
