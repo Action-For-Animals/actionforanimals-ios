@@ -114,27 +114,41 @@ private struct CategoryBadge: View {
     
     // MARK: Visual mapping
     private func categoryIconName(for issue: AnimalPolicy) -> String {
-        // For now, hard-code farmed. Expand the switch as you add more categories.
-        /*
         switch primaryCategoryKey(from: issue) {
-        case .farmed:   return "category-farmed"
-        case .wildlife: return "category-wildlife"
-        case .oceans:   return "category-oceans"
-        case .policy:   return "category-policy"
-        case .none:     return "category-default"
+        case .farmed:        return "category-farmed"
+        case .wildlife:      return "category-wildlife"
+        case .climate:       return "category-climate"
+        case .entertainment: return "category-entertainment"
+        case .testing:       return "category-testing"
+        case .companion:     return "category-companion"
+        case .none:          return "category-generic"
         }
-        */
-        return "category-farmed"
     }
-    
-    private func primaryCategoryKey(from issue: AnimalPolicy) -> CategoryKey {
-           guard let raw = issue.categories.first?.name.lowercased() else { return .none }
 
-           if raw.contains("farmed") { return .farmed }
-           if raw.contains("wild")   { return .wildlife }
-           if raw.contains("ocean") || raw.contains("marine") { return .oceans }
-           if raw.contains("policy") || raw.contains("legis") { return .policy }
-           return .none
+    private func primaryCategoryKey(from issue: AnimalPolicy) -> CategoryKey {
+        // Take the first category’s *display* name and normalize it
+        guard let rawName = issue.categories.first?.name else { return .none }
+        let key = normalize(rawName)
+        print("primaryCategoryKey: rawName = '\(rawName)', normalized = '\(key)'")
+        
+        // Exact, simple names you control
+        switch key {
+        case "farmed":        return .farmed
+        case "wildlife":      return .wildlife
+        case "climate":       return .climate
+        case "entertainment": return .entertainment
+        case "testing":       return .testing
+        case "companion":     return .companion
+        default:              return .none
+        }
+    }
+
+    private func normalize(_ s: String) -> String {
+        s
+          .trimmingCharacters(in: .whitespacesAndNewlines)
+          .lowercased()
+          .replacingOccurrences(of: "_", with: "-")
+          .replacingOccurrences(of: " ", with: "")
     }
 
     
@@ -152,6 +166,6 @@ private struct CategoryBadge: View {
 }
 
 private enum CategoryKey {
-    case farmed, wildlife, oceans, policy, none
+    case farmed, wildlife, climate, entertainment, testing, companion, none
 }
 
