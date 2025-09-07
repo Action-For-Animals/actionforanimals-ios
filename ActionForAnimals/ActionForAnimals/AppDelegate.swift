@@ -117,10 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 //}
 extension AppDelegate: UNUserNotificationCenterDelegate {
     func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
-        // if the user has selected a notification with a messageid contained, dispatch a message to handle the navigation
-        if let messageID = response.notification.request.content.userInfo["messageid"] as? String {
-            app?.store.dispatch(action: .SetNavigateToInboxMessage(messageID))
-        }
+        
     }
     
     func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {

@@ -25,7 +25,6 @@ class AppState: ObservableObject, ReduxState {
             UserDefaults.standard.set(plistSupportableIssueCache, forKey: UserDefaultsKey.issueCompletionCache.rawValue)
         }
     }
-    @Published var repMessages: [InboxMessage] = []
     @Published var donateOn = false
     @Published var issues: [Issue] = []
     @Published var issueFetchTime: Date? = nil
@@ -55,8 +54,7 @@ class AppState: ObservableObject, ReduxState {
     @Published var contactsLoadingError: Error? = nil
     
     @Published var issueRouter: IssueRouter = IssueRouter()
-    @Published var inboxRouter: InboxRouter = InboxRouter()
-
+    
     init() {
         // load user location cache
         if let locationType = UserDefaults.standard.string(forKey: UserDefaultsKey.locationType.rawValue),

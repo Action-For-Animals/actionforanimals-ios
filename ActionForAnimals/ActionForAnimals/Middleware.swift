@@ -18,9 +18,6 @@ func appMiddleware() -> Middleware<AppState> {
             fetchContacts(location: location, dispatch: dispatch)
         case let .SetLocation(location):
             fetchContacts(location: location, dispatch: dispatch)
-//        case .FetchMessages:
-//            don't fetch any messages right now because we don't display them
-//            fetchMessages(state: state, dispatch: dispatch)
         case let .ReportOutcome(issue, contactLog, outcome):
             // TODO: migrate ContactLog issueId to Int after UIKit is gone
             // this is always generated in swiftUI from an int so it should always succeed
@@ -33,8 +30,7 @@ func appMiddleware() -> Middleware<AppState> {
             logSearch(searchQuery: searchQuery)
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
-                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMessages, .SetMissingReps,
-                .SelectMessage(_), .SelectMessageIDWhenLoaded(_), .SetNavigateToInboxMessage(_), .FetchMessages:
+                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps:
             // no middleware actions for these, including for completeness
             break
         }
@@ -143,23 +139,6 @@ private func fetchContacts(location: UserLocation, dispatch: @escaping Dispatche
             // TODO: parse error messages from the backend and return specifics
             DispatchQueue.main.async {
                 dispatch(.SetLoadingContactsError(MiddlewareError.UnknownError))
-            }
-        }
-    }
-    queue.addOperation(operation)
-}
-
-private func fetchMessages(state: AppState, dispatch: @escaping Dispatcher) {
-    guard let district = state.district else {
-        return
-    }
-            
-    let queue = OperationQueue.main
-    let operation = FetchMessagesOperation(district: district)
-    operation.completionBlock = { [weak operation] in
-        if let messages = operation?.messages {
-            DispatchQueue.main.async {
-                dispatch(.SetMessages(messages))
             }
         }
     }

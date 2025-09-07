@@ -60,57 +60,18 @@ class Store: ObservableObject {
         case let .SetDistrict(district):
             let oldDistrict = state.district
             state.district = district
-
-            if oldDistrict != district {
-                dispatch(action: .FetchMessages)
-            }
         case let .SetSplitDistrict(splitDistrict):
             state.isSplitDistrict = splitDistrict
         case let .SetMissingReps(missingReps):
             state.missingReps = missingReps
         case let .SetLocation(location):
             state.location = location
-        case let .SetMessages(messages):
-            state.repMessages = messages
-            if state.wantedMessageID != nil {
-                if let selectedMessage = state.repMessages.first(where: { $0.id == state.wantedMessageID }) {
-                    dispatch(action: .SelectMessage(selectedMessage))
-                }
-                
-                // reset the wanted message id to nil any time we process it, regardless of success
-                state.wantedMessageID = nil
-            }
-        case let .SelectMessage(message):
-            state.selectedTab = "inbox"
-            state.inboxRouter.selectedMessage = message
-        case let .SelectMessageIDWhenLoaded(messageID):
-            state.wantedMessageID = messageID
         case let .SetLoadingStatsError(error):
             state.statsLoadingError = error
         case let .SetLoadingIssuesError(error):
             state.issueLoadingError = error
         case let .SetLoadingContactsError(error):
             state.contactsLoadingError = error
-        case let .SetNavigateToInboxMessage(messageid):
-            guard let messageIntID = Int(messageid) else {
-                break
-            }
-            
-            // three cases that need to be handled here as we jump into the app from a push:
-            // * no messages loaded: likely app launched fresh and racing the messages response
-            // * have messages, but nothing matched the id: app in background but with stale messages
-            // * have messages with a match: app is in background or foreground with up-to-date messages
-            if state.repMessages.isEmpty {
-                // no messages, set the future message selection id but don't refresh messages, they're probably already being refreshed
-                dispatch(action: .SelectMessageIDWhenLoaded(messageIntID))
-            } else if let selectedMessage = state.repMessages.first(where: { $0.id == messageIntID }) {
-                // have messages and a match, so just navigate (this works even if we're on the issue list tab)
-                dispatch(action: .SelectMessage(selectedMessage))
-            } else {
-                // have messages but no match, set the future message selection id and refresh messages
-                dispatch(action: .SelectMessageIDWhenLoaded(messageIntID))
-                dispatch(action: .FetchMessages)
-            }
         case .GoBack:
            if state.issueRouter.path.isEmpty {
                state.issueRouter.selectedIssue = nil
@@ -127,7 +88,7 @@ class Store: ObservableObject {
                state.issueRouter.path.append(IssueDoneNavModel(issue: issue, type: "done"))
            }
         case .FetchStats, .FetchIssues,
-                .FetchContacts(_), .FetchMessages,
+                .FetchContacts(_),
                 .ReportOutcome(_, _, _),
                 .LogSearch(_):
             // handled in middleware
