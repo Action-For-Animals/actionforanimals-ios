@@ -10,6 +10,10 @@ import Foundation
 import RswiftResources
 
 struct Issue: Identifiable, Decodable {
+    struct Stats: Decodable {
+            let calls: Int
+    }
+    
     let id: Int
     let meta: String
     let name: String
@@ -22,6 +26,11 @@ struct Issue: Identifiable, Decodable {
     let contactType: String
     let contactAreas: [String]
     let createdAt: Date
+    let status: String
+    let stats: Stats
+    
+    // convenience
+    var callCount: Int { stats.calls }
     
     // Action For Animals - Not used for now - until we figure it out
     var shareImageURL: URL {

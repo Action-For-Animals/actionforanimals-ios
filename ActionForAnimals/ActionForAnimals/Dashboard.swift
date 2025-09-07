@@ -10,12 +10,10 @@ import SwiftUI
 
 struct Dashboard: View {
     @EnvironmentObject var store: Store
-    @AppStorage("shownNewsletterSignup") var shownNewsletterSignup: Bool = false
     
     @State var selectedIssueUrl: URL?
     @Binding var selectedIssue: Issue?
 
-    @State var showAllIssues = false
     @State var searchText = ""
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
@@ -28,34 +26,10 @@ struct Dashboard: View {
         VStack(alignment: .leading, spacing: 10) {
             MainHeader()
                 .padding(.horizontal, 10)
-                .padding(.bottom, 10)
-/*
-            if !shownNewsletterSignup {
-                NewsletterSignup {
-                    shownNewsletterSignup = true
-                } onSubmit: { email in
-                    var district = store.state.district
-#if !DEBUG
-                    var req = URLRequest(url: URL(string: "")!)
-                    req.httpMethod = "POST"
-                    req.setValue("application/x-www-form-urlencoded", forHTTPHeaderField: "Content-Type")
-                    var reqBody = "email=\(email)&tag=ios"
-                    if let district { reqBody += "&tag=\(district)" }
-                    req.httpBody = reqBody.data(using: .utf8)
-                    URLSession.shared.dataTask(with: req).resume()
-#else
-                    var subscribeDebug = "DEBUG: would send email sub request to: \(email)"
-                    if let district { subscribeDebug += " with district: \(district)"}
-                    print(subscribeDebug)
-#endif
-                    
-                    shownNewsletterSignup = true
-                }
-            }
-*/
+                
             if usingRegularFonts() {
-                Text(R.string.localizable.whatsImportantTitle())
-                    .font(.body)
+                Text(R.string.localizable.takeActionForAnimals)
+                    .font(.title)
                     .fontWeight(.bold)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, 16)
@@ -63,7 +37,7 @@ struct Dashboard: View {
             
             SearchBar(searchText: $searchText)
 
-            IssuesList(store: store, selectedIssue: $selectedIssue, showAllIssues: $showAllIssues, searchText: $searchText)
+            IssuesList(store: store, selectedIssue: $selectedIssue, searchText: $searchText)
         }
         .navigationBarHidden(true)
         .onAppear() {
@@ -153,121 +127,58 @@ struct MenuView: View {
 struct IssuesList: View {
     @ObservedObject var store: Store
     @Binding var selectedIssue: Issue?
-    @Binding var showAllIssues: Bool
     @Binding var searchText: String
     
     var isSearching: Bool {
         searchText.count >= 3
     }
 
+    // Always show ALL issues (active + inactive) by default
     var allIssues: [Issue] {
-        let baseIssues: [Issue]
-        
         if isSearching {
-            // When searching, search all issues regardless of active status
-            let filteredIssues = store.state.issues.filter { issue in
+            let filtered = store.state.issues.filter { issue in
                 issue.name.localizedCaseInsensitiveContains(searchText) ||
                 issue.reason.localizedCaseInsensitiveContains(searchText) ||
                 issue.script.localizedCaseInsensitiveContains(searchText) ||
                 issue.slug.localizedCaseInsensitiveContains(searchText) ||
-                issue.categories.contains { category in
-                    category.name.localizedCaseInsensitiveContains(searchText)
-                }
+                issue.categories.contains { $0.name.localizedCaseInsensitiveContains(searchText) }
             }
             
-            // Sort results with name matches first
-            baseIssues = filteredIssues.sorted { issue1, issue2 in
-                let issue1NameMatch = issue1.name.localizedCaseInsensitiveContains(searchText)
-                let issue2NameMatch = issue2.name.localizedCaseInsensitiveContains(searchText)
-                
-                if issue1NameMatch && !issue2NameMatch {
-                    return true // issue1 comes first
-                } else if !issue1NameMatch && issue2NameMatch {
-                    return false // issue2 comes first
-                } else {
-                    return false
-                }
+            // Sort so that name matches come first
+            return filtered.sorted { a, b in
+                let am = a.name.localizedCaseInsensitiveContains(searchText)
+                let bm = b.name.localizedCaseInsensitiveContains(searchText)
+                return am && !bm
             }
-        } else if showAllIssues {
-            baseIssues = store.state.issues
         } else {
-            baseIssues = store.state.issues.filter({ $0.active })
+            return store.state.issues
         }
-        
-        return baseIssues
-    }
-
-    private var categorizedIssues: [CategorizedIssuesViewModel] {
-        var categoryViewModels = Set<CategorizedIssuesViewModel>()
-        
-        if isSearching || !showAllIssues {
-            // For search results or default view, make fake categories to preserve order and show flat list
-            return allIssues.map({ CategorizedIssuesViewModel(category: Category(name: "\($0.id)"), issues: [$0]) })
-        }
-
-        for issue in allIssues {
-            for category in issue.categories {
-                if let categorized = categoryViewModels.first(where: { $0.category == category }) {
-                    categorized.issues.append(issue)
-                } else {
-                    categoryViewModels.insert(CategorizedIssuesViewModel(category: category, issues: [issue]))
-                }
-            }
-        }
-        return Array(categoryViewModels).sorted(by: { $0.category < $1.category })
     }
 
     var body: some View {
-        ScrollViewReader { scroll in
-            if isSearching && allIssues.isEmpty {
-                VStack {
-                    Spacer()
-                    Text(R.string.localizable.searchNoResultsTitle())
-                        .font(.title2)
-                        .foregroundColor(.secondary)
-                    Text(R.string.localizable.searchNoResultsMessage())
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                    Spacer()
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            } else {
-                List(categorizedIssues, selection: $selectedIssue) { section in
-                Section {
-                    ForEach(section.issues) { issue in
-                        NavigationLink(value: issue) {
-                            IssueListItem(issue: issue, contacts: store.state.contacts)
-                        }
-                        .listRowSeparatorTint(.afaDarkGray)
-                    }
-                } header: {
-                    if showAllIssues && !isSearching {
-                        Text(section.name.uppercased()).font(.headline)
-                            .foregroundStyle(.afaDarkGray)
-                    }
-                } footer: {
-                    if section == categorizedIssues.last && !isSearching {
-                        Button {
-                            showAllIssues.toggle()
-                            if let issueID = categorizedIssues.first?.issues.first?.id {
-                                scroll.scrollTo(issueID, anchor: .top)
-                            }
-                        } label: {
-                            Text(showAllIssues ? R.string.localizable.lessIssuesTitle() :
-                                    R.string.localizable.moreIssuesTitle())
-                                .font(.title3)
-                                .fontWeight(.semibold)
-                                .foregroundColor(Color.afaDarkBlueText)
-
-                        }
-                        .padding(.vertical, 10)
-                        .listRowSeparatorTint(.afaDarkGray)
-                    }
-                }
-                }
-                .tint(Color.afaLightBG)
-                .listStyle(.plain)
+        if isSearching && allIssues.isEmpty {
+            VStack {
+                Spacer()
+                Text(R.string.localizable.searchNoResultsTitle())
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                Text(R.string.localizable.searchNoResultsMessage())
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                Spacer()
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else {
+            // Flat list, no categories, no footer toggle
+            List(allIssues, selection: $selectedIssue) { issue in
+                NavigationLink(value: issue) {
+                    IssueListItem(issue: issue, contacts: store.state.contacts)
+                }
+                .listRowSeparatorTint(.afaDarkGray)
+            }
+            .tint(Color.afaLightBG)
+            .listStyle(.plain)
         }
     }
 }
+

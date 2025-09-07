@@ -41,8 +41,8 @@ struct IssueSplitView: View {
                 }
             }
             .navigationSplitViewStyle(.balanced)
-            .tabItem({ Label(R.string.localizable.tabTopics(), systemImage: "phone.bubble.fill" ) })
-            .tag("topics")
+            .tabItem({ Label(R.string.localizable.tabIssues(), systemImage: "phone.bubble.fill" ) })
+            .tag("issues")
             // Set the inner size class for the navigation stack back to whatever it was originally since we override it for old tab bar behavior below
             .environment(\.horizontalSizeClass, originalSizeClass)
             .toolbar(.visible, for: .tabBar)

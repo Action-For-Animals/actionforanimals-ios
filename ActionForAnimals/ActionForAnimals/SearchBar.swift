@@ -45,7 +45,6 @@ struct SearchBar: View {
             .clipShape(RoundedRectangle(cornerRadius: 10))
         }
         .padding(.horizontal, 16)
-        .padding(.bottom, 8)
     }
     
     private func handleSearchTextChange(_ newValue: String) {

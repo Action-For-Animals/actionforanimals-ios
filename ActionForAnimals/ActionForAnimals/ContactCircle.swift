@@ -20,26 +20,25 @@ struct ContactCircle: View {
     }
     
     var body: some View {
-        if let issueID, store.state.issueCalledOn(issueID: issueID, contactID: contact.id) {
-            Image(systemName: "checkmark.circle.fill")
-                .resizable()
-                .foregroundColor(.afaGreen)
-                .background {
-                    Circle().foregroundColor(.white)
+        GeometryReader { geo in
+            let showComplete = issueID.flatMap {
+                store.state.issueCalledOn(issueID: $0, contactID: contact.id)
+            } ?? false
+            let size = min(geo.size.width, geo.size.height)
+
+            Group {
+                if let url = contact.photoURL {
+                    AsyncImage(url: url) { image in
+                        image.resizable().aspectRatio(contentMode: .fill)
+                    } placeholder: { placeholder }
+                } else {
+                    placeholder
                 }
-        } else if contact.photoURL != nil {
-            AsyncImage(url: contact.photoURL, content: { image in
-                image.resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .mask {
-                        Circle()
-                    }
-            }) {
-                placeholder
             }
-        } else {
-            placeholder
+            .clipShape(Circle())
+            .completionCheckmarkOverlay(show: showComplete, containerSize: size, mode: .replace)
         }
+        .aspectRatio(1, contentMode: .fit)
     }
     
     var placeholder: some View {

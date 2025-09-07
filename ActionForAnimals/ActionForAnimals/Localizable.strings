@@ -14,7 +14,7 @@
 "location-permission-denied-message"  = "To use Location please change the permissions in the Settings app and try again.";
 "open-settings-title"                 = "Open Settings";
 "dismiss-title"                       = "Dismiss";
-"whats-important-title"               = "What's important to you?";
+"take-action-for-animals"             = "Take Action for Animals";
 "call-your-reps"                      = "Call your representatives";
 "split-district-title"                = "Split Congressional District";
 "split-district-message"              = "Your location information could belong to more than one congressional district. Try a more specific address, or select “Use My Location” to locate your particular representative.";
@@ -49,6 +49,7 @@
 "search-issues"                       = "Search all issues...";
 "search-no-results-title"             = "No issues found";
 "search-no-results-message"           = "Try a different search term";
+"issue-item-calls-made"               = "%@ calls made";
 
 // scheduled reminders
 "scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
@@ -223,7 +224,7 @@
 // nav
 "back"                                = "Back";
 "share"                               = "Share";
-"tab-topics" = "Topics";
+"tab-issues" = "Issues";
 "tab-reps" = "Reps";
 
 // inbox
