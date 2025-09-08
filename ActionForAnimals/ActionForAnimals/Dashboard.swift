@@ -29,7 +29,7 @@ struct Dashboard: View {
                 
             if usingRegularFonts() {
                 Text(R.string.localizable.takeActionForAnimals)
-                    .font(.title)
+                    .font(.title2)
                     .fontWeight(.bold)
                     .accessibilityAddTraits(.isHeader)
                     .padding(.horizontal, 16)
