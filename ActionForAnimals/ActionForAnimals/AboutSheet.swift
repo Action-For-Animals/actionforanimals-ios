@@ -33,14 +33,6 @@ struct AboutSheet: View {
         NavigationStack {
             List {
                 Section {
-                    AboutListItem(title: R.string.localizable.aboutItemWhyCall(),
-                                  type: .action({
-                        openSocialLink("https://actionforanimals.substack.com/p/why-calling-works")
-                    }))
-                    AboutListItem(title: R.string.localizable.aboutItemWhoWeAre(),
-                                  type: .action({
-                        openSocialLink("https://actionforanimals.substack.com/p/about-us")
-                    }))
                     AboutListItem(title: R.string.localizable.aboutItemFeedback(),
                                   type: .action({
                         if EmailComposerView.canSendEmail() {
@@ -57,57 +49,18 @@ struct AboutSheet: View {
                               message: Text(R.string.localizable.cantSendEmailMessage()),
                               dismissButton: .default(Text(R.string.localizable.dismissTitle())))
                     }
-                    AboutListItem(title: R.string.localizable.aboutItemShowWelcome(),
-                                  type: .action({
-                        showWelcome = true
-                    }))
-                    .sheet(isPresented: $showWelcome, content: {
-                        Welcome()
-                    })
+              
                 } header: {
                     Text(R.string.localizable.aboutSectionHeaderGeneral().uppercased())
                         .font(.footnote)
                         .foregroundStyle(.afaDarkGray)
                 }
 
-                // Remove Calling Group functionality
-                /*
-                Section {
-                    TextField(R.string.localizable.aboutCallingGroupPlaceholder(), text: $callingGroup)
-                        .onChange(of: callingGroup) { newValue in
-                            let trimmed = newValue.trimmingCharacters(in: .whitespaces)
-                            if trimmed != newValue {
-                                callingGroup = trimmed
-                            }
-                            UserDefaults.standard.set(trimmed, forKey: UserDefaultsKey.callingGroup.rawValue)
-                        }
-                } header: {
-                    Text(R.string.localizable.aboutCallingGroupHeader().uppercased())
-                        .font(.footnote)
-                        .foregroundStyle(.afaDarkGray)
-                } footer: {
-                    Text(R.string.localizable.aboutCallingGroupFooter())
-                        .font(.footnote)
-                        .foregroundStyle(.afaDarkGray)
-                }
-                */
                 
                 Section {
                     AboutListItem(title: "Instagram",
                                   type: .action({
                         openSocialLink("https://www.instagram.com/xfaorg/")
-                    }))
-                    AboutListItem(title: "Bluesky",
-                                  type: .action({
-                        openSocialLink("https://bsky.app/profile/xfaorg.bsky.social")
-                    }))
-                    AboutListItem(title: "Threads",
-                                  type: .action({
-                        openSocialLink("https://www.threads.com/@xfaorg")
-                    }))
-                    AboutListItem(title: "Mastodon",
-                                  type: .action({
-                        openSocialLink("https://mastodon.social/@xfaorg")
                     }))
                     if appUrl != nil {
                         AboutListItem(title: R.string.localizable.aboutItemShare(),

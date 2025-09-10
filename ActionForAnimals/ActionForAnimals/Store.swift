@@ -46,9 +46,9 @@ class Store: ObservableObject {
             state.issueCallCounts[issueID] = count
         case let .SetDonateOn(donateOn):
             state.donateOn = donateOn
-        case let .SetIssueContactCompletion(issueID, contactOutcome):
+        case let .SetIssueContactCompletion(issueID, contactLog):
             var existingCompletions = state.issueCompletion[issueID] ?? []
-            existingCompletions.append(contactOutcome)
+            existingCompletions.append(contactLog)
             state.issueCompletion[issueID] = existingCompletions
         case let .SetFetchingContacts(fetching):
             state.fetchingContacts = fetching
@@ -66,6 +66,8 @@ class Store: ObservableObject {
             state.missingReps = missingReps
         case let .SetLocation(location):
             state.location = location
+        case let .SetCategoryFilter(filter):
+            state.selectedCategoryFilter = filter
         case let .SetLoadingStatsError(error):
             state.statsLoadingError = error
         case let .SetLoadingIssuesError(error):
@@ -81,9 +83,9 @@ class Store: ObservableObject {
        case .GoToRoot:
            state.issueRouter.selectedIssue = nil
            state.issueRouter.path = NavigationPath()
-       case let .GoToNext(issue, nextContacts):
+       case let .GoToNext(issue, nextContacts, actionType):
            if nextContacts.count >= 1 {
-               state.issueRouter.path.append(IssueDetailNavModel(issue: issue, contacts: nextContacts))
+               state.issueRouter.path.append(IssueDetailNavModel(issue: issue, contacts: nextContacts, actionType: actionType))
            } else {
                state.issueRouter.path.append(IssueDoneNavModel(issue: issue, type: "done"))
            }

@@ -34,11 +34,9 @@ struct AnimalPolicyListItem: View {
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
                 
-                // Existing: contacts row + subtitle
+                // Enhanced: contacts row + subtitle with campaign type
                 HStack(spacing: 0) {
-                    let contactsForIssue = contacts.isEmpty
-                    ? issue.contactAreas.flatMap { Contact.placeholderContact(for: $0) }
-                    : issue.contactsForIssue(allContacts: contacts)
+                    let contactsForIssue = getContactsForDisplay()
 
                     ForEach(contactsForIssue.numbered()) { numberedContact in
                         ContactCircle(contact: numberedContact.element, issueID: issue.id)
@@ -47,10 +45,15 @@ struct AnimalPolicyListItem: View {
                             .offset(x: -10 * CGFloat(numberedContact.number), y: 0)
                     }
                     
-                    Text(callsSubtitle(for: issue))
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-                        .offset(x: contactsForIssue.isEmpty ? 0 : 16 + (-10 * CGFloat(contactsForIssue.count)), y: 0)
+                    // Campaign type label + stats
+                    HStack(spacing: 4) {
+                        CampaignTypeLabel(contactType: issue.contactType)
+                        
+                        Text(callsSubtitle(for: issue))
+                            .font(.footnote)
+                            .foregroundColor(.secondary)
+                    }
+                    .offset(x: contactsForIssue.isEmpty ? 0 : 16 + (-10 * CGFloat(contactsForIssue.count)), y: 0)
 
                     Spacer(minLength: 0)
                 }
@@ -60,10 +63,38 @@ struct AnimalPolicyListItem: View {
         .contentShape(Rectangle()) // full-row tap target when wrapped in NavigationLink
     }
 
+    private func getContactsForDisplay() -> [Contact] {
+        if issue.contactType == .corporate {
+            // For batch email campaigns, show single company contact
+            if issue.isBatchEmailCampaign {
+                // Create a single contact representing the company
+                let companyName = issue.corporateInfo?.company ?? "Company"
+                return [Contact(
+                    id: "company-\(issue.id)",
+                    name: companyName,
+                    phone: "",
+                    email: "",
+                    contactType: .corporate,
+                    metadata: nil
+                )]
+            } else {
+                // For individual corporate campaigns, create contacts from targets
+                guard let targets = issue.targets else { return [] }
+                return targets.map { Contact.fromTarget($0) }
+            }
+        } else {
+            // For political campaigns, use existing logic
+            return contacts.isEmpty
+                ? issue.contactAreas.flatMap { Contact.placeholderContact(for: $0) }
+                : issue.contactsForIssue(allContacts: contacts)
+        }
+    }
+
     private func callsSubtitle(for issue: AnimalPolicy) -> String {
-        let calls = issue.stats.calls
-        let pretty = calls.formatted(.number.notation(.compactName)) // 1.2K, 12K, etc.
-        return String(format: R.string.localizable.policyItemCallsMade(pretty))
+        // Use total actions for all campaign types
+        let totalActions = issue.totalActionCount
+        let pretty = totalActions.formatted(.number.notation(.compactName)) // 1.2K, 12K, etc.
+        return "• \(pretty) actions taken"
     }
     
     // unchanged
@@ -73,6 +104,49 @@ struct AnimalPolicyListItem: View {
         } else {
             let areas = issue.contactAreas.map { AreaToNiceString(area: $0) }.joined(separator: ", ")
             return R.string.localizable.callAreas(areas)
+        }
+    }
+}
+
+// MARK: - Campaign Type Label Component
+private struct CampaignTypeLabel: View {
+    let contactType: ContactType
+    
+    var body: some View {
+        Text(labelText)
+            .font(.caption)
+            .fontWeight(.semibold)
+            .padding(.horizontal, 6)
+            .padding(.vertical, 2)
+            .background(backgroundColor)
+            .foregroundColor(textColor)
+            .cornerRadius(4)
+    }
+    
+    private var labelText: String {
+        switch contactType {
+        case .representatives:
+            return "Political"
+        case .corporate:
+            return "Corporate"
+        }
+    }
+    
+    private var backgroundColor: Color {
+        switch contactType {
+        case .representatives:
+            return Color.green.opacity(0.15)
+        case .corporate:
+            return Color.orange.opacity(0.15)
+        }
+    }
+    
+    private var textColor: Color {
+        switch contactType {
+        case .representatives:
+            return Color.green.opacity(0.8)
+        case .corporate:
+            return Color.orange.opacity(0.8)
         }
     }
 }
@@ -102,7 +176,7 @@ private struct CategoryBadge: View {
                     .scaledToFit()
                     .saturation(isActive ? 1 : 0)
                     .opacity(isActive ? 1 : 0.75)
-                    .padding(badgeSize * ((1 - iconScale) / 2))
+                    .padding(badgeSize *  ((1 - iconScale) / 2))
                     .frame(width: badgeSize, height: badgeSize)
                     .completionCheckmarkOverlay(show: isSuccess, containerSize: badgeSize, mode: .overlay)
                     .padding(.vertical, 2)
@@ -112,60 +186,20 @@ private struct CategoryBadge: View {
             .accessibilityLabel(categoryAccessibilityLabel(for: issue))
     }
     
-    // MARK: Visual mapping
+    // MARK: Visual mapping - now uses CategoryHelper
     private func categoryIconName(for issue: AnimalPolicy) -> String {
-        switch primaryCategoryKey(from: issue) {
-        case .farmed:        return "category-farmed"
-        case .wildlife:      return "category-wildlife"
-        case .climate:       return "category-climate"
-        case .entertainment: return "category-entertainment"
-        case .testing:       return "category-testing"
-        case .companion:     return "category-companion"
-        case .none:          return "category-generic"
-        }
+        return CategoryHelper.iconName(for: issue)
     }
 
     private func primaryCategoryKey(from issue: AnimalPolicy) -> CategoryKey {
-        // Take the first category’s *display* name and normalize it
-        guard let rawName = issue.categories.first?.name else { return .none }
-        let key = normalize(rawName)
-        print("primaryCategoryKey: rawName = '\(rawName)', normalized = '\(key)'")
-        
-        // Exact, simple names you control
-        switch key {
-        case "farmed":        return .farmed
-        case "wildlife":      return .wildlife
-        case "climate":       return .climate
-        case "entertainment": return .entertainment
-        case "testing":       return .testing
-        case "companion":     return .companion
-        default:              return .none
-        }
-    }
-
-    private func normalize(_ s: String) -> String {
-        s
-          .trimmingCharacters(in: .whitespacesAndNewlines)
-          .lowercased()
-          .replacingOccurrences(of: "_", with: "-")
-          .replacingOccurrences(of: " ", with: "")
-    }
-
-    
-    private func initials(from text: String) -> String {
-        let words = text.split(separator: " ").prefix(2)
-        return words.compactMap { $0.first?.uppercased() }.joined()
+        return CategoryHelper.primaryCategoryKey(from: issue)
     }
 
     private func categoryAccessibilityLabel(for issue: AnimalPolicy) -> String {
         if let name = issue.categories.first?.name, !name.isEmpty {
             return name
         }
-        return R.string.localizable.menuAbout() // or a generic “Issue”
+        return R.string.localizable.menuAbout() // or a generic "Issue"
     }
-}
-
-private enum CategoryKey {
-    case farmed, wildlife, climate, entertainment, testing, companion, none
 }
 

@@ -15,7 +15,7 @@ struct OutcomesView: View {
     var body: some View {
         LazyVGrid(columns: [GridItem(.flexible()),GridItem(.flexible())]) {
             ForEach(outcomes) { outcome in
-                PrimaryButton(title: ContactLog.localizedOutcomeForStatus(status: outcome.status))
+                PrimaryButton(title: outcome.label)
                 .accessibilityAddTraits(.isButton)
                 .onTapGesture {
                     report(outcome)

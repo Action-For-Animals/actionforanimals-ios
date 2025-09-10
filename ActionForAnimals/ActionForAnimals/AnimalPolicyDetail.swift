@@ -16,14 +16,55 @@ struct AnimalPolicyDetail: View {
     @State var showLocationSheet = false
     @State private var forceRefreshID = UUID()
     
-    var targetedContacts: [Contact] { issue.contactsForIssue(allContacts: store.state.contacts) }
+    // Computed properties that work for both political and corporate campaigns
+    var targetedContacts: [Contact] {
+        switch issue.contactType {
+        case .representatives:
+            return issue.contactsForIssue(allContacts: store.state.contacts)
+        case .corporate:
+            // Fix: Handle optional targets array properly
+            guard let targets = issue.targets else { return [] }
+            return targets.map { target in
+                Contact.fromTarget(target)
+            }
+        }
+    }
     
-    // reps that we want to show, but not direct calls to
-    var irrelevantContacts: [Contact] { issue.irrelevantContacts(allContacts: store.state.contacts) }
+    // Only relevant for political campaigns
+    var irrelevantContacts: [Contact] {
+        guard issue.contactType == .representatives else { return [] }
+        return issue.irrelevantContacts(allContacts: store.state.contacts)
+    }
     
-    // vacancies for both targeted and irrelevant contacts
+    // Only relevant for political campaigns
     var vacantAreas: [String] {
-        store.state.missingReps.filter { issue.contactAreas.contains($0) || $0 == issue.irrelevantContactArea() }
+        guard issue.contactType == .representatives else { return [] }
+        return store.state.missingReps.filter { issue.contactAreas.contains($0) || $0 == issue.irrelevantContactArea() }
+    }
+    
+    // Determine if we need location (only for political campaigns)
+    var requiresLocation: Bool {
+        issue.contactType == .representatives
+    }
+    
+    var hasValidTargets: Bool {
+        !targetedContacts.isEmpty
+    }
+    
+    // NEW: Check if this is a batch email campaign
+    var isBatchEmailCampaign: Bool {
+        issue.contactType == .corporate &&
+        issue.actions?.email?.enabled == true &&
+        issue.actions?.email?.distributionMethod == "batch"
+    }
+    
+    // NEW: Check if batch campaign has been completed
+    var batchCampaignCompleted: Bool {
+        guard isBatchEmailCampaign else { return false }
+        // For batch campaigns, check if any of the target contacts have been called on
+        return targetedContacts.contains { contact in
+            store.state.issueCalledOn(issueID: issue.id, contactID: contact.id)
+        }
     }
 
     var body: some View {
@@ -34,53 +75,21 @@ struct AnimalPolicyDetail: View {
                     .fontWeight(.medium)
                     .padding(.top, 1)
                     .padding(.bottom, 8)
+                    
                 Text(issue.markdownIssueReason)
                     .padding(.bottom, 16)
                     .accentColor(.afaDarkBlueText)
-                if store.state.location != nil {
-                    Text(R.string.localizable.repsListHeader())
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 2)
-                        .padding(.leading, 6)
-                        .accessibilityAddTraits(.isHeader)
-                    VStack(spacing: 0) {
-                        targetedRepsList
-                        
-                        if !irrelevantContacts.isEmpty {
-                            Divider()
-                        }
-                        
-                        irrelevantRepsList
-                        
-                        if !vacantAreas.isEmpty {
-                            Divider()
-                        }
-                        
-                        vacantRepsList
-                    }
-                    .background {
-                        RoundedRectangle(cornerRadius: 10)
-                            .foregroundColor(Color.afaLightBG)
-                    }
-                    .padding(.bottom, 16)
-                    
-                    if !targetedContacts.isEmpty {
-                        NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts)) {
-                            PrimaryButton(title: R.string.localizable.seeScript(), systemImageName: "megaphone.fill")
-                        }
-                    }
+                
+                if requiresLocation && store.state.location == nil {
+                    // Show location setup for political campaigns
+                    locationSetupSection
                 } else {
-                    Text(R.string.localizable.setLocationHeader())
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        .padding(.bottom, 2)
-                        .padding(.leading, 6)
-                    Button(action: {
-                        showLocationSheet.toggle()
-                    }, label: {
-                        PrimaryButton(title: R.string.localizable.setLocationButton(), systemImageName: "location.circle.fill")
-                    })
+                    // Show contacts and action buttons
+                    contactsSection
+                    
+                    if hasValidTargets {
+                        actionButtonsSection
+                    }
                 }
             }
             .padding(.horizontal)
@@ -107,28 +116,182 @@ struct AnimalPolicyDetail: View {
             Spacer()
         }
         .onAppear {
-            // Force refresh id so that async images can load. See https://github.com/5calls/ios/issues/465
             forceRefreshID = UUID()
-            
             AnalyticsManager.shared.trackPageview(path: "/issue/\(issue.slug)/")
         }
     }
     
-    private var targetedRepsList: some View {
-        ForEach(targetedContacts.numbered(), id: \.element.id) { contact in
-            NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: Array(targetedContacts[contact.number..<targetedContacts.endIndex]))) {
-                ContactListItem(contact: contact.element, showComplete: store.state.issueCalledOn(issueID: issue.id, contactID: contact.id))
-                    .id(forceRefreshID)
-            }
+    // MARK: - Location Setup Section
+    private var locationSetupSection: some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(R.string.localizable.setLocationHeader())
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.leading, 6)
+            Button(action: {
+                showLocationSheet.toggle()
+            }, label: {
+                PrimaryButton(title: R.string.localizable.setLocationButton(), systemImageName: "location.circle.fill")
+            })
+        }
+    }
+    
+    // MARK: - Contacts Section
+    private var contactsSection: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text(contactsSectionHeader)
+                .font(.caption)
+                .foregroundColor(.secondary)
+                .padding(.bottom, 2)
+                .padding(.leading, 6)
+                .accessibilityAddTraits(.isHeader)
             
-            if contact.number < targetedContacts.count - 1 {
-                Divider()
+            VStack(spacing: 0) {
+                targetedContactsList
+                
+                if !irrelevantContacts.isEmpty {
+                    Divider()
+                    irrelevantContactsList
+                }
+                
+                if !vacantAreas.isEmpty {
+                    Divider()
+                    vacantContactsList
+                }
+            }
+            .background {
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(Color.afaLightBG)
+            }
+            .padding(.bottom, 16)
+        }
+    }
+    
+    private var contactsSectionHeader: String {
+        switch issue.contactType {
+        case .representatives:
+            return R.string.localizable.repsListHeader()
+        case .corporate:
+            // NEW: Different header for batch vs individual campaigns
+            if isBatchEmailCampaign {
+                return "Target Company"
+            } else {
+                return "Target Companies"
             }
         }
     }
     
-    private var irrelevantRepsList: some View {
-        ForEach(irrelevantContacts, id: \.self) { contact in
+    // MARK: - Action Buttons Section
+    private var actionButtonsSection: some View {
+        VStack(spacing: 12) {
+            // NEW: For batch campaigns, show single action button
+            if isBatchEmailCampaign {
+                NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts, actionType: .batchEmail)) {
+                    PrimaryButton(title: "Take Action", systemImageName: "person.wave.2.fill")
+                }
+            } else {
+                // Original behavior for individual campaigns
+                NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts, actionType: getPreferredActionType())) {
+                    PrimaryButton(title: "Take Action", systemImageName: "person.wave.2.fill")
+                }
+            }
+            
+            // NEW: Show available action types for corporate campaigns
+            if issue.contactType == .corporate && !isBatchEmailCampaign {
+                actionTypeButtons
+            }
+        }
+    }
+    
+    // NEW: Show call options for individual corporate campaigns
+    private var actionTypeButtons: some View {
+        HStack(spacing: 12) {
+            if issue.actions?.call?.enabled == true {
+                NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts, actionType: .call)) {
+                    SecondaryButton(title: "Make Calls", systemImageName: "phone")
+                }
+            }
+        }
+    }
+    
+    // MARK: - Helper Methods
+    private func getPreferredActionType() -> IssueDetailNavModel.ActionType {
+        if issue.contactType == .corporate {
+            // For corporate campaigns, prefer email if enabled, otherwise call
+            if issue.actions?.email?.enabled == true {
+                return .email
+            }
+        }
+        return .call
+    }
+    
+    // MARK: - Contact Lists
+    @ViewBuilder
+    private var targetedContactsList: some View {
+        if isBatchEmailCampaign {
+            // For batch campaigns, show single company entry with navigation
+            NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts, actionType: .batchEmail)) {
+                HStack(spacing: 12) {
+                    // Corporate logo placeholder (consistent with contact photos)
+                    Circle()
+                        .fill(Color.secondary.opacity(0.3))
+                        .frame(width: 45, height: 45)
+                        .overlay {
+                            Image(systemName: "building.2")
+                                .font(.title2)
+                                .foregroundColor(.secondary)
+                        }
+                        .overlay {
+                            // Show completion checkmark for batch campaigns
+                            if batchCampaignCompleted {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(.afaGreen)
+                                    .background {
+                                        Circle().foregroundColor(.white)
+                                    }
+                                    .offset(x: 20, y: 15)
+                                    .accessibilityHidden(true)
+                            }
+                        }
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(issue.corporateInfo?.company ?? "Company")
+                            .font(.headline)
+                            .fontWeight(.medium)
+                        
+                        if let industry = issue.corporateInfo?.industry {
+                            Text(industry)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    Spacer()
+                }
+                .padding()
+            }
+        } else {
+            // Original behavior for individual campaigns
+            ForEach(targetedContacts.numbered(), id: \.element.id) { contact in
+                NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: Array(targetedContacts[contact.number..<targetedContacts.endIndex]), actionType: getPreferredActionType())) {
+                    ContactListItem(
+                        contact: contact.element,
+                        showComplete: store.state.issueCalledOn(issueID: issue.id, contactID: contact.element.id)
+                    )
+                    .id(forceRefreshID)
+                }
+                
+                if contact.number < targetedContacts.count - 1 {
+                    Divider()
+                }
+            }
+        }
+    }
+    
+    private var irrelevantContactsList: some View {
+        ForEach(irrelevantContacts, id: \.id) { contact in
             ContactListItem(
                 contact: contact,
                 showComplete: store.state.issueCalledOn(issueID: issue.id, contactID: contact.id),
@@ -137,19 +300,22 @@ struct AnimalPolicyDetail: View {
             .opacity(0.4)
             .id(forceRefreshID)
             
-            if contact != irrelevantContacts.last {
+            if contact.id != irrelevantContacts.last?.id {
                 Divider()
             }
         }
     }
     
-    private var vacantRepsList: some View {
+    private var vacantContactsList: some View {
         ForEach(vacantAreas, id: \.self) { area in
             let contact = Contact(area: area, name: R.string.localizable.vacantSeatTitle())
             let note = R.string.localizable.vacantSeatMessage(area)
             
-            ContactListItem(contact: contact, contactNote: note)
-                .opacity(0.4)
+            ContactListItem(
+                contact: contact,
+                contactNote: note
+            )
+            .opacity(0.4)
             
             if area != vacantAreas.last {
                 Divider()
@@ -165,22 +331,51 @@ struct AnimalPolicyDetail: View {
         return Store(state: state)
     }()
     
-    return AnimalPolicyDetail(issue: .houseOnlyPreviewIssue)
+    AnimalPolicyDetail(issue: .houseOnlyPreviewIssue)
         .environmentObject(store)
 }
 
+// MARK: - Updated Navigation Model
 struct IssueDetailNavModel {
     var issue: AnimalPolicy
     let contacts: [Contact]
+    let actionType: ActionType
+    
+    enum ActionType {
+        case call
+        case email
+        case batchEmail // NEW: For batch corporate campaigns
+    }
 }
 
 extension IssueDetailNavModel: Equatable, Hashable {
     static func == (lhs: IssueDetailNavModel, rhs: IssueDetailNavModel) -> Bool {
-        return lhs.issue.id == rhs.issue.id && lhs.contacts.elementsEqual(rhs.contacts)
+        return lhs.issue.id == rhs.issue.id &&
+               lhs.contacts.elementsEqual(rhs.contacts) &&
+               lhs.actionType == rhs.actionType
     }
 
     func hash(into hasher: inout Hasher) {
         hasher.combine(issue.id)
         hasher.combine(contacts.compactMap({$0.id}).joined())
+        hasher.combine(actionType)
+    }
+}
+
+// Secondary button component for email actions
+struct SecondaryButton: View {
+    let title: String
+    let systemImageName: String
+    
+    var body: some View {
+        HStack {
+            Image(systemName: systemImageName)
+            Text(title)
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(Color.secondary.opacity(0.1))
+        .foregroundColor(.primary)
+        .cornerRadius(8)
     }
 }

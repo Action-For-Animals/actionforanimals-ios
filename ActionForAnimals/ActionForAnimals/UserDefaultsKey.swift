@@ -15,6 +15,8 @@ enum UserDefaultsKey : String {
     case locationType
     case locationValue
     
+    case selectedCategoryFilter // user's preferred animal category filter
+    
     case issueCompletionCache // a cached map of issue id to contact ids regarding completed calls
     
     case hasSeenFirstCallInstructions

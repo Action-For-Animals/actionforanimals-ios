@@ -22,7 +22,7 @@ struct AnimalPolicySplitView: View {
                         AnimalPolicyDetail(issue: selectedIssue)
                             .toolbar(.hidden, for: .tabBar)
                             .navigationDestination(for: IssueDetailNavModel.self) { idnm in
-                                AnimalPolicyContactDetail(issue: idnm.issue, remainingContacts: idnm.contacts)
+                                AnimalPolicyContactDetail(issue: idnm.issue, remainingContacts: idnm.contacts, actionType: idnm.actionType)
                             }
                             .navigationDestination(for: IssueDoneNavModel.self) { inm in
                                 AnimalPolicyDone(issue: inm.issue)

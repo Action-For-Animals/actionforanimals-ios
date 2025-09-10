@@ -21,8 +21,8 @@ func appMiddleware() -> Middleware<AppState> {
         case let .ReportOutcome(issue, contactLog, outcome):
             // TODO: migrate ContactLog issueId to Int after UIKit is gone
             // this is always generated in swiftUI from an int so it should always succeed
-            if let issueId = Int(contactLog.issueId), outcome.status != "skip" {
-                dispatch(.SetIssueContactCompletion(issueId, "\(contactLog.contactId)-\(outcome.status)"))
+            if let issueId = Int(contactLog.issueId) {
+                dispatch(.SetIssueContactCompletion(issueId, contactLog))
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
             reportOutcome(log: contactLog, outcome: outcome)
@@ -30,7 +30,7 @@ func appMiddleware() -> Middleware<AppState> {
             logSearch(searchQuery: searchQuery)
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
-                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps:
+                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps, .SetCategoryFilter:
             // no middleware actions for these, including for completeness
             break
         }

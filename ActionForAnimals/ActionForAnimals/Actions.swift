@@ -12,7 +12,7 @@ enum Action {
     case FetchStats(Int?)
     case SetGlobalCallCount(Int)
     case SetIssueCallCount(Int,Int)
-    case SetIssueContactCompletion(Int,String)
+    case SetIssueContactCompletion(Int,ContactLog)
     case SetDonateOn(Bool)
     case FetchIssues
     case SetIssues([AnimalPolicy])
@@ -21,6 +21,7 @@ enum Action {
     case SetDistrict(String)
     case SetSplitDistrict(Bool)
     case SetLocation(UserLocation)
+    case SetCategoryFilter(String)
     case ReportOutcome(AnimalPolicy, ContactLog, Outcome)
     case SetFetchingContacts(Bool)
     case SetLoadingStatsError(Error)
@@ -28,7 +29,7 @@ enum Action {
     case SetLoadingContactsError(Error)
     case GoBack
     case GoToRoot
-    case GoToNext(AnimalPolicy, [Contact])
+    case GoToNext(AnimalPolicy, [Contact], IssueDetailNavModel.ActionType)
     case SetMissingReps([String])
     case LogSearch(String)
 }

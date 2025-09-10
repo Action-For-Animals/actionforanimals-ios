@@ -20,6 +20,11 @@ struct Contact : Decodable {
     let state: String?
     let fieldOffices: [AreaOffice]
     
+    // ✨ NEW: Corporate support fields
+    let email: String?
+    let contactType: ContactType
+    let metadata: [String: String]?
+    
     enum CodingKeys: String, CodingKey {
         case id
         case area
@@ -30,6 +35,9 @@ struct Contact : Decodable {
         case reason
         case state
         case fieldOffices = "field_offices"
+        case email
+        case contactType
+        case metadata
     }
     
     init(from decoder: Decoder) throws {
@@ -43,8 +51,14 @@ struct Contact : Decodable {
         reason = try container.decode(String.self, forKey: .reason)
         state = try container.decode(String.self, forKey: .state)
         fieldOffices = try container.decode([AreaOffice]?.self, forKey: .fieldOffices) ?? []
+        
+        // ✨ NEW: Decode new fields with defaults for backward compatibility
+        email = try container.decodeIfPresent(String.self, forKey: .email)
+        contactType = try container.decodeIfPresent(ContactType.self, forKey: .contactType) ?? .representatives
+        metadata = try container.decodeIfPresent([String: String].self, forKey: .metadata)
     }
 
+    // 🔄 CHANGED: Updated legacy initializer for political contacts
     init(id: String = "id", area: String = "US House", name: String = "Test Name", party: String = "Party", phone: String = "14155551212", photoURL: URL? = nil, fieldOffices: [AreaOffice] = []) {
         self.id = id
         self.area = area
@@ -55,6 +69,60 @@ struct Contact : Decodable {
         self.reason = nil
         self.state = nil
         self.fieldOffices = fieldOffices
+        
+        // ✨ NEW: Default values for new fields
+        self.email = nil
+        self.contactType = .representatives
+        self.metadata = nil
+    }
+    
+    // ✨ NEW: Initializer for corporate contacts (used when creating from Target)
+    init(id: String,
+         name: String,
+         phone: String? = nil,
+         email: String? = nil,
+         contactType: ContactType = .corporate,
+         metadata: [String: String]? = nil) {
+        self.id = id
+        self.name = name
+        self.phone = phone ?? ""
+        self.email = email
+        self.contactType = contactType
+        self.metadata = metadata
+        
+        // Political fields (not relevant for corporate but required)
+        self.area = ""
+        self.party = ""
+        self.photoURL = nil
+        self.reason = nil
+        self.state = nil
+        self.fieldOffices = []
+    }
+    
+    // ✨ NEW: Convenience initializer from Target
+    init(from target: Target) {
+        self.id = target.id
+        self.name = target.name
+        self.phone = target.phone ?? ""
+        self.email = target.email
+        self.contactType = .corporate
+        // Create metadata dictionary from Target properties
+        var metadata: [String: String] = [:]
+        if let department = target.department {
+            metadata["department"] = department
+        }
+        if let jobTitle = target.jobTitle {
+            metadata["title"] = jobTitle
+        }
+        self.metadata = metadata.isEmpty ? nil : metadata
+        
+        // Political fields (not relevant for corporate but required)
+        self.area = ""
+        self.party = ""
+        self.photoURL = nil
+        self.reason = nil
+        self.state = nil
+        self.fieldOffices = []
     }
 }
 
@@ -68,9 +136,22 @@ extension Contact: Hashable, Identifiable {
     }
 }
 
-extension Contact {    
-    // this has some overlap with other area -> string conversions but I haven't thought about it long enough to combine them
+extension Contact {
+    // 🔄 CHANGED: Enhanced to support corporate contacts
     func officeDescription() -> String {
+        // For corporate contacts, show company and department info
+        if contactType == .corporate {
+            var description = ""
+            if let company = metadata?["company"] {
+                description += company
+            }
+            if let department = metadata?["department"] {
+                description += description.isEmpty ? department : " - \(department)"
+            }
+            return description.isEmpty ? "Corporate Contact" : description
+        }
+        
+        // For political contacts, use existing logic
         switch self.area {
         case "US House", "House":
             // TODO: plumb the district through here too
@@ -88,6 +169,33 @@ extension Contact {
         default:
             return ""
         }
+    }
+    
+    // ✨ NEW: Get primary contact method based on contact type
+    var primaryContactMethod: String {
+        switch contactType {
+        case .representatives:
+            return phone
+        case .corporate:
+            // Prefer phone, fallback to email
+            if !phone.isEmpty {
+                return phone
+            } else if let email = email, !email.isEmpty {
+                return email
+            } else {
+                return "No contact info"
+            }
+        }
+    }
+    
+    // ✨ NEW: Check if contact has email capability
+    var hasEmail: Bool {
+        return email != nil && !email!.isEmpty
+    }
+    
+    // ✨ NEW: Check if contact has phone capability
+    var hasPhone: Bool {
+        return !phone.isEmpty
     }
 }
 

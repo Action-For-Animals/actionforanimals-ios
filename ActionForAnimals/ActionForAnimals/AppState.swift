@@ -16,13 +16,17 @@ class AppState: ObservableObject, ReduxState {
     @Published var globalCallCount: Int = 0
     @Published var issueCallCounts: [Int: Int] = [:]
     // issueCompletion is a local cache of completed calls: an array of contact id and outcomes (B0001234-contact) keyed by an issue id
-    @Published var issueCompletion: [Int: [String]] = [:] {
+    @Published var issueCompletion: [Int: [ContactLog]] = [:] {
         didSet {
-            // NSNumber (bridged automatically from Int) is not supported as a key in a plist dictionary, so we stringify and unstringify
-            let plistSupportableIssueCache: [String: [String]] = Dictionary(uniqueKeysWithValues: issueCompletion.map { key, value in
-                (String(key), value)
-            })
-            UserDefaults.standard.set(plistSupportableIssueCache, forKey: UserDefaultsKey.issueCompletionCache.rawValue)
+            // Serialize ContactLog objects to Data for storage
+            do {
+                let encoder = JSONEncoder()
+                let plistSupportableIssueCache: [String: Data] = Dictionary(uniqueKeysWithValues: issueCompletion.compactMap { key, value in
+                    guard let data = try? encoder.encode(value) else { return nil }
+                    return (String(key), data)
+                })
+                UserDefaults.standard.set(plistSupportableIssueCache, forKey: UserDefaultsKey.issueCompletionCache.rawValue)
+            }
         }
     }
     @Published var donateOn = false
@@ -40,6 +44,14 @@ class AppState: ObservableObject, ReduxState {
             defaults.set(location.locationValue, forKey: UserDefaultsKey.locationValue.rawValue)
             defaults.set(location.locationDisplay, forKey: UserDefaultsKey.locationDisplay.rawValue)
             Logger().info("saved cached location as \(location)")
+        }
+    }
+    @Published var selectedCategoryFilter: String? {
+        didSet {
+            if let filter = selectedCategoryFilter {
+                UserDefaults.standard.set(filter, forKey: UserDefaultsKey.selectedCategoryFilter.rawValue)
+                Logger().info("saved category filter: \(filter)")
+            }
         }
     }
     @Published var fetchingContacts = false
@@ -77,31 +89,29 @@ class AppState: ObservableObject, ReduxState {
         }
         
         // load the issue completion cache
-        if let plistSupportableIssueCache = UserDefaults.standard.object(forKey: UserDefaultsKey.issueCompletionCache.rawValue) as? [String: [String]] {
-            self.issueCompletion = Dictionary(uniqueKeysWithValues: plistSupportableIssueCache.compactMap({ key, value in
-                if let intKey = Int(key) {
-                    return (intKey, value)
+        if let plistSupportableIssueCache = UserDefaults.standard.object(forKey: UserDefaultsKey.issueCompletionCache.rawValue) as? [String: Data] {
+            let decoder = JSONDecoder()
+            self.issueCompletion = Dictionary(uniqueKeysWithValues: plistSupportableIssueCache.compactMap({ key, data in
+                guard let intKey = Int(key),
+                      let contactLogs = try? decoder.decode([ContactLog].self, from: data) else {
+                    return nil
                 }
-                return nil
+                return (intKey, contactLogs)
             }))
+        }
+        
+        // load category filter preference
+        self.selectedCategoryFilter = UserDefaults.standard.string(forKey: UserDefaultsKey.selectedCategoryFilter.rawValue)
+        if let filter = selectedCategoryFilter {
+            Logger().info("loading cached category filter: \(filter)")
         }
     }
 }
 
 extension AppState {
     func issueCalledOn(issueID: Int, contactID: String) -> Bool {
-        // a contact outcome is a contactid concatenated with an outcome (B0001234-contact)
-        let contactOutcomesForIssue = self.issueCompletion[issueID] ?? []
-        
-        let contactIDs = contactOutcomesForIssue.map { contactOutcome in
-            // Split from the right to handle contact IDs that contain hyphens
-            if let lastHyphenIndex = contactOutcome.lastIndex(of: "-") {
-                return String(contactOutcome[..<lastHyphenIndex])
-            }
-            return contactOutcome
-        }
-
-        return contactIDs.contains(contactID)
+        let contactLogsForIssue = self.issueCompletion[issueID] ?? []
+        return contactLogsForIssue.contains { $0.contactId == contactID }
     }
     
     var needsIssueRefresh: Bool {
@@ -114,5 +124,19 @@ extension AppState {
         } else {
             return false
         }
+    }
+    
+    /// Get the user's selected category filters as a Set
+    var selectedCategoryFilters: Set<String> {
+        guard let filterString = selectedCategoryFilter, !filterString.isEmpty else {
+            return ["all"]
+        }
+        return Set(filterString.split(separator: ",").map { String($0) })
+    }
+    
+    /// Check if the user is interested in a specific category
+    func isInterestedInCategory(_ category: String) -> Bool {
+        let filters = selectedCategoryFilters
+        return filters.contains("all") || filters.contains(category)
     }
 }

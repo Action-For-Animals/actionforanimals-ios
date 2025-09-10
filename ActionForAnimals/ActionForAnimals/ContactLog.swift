@@ -16,6 +16,7 @@ struct ContactLog : Hashable, Codable {
     let outcome: String
     let date: Date
     let reported: Bool
+    let actionType: String
 
     static func localizedOutcomeForStatus(status: String) -> String {
         switch status {
@@ -93,7 +94,7 @@ struct ContactLogs {
         if let index = all.firstIndex(of: log) {
             // ContactLogs are immutable, so we'll need to replace it
             all.remove(at: index)
-            all.append(ContactLog(issueId: log.issueId, contactId: log.contactId, phone: log.phone, outcome: log.outcome, date: log.date, reported: true))
+            all.append(ContactLog(issueId: log.issueId, contactId: log.contactId, phone: log.phone, outcome: log.outcome, date: log.date, reported: true, actionType: log.actionType))
         }
     }
 

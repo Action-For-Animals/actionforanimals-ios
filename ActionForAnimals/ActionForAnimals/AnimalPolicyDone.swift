@@ -31,10 +31,31 @@ struct AnimalPolicyDone: View {
     let donateURL = URL(string: "https://secure.actblue.com/donate/5calls-donate?refcode=ios&refcode2=\(AnalyticsManager.shared.callerID)")!
     var markdownTitle: AttributedString!
 
-    func latestOutcomeForContact(contact: Contact, issueCompletions: [String]) -> String {
-        if let contactOutcome = issueCompletions.last(where: { $0.split(separator: "-")[0] == contact.id }) {
-            if contactOutcome.split(separator: "-").count > 1 {
-                return ContactLog.localizedOutcomeForStatus(status: String(contactOutcome.split(separator: "-")[1]))
+    func latestOutcomeForContact(contact: Contact, issueCompletions: [ContactLog]) -> String {
+        // For corporate campaigns, handle completion tracking differently
+        if issue.contactType == .corporate {
+            // For batch campaigns, any completion means the batch was sent
+            if issue.isBatchEmailCampaign {
+                return issueCompletions.isEmpty ? R.string.localizable.outcomesSkip() : "Sent Email"
+            } else {
+                // For individual corporate campaigns, look for this specific contact ID (get the most recent one)
+                if let contactLog = issueCompletions.last(where: { $0.contactId == contact.id }) {
+                    if contactLog.outcome == "contact" {
+                        return contactLog.actionType == "email" ? "Sent Email" : "Made Contact"
+                    } else {
+                        return ContactLog.localizedOutcomeForStatus(status: contactLog.outcome)
+                    }
+                }
+            }
+            return R.string.localizable.outcomesSkip()
+        }
+        
+        // Original logic for political campaigns
+        if let contactLog = issueCompletions.last(where: { $0.contactId == contact.id }) {
+            if contactLog.outcome == "contact" {
+                return contactLog.actionType == "email" ? "Sent Email" : "Made Contact"
+            } else {
+                return ContactLog.localizedOutcomeForStatus(status: contactLog.outcome)
             }
         }
 
@@ -43,6 +64,33 @@ struct AnimalPolicyDone: View {
 
     func shouldShowImage(latestOutcomeForContact: String) -> Bool {
         return latestOutcomeForContact != "Skip"
+    }
+
+    var getContactsToDisplay: () -> [Contact] {
+        return {
+            if issue.contactType == .corporate {
+                // For corporate campaigns, show targets as contacts
+                if issue.isBatchEmailCampaign {
+                    // For batch campaigns, show single company contact
+                    let companyName = issue.corporateInfo?.company ?? "Company"
+                    return [Contact(
+                        id: "company-\(issue.id)",
+                        name: companyName,
+                        phone: "",
+                        email: "",
+                        contactType: .corporate,
+                        metadata: nil
+                    )]
+                } else {
+                    // For individual corporate campaigns, show all targets
+                    guard let targets = issue.targets else { return [] }
+                    return targets.map { Contact.fromTarget($0) }
+                }
+            } else {
+                // For political campaigns, use existing logic
+                return issue.contactsForIssue(allContacts: store.state.contacts)
+            }
+        }
     }
 
     var body: some View {
@@ -67,7 +115,7 @@ struct AnimalPolicyDone: View {
                 Text(R.string.localizable.contactSummaryHeader())
                     .font(.caption).fontWeight(.bold)
                     .accessibilityAddTraits(.isHeader)
-                ForEach(issue.contactsForIssue(allContacts: store.state.contacts)) { contact in
+                ForEach(getContactsToDisplay()) { contact in
                     let issueCompletions = store.state.issueCompletion[issue.id] ?? []
                     let latestContactCompletion = latestOutcomeForContact(contact: contact, issueCompletions: issueCompletions)
                     ContactListItem(contact: contact, showComplete: shouldShowImage(latestOutcomeForContact: latestContactCompletion), contactNote: latestContactCompletion, listType: .compact)
@@ -249,12 +297,14 @@ struct CountingView: View {
     let previewState = {
         let state = AppState()
         state.contacts = [.housePreviewContact, .senatePreviewContact1, .senatePreviewContact2]
-        state.issueCompletion[AnimalPolicy.basicPreviewIssue.id] = ["\(Contact.housePreviewContact.id)-voicemail","\(Contact.senatePreviewContact1.id)-contact"]
+        state.issueCompletion[AnimalPolicy.basicPreviewIssue.id] = [
+            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.housePreviewContact.id, phone: "", outcome: "voicemail", date: Date(), reported: true, actionType: "call"),
+            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.senatePreviewContact1.id, phone: "", outcome: "contact", date: Date(), reported: true, actionType: "call")
+        ]
         return state
     }()
 
-    return AnimalPolicyDone(issue: .basicPreviewIssue)
-
+    AnimalPolicyDone(issue: .basicPreviewIssue)
         .environmentObject(Store(state: previewState, middlewares: [appMiddleware()]))
 }
 

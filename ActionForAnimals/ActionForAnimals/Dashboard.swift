@@ -15,6 +15,7 @@ struct Dashboard: View {
     @Binding var selectedIssue: AnimalPolicy?
 
     @State var searchText = ""
+    @State var selectedCategories: Set<CategoryKey> = [] // empty means "All"
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -36,8 +37,18 @@ struct Dashboard: View {
             }
             
             SearchBar(searchText: $searchText)
+            
+            CategoryFilterBar(
+                selectedCategories: $selectedCategories,
+                availableCategories: CategoryHelper.availableCategories(from: store.state.issues)
+            )
 
-            IssuesList(store: store, selectedIssue: $selectedIssue, searchText: $searchText)
+            IssuesList(
+                store: store,
+                selectedIssue: $selectedIssue,
+                searchText: $searchText,
+                selectedCategories: $selectedCategories
+            )
         }
         .navigationBarHidden(true)
         .onAppear() {
@@ -46,6 +57,9 @@ struct Dashboard: View {
             if let location = store.state.location, store.state.contacts.isEmpty {
                 store.dispatch(action: .FetchContacts(location))
             }
+            
+            // Initialize category filter from user preferences
+            initializeCategoryFromPreferences()
         }
         .onOpenURL(perform: { url in
             if store.state.issues.isEmpty {
@@ -61,6 +75,94 @@ struct Dashboard: View {
                 self.selectedIssueUrl = nil
             }
         }
+        .onChange(of: store.state.selectedCategoryFilter) { _ in
+            initializeCategoryFromPreferences()
+        }
+    }
+    
+    private func initializeCategoryFromPreferences() {
+        let userPreferences = store.state.selectedCategoryFilters
+        
+        // If user selected "all", show all (empty set)
+        if userPreferences.contains("all") {
+            selectedCategories = []
+        } else {
+            // Convert WelcomeStep1 category strings to CategoryKey set
+            var categories: Set<CategoryKey> = []
+            for preference in userPreferences {
+                switch preference {
+                case "farmed":
+                    categories.insert(.farmed)
+                case "wildlife":
+                    categories.insert(.wildlife)
+                case "companion":
+                    categories.insert(.companion)
+                default:
+                    break
+                }
+            }
+            selectedCategories = categories
+        }
+    }
+}
+
+struct CategoryFilterBar: View {
+    @Binding var selectedCategories: Set<CategoryKey>
+    let availableCategories: [CategoryKey]
+    
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 8) {
+                // All filter
+                CategoryFilterChip(
+                    title: "All",
+                    isSelected: selectedCategories.isEmpty
+                ) {
+                    // Toggle all - if currently empty (all selected), do nothing
+                    // If some are selected, clear all to show all
+                    selectedCategories = []
+                }
+                
+                // Dynamic category filters based on available categories
+                ForEach(availableCategories, id: \.self) { categoryKey in
+                    CategoryFilterChip(
+                        title: categoryKey.displayName,
+                        isSelected: selectedCategories.contains(categoryKey)
+                    ) {
+                        // Toggle this specific category
+                        if selectedCategories.contains(categoryKey) {
+                            selectedCategories.remove(categoryKey)
+                        } else {
+                            selectedCategories.insert(categoryKey)
+                        }
+                    }
+                }
+                
+                // Invisible spacer to ensure last chip isn't cut off
+                Spacer(minLength: 16)
+            }
+            .padding(.leading, 16)
+        }
+    }
+}
+
+struct CategoryFilterChip: View {
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            Text(title)
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(isSelected ? Color.accentColor : Color.secondary.opacity(0.1))
+                .foregroundColor(isSelected ? .white : .primary)
+                .clipShape(Capsule())
+        }
+        .buttonStyle(PlainButtonStyle())
     }
 }
 
@@ -120,35 +222,58 @@ struct IssuesList: View {
     @ObservedObject var store: Store
     @Binding var selectedIssue: AnimalPolicy?
     @Binding var searchText: String
+    @Binding var selectedCategories: Set<CategoryKey>
     
     var isSearching: Bool {
         searchText.count >= 3
     }
+    
+    var selectedCategoriesDisplayName: String {
+        if selectedCategories.isEmpty {
+            return "All"
+        } else if selectedCategories.count == 1 {
+            return selectedCategories.first?.displayName ?? "Selected"
+        } else {
+            let names = selectedCategories.map { $0.displayName }
+            return names.joined(separator: " & ")
+        }
+    }
 
-    // Always show ALL issues (active + inactive) by default
-    var allIssues: [AnimalPolicy] {
+    // Filter issues by both search and category using CategoryHelper
+    var filteredIssues: [AnimalPolicy] {
+        var issues = store.state.issues
+        
+        // Apply category filter using CategoryHelper
+        if !selectedCategories.isEmpty {
+            issues = issues.filter { issue in
+                let primaryCategory = CategoryHelper.primaryCategoryKey(from: issue)
+                return selectedCategories.contains(primaryCategory)
+            }
+        }
+        
+        // Apply search filter
         if isSearching {
-            let filtered = store.state.issues.filter { issue in
+            issues = issues.filter { issue in
                 issue.name.localizedCaseInsensitiveContains(searchText) ||
                 issue.reason.localizedCaseInsensitiveContains(searchText) ||
-                issue.script.localizedCaseInsensitiveContains(searchText) ||
+                (issue.script?.localizedCaseInsensitiveContains(searchText) ?? false) ||
                 issue.slug.localizedCaseInsensitiveContains(searchText) ||
                 issue.categories.contains { $0.name.localizedCaseInsensitiveContains(searchText) }
             }
             
             // Sort so that name matches come first
-            return filtered.sorted { a, b in
+            issues = issues.sorted { a, b in
                 let am = a.name.localizedCaseInsensitiveContains(searchText)
                 let bm = b.name.localizedCaseInsensitiveContains(searchText)
                 return am && !bm
             }
-        } else {
-            return store.state.issues
         }
+        
+        return issues
     }
 
     var body: some View {
-        if isSearching && allIssues.isEmpty {
+        if isSearching && filteredIssues.isEmpty {
             VStack {
                 Spacer()
                 Text(R.string.localizable.searchNoResultsTitle())
@@ -160,9 +285,21 @@ struct IssuesList: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
+        } else if !isSearching && filteredIssues.isEmpty && !selectedCategories.isEmpty {
+            VStack {
+                Spacer()
+                Text("No \(selectedCategoriesDisplayName) Campaigns")
+                    .font(.title2)
+                    .foregroundColor(.secondary)
+                Text("Try selecting different categories")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
-            // Flat list, no categories, no footer toggle
-            List(allIssues, selection: $selectedIssue) { issue in
+            // Flat list showing filtered results
+            List(filteredIssues, selection: $selectedIssue) { issue in
                 NavigationLink(value: issue) {
                     AnimalPolicyListItem(issue: issue, contacts: store.state.contacts)
                 }
@@ -173,4 +310,3 @@ struct IssuesList: View {
         }
     }
 }
-

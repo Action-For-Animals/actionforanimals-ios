@@ -53,7 +53,7 @@ struct ContactCircle: View {
 #Preview {
     let storeWithCompletedIssues: Store = {
         let state = AppState()
-        state.issueCompletion[123] = ["1234-contact"]
+        state.issueCompletion[123] = [ContactLog(issueId: "123", contactId: "1234", phone: "", outcome: "contact", date: Date(), reported: true, actionType: "call")]
         return Store(state: state)
     }()
     

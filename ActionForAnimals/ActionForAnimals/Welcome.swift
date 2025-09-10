@@ -9,96 +9,30 @@
 import SwiftUI
 
 struct Welcome: View {
-    @AppStorage(UserDefaultsKey.hasShownWelcomeScreen.rawValue) var hasShownWelcomeScreen = false
-
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var store: Store
 
+    @State private var currentStep = 1
+    @State private var selectedCategories: Set<WelcomeStep1.CategoryFilter> = [.all]
+
     var onContinue: (() -> Void)?
 
-    var subMessage: String {
-        guard store.state.globalCallCount > 0 else {
-            return ""
-        }
-
-        return String(format: R.string.localizable.welcomeSection3Calls(
-            StatsViewModel(numberOfCalls: store.state.globalCallCount).formattedNumberOfCalls)
-        )
-    }
-
-    var subMessageOpacity: Double {
-        store.state.globalCallCount > 0 ? 1 : 0
-    }
-
     var body: some View {
-        ScrollView {
-            Grid(verticalSpacing: 30) {
-                Image(decorative: R.image.afaLogotype)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 292)
-                    .padding(.vertical, 24)
-                GridRow() {
-                    Image(systemName: "phone.badge.waveform")
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.red, .blue)
-                        .font(.title)
-                        .accessibilityHidden(true)
-                    VStack(alignment: .leading) {
-                        Text(R.string.localizable.welcomeSection1Title())
-                            .fontWeight(.heavy)
-                        Text(R.string.localizable.welcomeSection1Message())
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-                GridRow() {
-                    Image(systemName: "pawprint")
-                        .foregroundStyle(.blue)
-                        .font(.title)
-                        .accessibilityHidden(true)
-                    VStack(alignment: .leading) {
-                        Text(R.string.localizable.welcomeSection2Title())
-                            .fontWeight(.heavy)
-                        Text(R.string.localizable.welcomeSection2Message())
-                    }
-                    .accessibilityElement(children: .combine)
-                }
-                GridRow() {
-                    Image(systemName: "person.2")
-                        .opacity(subMessageOpacity)
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.blue, .red)
-                        .font(.title)
-                        .accessibilityHidden(true)
-                    Text(subMessage)
-                        .fontWeight(.heavy)
-                        .opacity(subMessageOpacity)
-                        .gridColumnAlignment(.leading)
-                }
-                Spacer()
-                Spacer()
-                Button(action: {
+        Group {
+            if currentStep == 1 {
+                WelcomeStep1(onContinue: { categories in
+                    selectedCategories = categories
+                    // Save category preferences as comma-separated string
+                    let categoryString = categories.map { $0.rawValue }.sorted().joined(separator: ",")
+                    store.dispatch(action: .SetCategoryFilter(categoryString))
+                    currentStep = 2
+                })
+            } else {
+                WelcomeStep2(selectedCategories: selectedCategories, onComplete: {
                     onContinue?()
                     dismiss()
-                }) {
-                    Text(R.string.localizable.welcomeButtonTitle())
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background {
-                            RoundedRectangle(cornerRadius: 6)
-                            .foregroundColor(.blue)
-                        }
-                }
+                })
             }
-            .onAppear() {
-                hasShownWelcomeScreen = true
-                if store.state.globalCallCount == 0 {
-                    store.dispatch(action: .FetchStats(nil))
-                }
-            }
-            .frame(maxWidth: .infinity)
-            .padding(30)
         }
     }
 }

@@ -51,10 +51,12 @@ final class StoreTests: XCTestCase {
         state.issueCompletion[issueID] = nil
         let store = Store(state: state)
         XCTAssertNil(store.state.issueCompletion[issueID])
-        _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, "unavailable"))
-        XCTAssertEqual(store.state.issueCompletion[issueID], ["unavailable"])
-        _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, "contacted"))
-        XCTAssertEqual(store.state.issueCompletion[issueID], ["unavailable", "contacted"])
+        let log1 = ContactLog(issueId: String(issueID), contactId: "contact1", phone: "", outcome: "unavailable", date: Date(), reported: true, actionType: "call")
+        let log2 = ContactLog(issueId: String(issueID), contactId: "contact2", phone: "", outcome: "contact", date: Date(), reported: true, actionType: "email")
+        _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, log1))
+        XCTAssertEqual(store.state.issueCompletion[issueID], [log1])
+        _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, log2))
+        XCTAssertEqual(store.state.issueCompletion[issueID], [log1, log2])
     }
 
     func testReduceSetFetchingContacts() throws {
@@ -156,7 +158,7 @@ final class StoreTests: XCTestCase {
         let issue = Issue.basicPreviewIssue
         let contacts = [Contact.housePreviewContact, Contact.senatePreviewContact1]
         XCTAssertTrue(store.state.issueRouter.path.isEmpty)
-        _ = store.reduce(store.state, .GoToNext(issue, contacts))
+        _ = store.reduce(store.state, .GoToNext(issue, contacts, .call))
         XCTAssertFalse(store.state.issueRouter.path.isEmpty)
         var path = NavigationPath()
         path.append(IssueDetailNavModel(issue: issue, contacts: contacts))
@@ -169,15 +171,15 @@ final class StoreTests: XCTestCase {
         XCTAssertTrue(store.state.issueRouter.path.isEmpty)
 
         var path = NavigationPath()
-        _ = store.reduce(store.state, .GoToNext(issue, [.senatePreviewContact1,.housePreviewContact]))
+        _ = store.reduce(store.state, .GoToNext(issue, [.senatePreviewContact1,.housePreviewContact], .call))
         path.append(IssueDetailNavModel(issue: issue, contacts: [.senatePreviewContact1,.housePreviewContact]))
         XCTAssertEqual(store.state.issueRouter.path, path)
         
-        _ = store.reduce(store.state, .GoToNext(issue, [.housePreviewContact]))
+        _ = store.reduce(store.state, .GoToNext(issue, [.housePreviewContact], .call))
         path.append(IssueDetailNavModel(issue: issue, contacts: [.housePreviewContact]))
         XCTAssertEqual(store.state.issueRouter.path, path)
         
-        _ = store.reduce(store.state, .GoToNext(issue, []))
+        _ = store.reduce(store.state, .GoToNext(issue, [], .call))
         path.append(IssueDoneNavModel(issue: issue, type: "done"))
         XCTAssertEqual(store.state.issueRouter.path, path)
     }

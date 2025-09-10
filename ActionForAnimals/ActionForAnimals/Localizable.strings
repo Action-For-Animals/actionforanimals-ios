@@ -45,7 +45,7 @@
 "menu-tip-message"                    = "Your Impact and About now reside in Settings menu along with Reminders";
 "more-policies-title"                 = "More Policies";
 "less-policies-title"                 = "Fewer Policies";
-"search-policies"                     = "Search all policies...";
+"search-campaigns"                    = "Search Campaigns";
 "search-no-results-title"             = "No policies found";
 "search-no-results-message"           = "Try a different search term";
 "policy-item-calls-made"              = "%@ calls made";
@@ -160,21 +160,16 @@
 "about-section-header-social"         = "Follow us on your favorite platform";
 "about-section-footer-social"         = "Sharing and Rating helps others find Action for Animals";
 "about-section-header-credits"        = "Credits";
-"about-item-why-call"                 = "Why Calling Works";
 "about-item-who-we-are"               = "Who Made Action for Animals?";
 "about-item-feedback"                 = "Feedback";
-"about-item-show-welcome"             = "Show Welcome Screen";
 "about-item-follow-twitter"           = "Follow on Twitter";
 "about-item-share"                    = "Share with Others";
 "about-item-rate"                     = "Please Rate Action for Animals";
 "about-item-open-source"              = "Open Source Libraries";
 "about-item-5-calls"                  = "5 Calls";
+"about-acknowledgements-title"        = "Open Source";
 "about-webview-title-why-call"        = "Why Calling Works";
 "about-webview-title-who-we-are"      = "Who Made Action for Animals";
-"about-acknowledgements-title"        = "Open Source";
-"about-callingGroup-header"           = "Calling Group";
-"about-callingGroup-placeholder"      = "Enter your calling group name";
-"about-callingGroup-footer"           = "Set a calling group name to track calls with others";
 
 // welcome
 "welcome-section-1-title"                = "Make your voice heard—for the animals.";
