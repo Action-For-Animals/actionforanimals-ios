@@ -9,29 +9,86 @@
 import SwiftUI
 
 struct Welcome: View {
+    @AppStorage(UserDefaultsKey.hasShownWelcomeScreen.rawValue) var hasShownWelcomeScreen = false
+    
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var store: Store
-
-    @State private var currentStep = 1
-    @State private var selectedCategories: Set<WelcomeStep1.CategoryFilter> = [.all]
-
+    
+    @State private var showLocationSheet = false
+    
     var onContinue: (() -> Void)?
 
     var body: some View {
-        Group {
-            if currentStep == 1 {
-                WelcomeStep1(onContinue: { categories in
-                    selectedCategories = categories
-                    // Save category preferences as comma-separated string
-                    let categoryString = categories.map { $0.rawValue }.sorted().joined(separator: ",")
-                    store.dispatch(action: .SetCategoryFilter(categoryString))
-                    currentStep = 2
-                })
-            } else {
-                WelcomeStep2(selectedCategories: selectedCategories, onComplete: {
-                    onContinue?()
-                    dismiss()
-                })
+        VStack(spacing: 0) {
+            Spacer()
+            
+            // Logo section
+            VStack(spacing: 24) {
+                Image(decorative: R.image.afaLogotype)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 250)
+                
+                Text("Turn your care for animals into meaningful action.")
+                    .font(.title2)
+                    .fontWeight(.medium)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
+            }
+            
+            Spacer()
+            Spacer()
+            
+            // Location setup section
+            VStack(spacing: 20) {
+                VStack(spacing: 8) {
+                    Text("Set Your Location to Get Started")
+                        .font(.headline)
+                        .fontWeight(.semibold)
+                    
+                    Text("We need your location to find your representatives and show relevant campaigns.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                }
+                
+                Button(action: {
+                    showLocationSheet = true
+                }) {
+                    HStack {
+                        Image(systemName: "location.circle.fill")
+                            .font(.title3)
+                        Text("Set Location")
+                            .fontWeight(.semibold)
+                    }
+                    .foregroundColor(.white)
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 16)
+                    .background(.blue)
+                    .cornerRadius(12)
+                }
+                .padding(.horizontal, 32)
+            }
+            
+            Spacer()
+        }
+        .onAppear() {
+            hasShownWelcomeScreen = true
+            if store.state.globalCallCount == 0 {
+                store.dispatch(action: .FetchStats(nil))
+            }
+        }
+        .sheet(isPresented: $showLocationSheet) {
+            LocationSheet()
+                .presentationDetents([.medium])
+                .presentationDragIndicator(.visible)
+        }
+        .onChange(of: store.state.location) { location in
+            if location != nil {
+                onContinue?()
+                dismiss()
             }
         }
     }

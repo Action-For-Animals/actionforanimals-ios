@@ -312,14 +312,6 @@ extension AnimalPolicy: Equatable, Hashable {
 // MARK: - Contact Extension for Target Conversion
 extension Contact {
     static func fromTarget(_ target: Target) -> Contact {
-        return Contact(
-            id: target.id,
-            area: target.department ?? "Corporate",
-            name: target.name,
-            party: "", // Empty string instead of nil
-            phone: target.phone ?? "",
-            photoURL: nil,
-            fieldOffices: []
-        )
+        return Contact(from: target)
     }
 }

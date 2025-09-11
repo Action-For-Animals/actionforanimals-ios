@@ -42,18 +42,11 @@ struct WelcomeStep2: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 250)
                 
-                VStack(spacing: 16) {
-                    Text("Take Action for Animals")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                    
-                    Text("Great! You're interested in \(categoryDisplayText) campaigns.")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                }
+                Text("Great! You're interested in \(categoryDisplayText) campaigns.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
             }
             
             Spacer()

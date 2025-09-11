@@ -170,16 +170,16 @@ struct AnimalPolicyContactDetail: View {
                     }) {
                         HStack(spacing: 8) {
                             Image(systemName: "envelope.fill")
-                                .font(.title2)
+                                .font(.headline)
                             Text("Compose Email")
-                                .font(.title2)
+                                .font(.headline)
                                 .fontWeight(.semibold)
                         }
                         .foregroundColor(.white)
                         .padding(.horizontal, 20)
                         .padding(.vertical, 12)
                         .background(Color.afaDarkBlue)
-                        .cornerRadius(8)
+                        .cornerRadius(10)
                     }
                     .onLongPressGesture(minimumDuration: 1.0) {
                         let emailList = getAllTargetEmails()

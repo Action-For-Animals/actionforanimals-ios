@@ -191,29 +191,20 @@ struct Dashboard_Previews: PreviewProvider {
 }
 
 struct MenuView: View {
-    @State var showRemindersSheet = false
-    @State var showAboutSheet = false
+    @State var showSettingsSheet = false
     var showingWelcomeScreen: Bool
 
     var body: some View {
-        Menu {
-            Button { showRemindersSheet.toggle() } label: {
-                Text(R.string.localizable.menuScheduledReminders())
-            }
-            Button { showAboutSheet.toggle() } label: {
-                Text(R.string.localizable.menuAbout())
-            }
-        } label: {
+        Button(action: {
+            showSettingsSheet = true
+        }) {
             Image(systemName: "gear")
                 .renderingMode(.template)
                 .font(.title)
                 .accessibilityLabel(Text(R.string.localizable.menuName))
         }
-        .sheet(isPresented: $showRemindersSheet) {
-            ScheduleReminders()
-        }
-        .sheet(isPresented: $showAboutSheet) {
-            AboutSheet()
+        .sheet(isPresented: $showSettingsSheet) {
+            SettingsSheet()
         }
     }
 }

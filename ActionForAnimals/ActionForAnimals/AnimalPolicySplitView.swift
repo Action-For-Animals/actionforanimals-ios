@@ -41,7 +41,7 @@ struct AnimalPolicySplitView: View {
                 }
             }
             .navigationSplitViewStyle(.balanced)
-            .tabItem({ Label(R.string.localizable.tabPolicies(), systemImage: "phone.bubble.fill" ) })
+            .tabItem({ Label("Campaigns", systemImage: "phone.bubble.fill" ) })
             .tag("issues")
             // Set the inner size class for the navigation stack back to whatever it was originally since we override it for old tab bar behavior below
             .environment(\.horizontalSizeClass, originalSizeClass)

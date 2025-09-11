@@ -27,6 +27,7 @@
 		558C17D1893D9289DF88BC95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54BC1EE211AE6068BB864845 /* CoreMedia.framework */; };
 		60C6E15E18B252A35EF14CFA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */; };
 		7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7221C2012E6F85D90031FD52 /* ContactType.swift */; };
+		724B93202E7341BC001E6368 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724B931F2E7341BC001E6368 /* SettingsSheet.swift */; };
 		728A872D2E6CF7B1007CF684 /* CompletionCheckmarkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */; };
 		728A87822E6DFC0B007CF684 /* AnimalPolicySplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F78E0252AF2B26D00FF23E9 /* AnimalPolicySplitView.swift */; };
 		728A87872E6DFC55007CF684 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01235BC2B8C5A7D00FEE7A0 /* InboxView.swift */; };
@@ -185,6 +186,7 @@
 		5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		714B1EC1C91D8E5AED00D1D6 /* Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		7221C2012E6F85D90031FD52 /* ContactType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactType.swift; sourceTree = "<group>"; };
+		724B931F2E7341BC001E6368 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		72549E0D2E65088B007E8D87 /* ActionforAnimalsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ActionforAnimalsRelease.entitlements; sourceTree = "<group>"; };
 		728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionCheckmarkOverlay.swift; sourceTree = "<group>"; };
 		7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStep1.swift; sourceTree = "<group>"; };
@@ -514,6 +516,7 @@
 		D0002E132A9DB2E90098973F /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				724B931F2E7341BC001E6368 /* SettingsSheet.swift */,
 				7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */,
 				7297F9F72E70E0FB00C819F7 /* WelcomeStep2.swift */,
 				4F4D2EB52AB8C59500882759 /* AboutSheet.swift */,
@@ -895,6 +898,7 @@
 				A0D474B4202A22B90012BC94 /* FetchUserStatsOperation.swift in Sources */,
 				D07D7C242B3F48A1004721B3 /* ProtocolMock.swift in Sources */,
 				D0312DD82A84A27F00F58F6B /* UserLocation.swift in Sources */,
+				724B93202E7341BC001E6368 /* SettingsSheet.swift in Sources */,
 				B5E7626B1E40D6DD00D63D62 /* Contact.swift in Sources */,
 				B5E762651E40480300D63D62 /* UserDefaultsKey.swift in Sources */,
 				D07ECA072E08675E00948BEC /* LogSearchOperation.swift in Sources */,

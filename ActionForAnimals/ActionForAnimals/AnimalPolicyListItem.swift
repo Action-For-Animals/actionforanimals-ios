@@ -47,7 +47,7 @@ struct AnimalPolicyListItem: View {
                     
                     // Campaign type label + stats
                     HStack(spacing: 4) {
-                        CampaignTypeLabel(contactType: issue.contactType)
+                        CampaignTypeLabel(issue: issue)
                         
                         Text(callsSubtitle(for: issue))
                             .font(.footnote)
@@ -110,7 +110,7 @@ struct AnimalPolicyListItem: View {
 
 // MARK: - Campaign Type Label Component
 private struct CampaignTypeLabel: View {
-    let contactType: ContactType
+    let issue: AnimalPolicy
     
     var body: some View {
         Text(labelText)
@@ -124,29 +124,36 @@ private struct CampaignTypeLabel: View {
     }
     
     private var labelText: String {
-        switch contactType {
-        case .representatives:
-            return "Political"
-        case .corporate:
-            return "Corporate"
+        // Determine action type based on enabled actions
+        if issue.actions?.call?.enabled == true {
+            return "Call"
+        } else if issue.actions?.email?.enabled == true {
+            return "Email"
+        } else {
+            // If no actions defined, return generic label
+            return "Action"
         }
     }
     
     private var backgroundColor: Color {
-        switch contactType {
-        case .representatives:
-            return Color.green.opacity(0.15)
-        case .corporate:
+        if issue.actions?.call?.enabled == true {
             return Color.orange.opacity(0.15)
+        } else if issue.actions?.email?.enabled == true {
+            return Color.teal.opacity(0.15)
+        } else {
+            // Fallback for generic "Action"
+            return Color.gray.opacity(0.15)
         }
     }
     
     private var textColor: Color {
-        switch contactType {
-        case .representatives:
-            return Color.green.opacity(0.8)
-        case .corporate:
+        if issue.actions?.call?.enabled == true {
             return Color.orange.opacity(0.8)
+        } else if issue.actions?.email?.enabled == true {
+            return Color.teal.opacity(0.8)
+        } else {
+            // Fallback for generic "Action"
+            return Color.gray.opacity(0.8)
         }
     }
 }

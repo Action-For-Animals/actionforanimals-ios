@@ -73,21 +73,13 @@ struct WelcomeStep1: View {
                     .aspectRatio(contentMode: .fit)
                     .frame(width: 250)
                 
-                VStack(spacing: 16) {
-                    Text("Take Action for Animals")
-                        .font(.title)
-                        .fontWeight(.bold)
-                        .multilineTextAlignment(.center)
-                    
-                    Text("Turn your care for animals into meaningful action.")
-                        .font(.body)
-                        .foregroundColor(.secondary)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                }
+                Text("Turn your care for animals into meaningful action.")
+                    .font(.body)
+                    .foregroundColor(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
             }
             
-            Spacer()
             Spacer()
             Spacer()
             
@@ -100,9 +92,9 @@ struct WelcomeStep1: View {
                 
                 // Category options in a grid
                 LazyVGrid(columns: [
-                    GridItem(.flexible(), spacing: 12),
-                    GridItem(.flexible(), spacing: 12)
-                ], spacing: 8) {
+                    GridItem(.flexible(), spacing: 16),
+                    GridItem(.flexible(), spacing: 16)
+                ], spacing: 16) {
                     ForEach(CategoryFilter.allCases, id: \.rawValue) { category in
                         CategorySelectionCard(
                             category: category,
@@ -151,17 +143,17 @@ struct CategorySelectionCard: View {
     
     var body: some View {
         Button(action: onTap) {
-            VStack(spacing: 4) {
+            VStack(spacing: 12) {
                 // Icon container - bigger icons, minimal background
                 Group {
                     if category.iconName.hasPrefix("category-") {
                         Image(category.iconName)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(width: 40, height: 40)
+                            .frame(width: 80, height: 80)
                     } else {
                         Image(systemName: category.iconName)
-                            .font(.system(size: 32, weight: .medium))
+                            .font(.system(size: 64, weight: .medium))
                     }
                 }
                 .foregroundColor(isSelected ? .white : (category == .all ? .red : .afaDarkBlue))
@@ -171,15 +163,15 @@ struct CategorySelectionCard: View {
                     .font(.caption2)
                     .fontWeight(.medium)
                 
-                // Selection indicator - tiny
+                // Selection indicator
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 10, weight: .medium))
+                    .font(.system(size: 14, weight: .medium))
                     .foregroundColor(isSelected ? .white : Color.secondary.opacity(0.6))
             }
             .foregroundColor(isSelected ? .white : .primary)
-            .frame(maxWidth: .infinity)
-            .padding(.vertical, 8)
-            .padding(.horizontal, 4)
+            .frame(maxWidth: .infinity, minHeight: 120)
+            .padding(.vertical, 16)
+            .padding(.horizontal, 12)
             .background(
                 RoundedRectangle(cornerRadius: 12)
                     .fill(isSelected ? Color.afaDarkBlue : Color.afaLightBG)
