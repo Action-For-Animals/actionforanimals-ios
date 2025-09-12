@@ -34,9 +34,16 @@ struct AnimalPolicyDone: View {
     func latestOutcomeForContact(contact: Contact, issueCompletions: [ContactLog]) -> String {
         // For corporate campaigns, handle completion tracking differently
         if issue.contactType == .corporate {
-            // For batch campaigns, any completion means the batch was sent
+            // For batch campaigns, check the actual outcome status
             if issue.isBatchEmailCampaign {
-                return issueCompletions.isEmpty ? R.string.localizable.outcomesSkip() : "Sent Email"
+                if let contactLog = issueCompletions.last {
+                    if contactLog.outcome == "contact" {
+                        return "Sent Email"
+                    } else {
+                        return ContactLog.localizedOutcomeForStatus(status: contactLog.outcome)
+                    }
+                }
+                return R.string.localizable.outcomesSkip()
             } else {
                 // For individual corporate campaigns, look for this specific contact ID (get the most recent one)
                 if let contactLog = issueCompletions.last(where: { $0.contactId == contact.id }) {

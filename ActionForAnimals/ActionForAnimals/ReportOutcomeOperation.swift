@@ -17,6 +17,7 @@ class ReportOutcomeOperation: BaseOperation, @unchecked Sendable {
     //Output properties
     var httpResponse: HTTPURLResponse?
     var error: Error?
+    var updatedIssueCount: Int?
     
     init(log: ContactLog, outcome: Outcome) {
         self.log = log
@@ -71,8 +72,20 @@ class ReportOutcomeOperation: BaseOperation, @unchecked Sendable {
             } else {
                 let http = response as! HTTPURLResponse
                 self.httpResponse = http
-                if let _ = data, http.statusCode == 200 {
+                if let data = data, http.statusCode == 200 {
                     print("sent report successfully")
+                    
+                    // Parse JSON response to get updated issue count
+                    do {
+                        if let json = try JSONSerialization.jsonObject(with: data, options: []) as? [String: Any],
+                           let issueCount = json["issueCount"] as? Int {
+                            self.updatedIssueCount = issueCount
+                            print("Updated issue count: \(issueCount)")
+                        }
+                    } catch {
+                        print("Failed to parse reportCall response JSON: \(error)")
+                    }
+                    
                     var logs = ContactLogs.load()
                     logs.markReported(self.log)
                     logs.save()

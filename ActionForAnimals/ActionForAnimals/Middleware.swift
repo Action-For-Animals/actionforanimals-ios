@@ -25,7 +25,11 @@ func appMiddleware() -> Middleware<AppState> {
                 dispatch(.SetIssueContactCompletion(issueId, contactLog))
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
-            reportOutcome(log: contactLog, outcome: outcome)
+            
+            // Only report outcome to server if it's not a skip - skips should not update counts
+            if outcome.status != "skip" {
+                reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch)
+            }
         case let .LogSearch(searchQuery):
             logSearch(searchQuery: searchQuery)
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
@@ -145,9 +149,23 @@ private func fetchContacts(location: UserLocation, dispatch: @escaping Dispatche
     queue.addOperation(operation)
 }
 
-private func reportOutcome(log: ContactLog, outcome: Outcome) {
-    // we don't actually care about the result of this so no need to set the callback
-    OperationQueue.main.addOperation(ReportOutcomeOperation(log: log, outcome: outcome))
+private func reportOutcome(log: ContactLog, outcome: Outcome, dispatch: @escaping Dispatcher) {
+    let operation = ReportOutcomeOperation(log: log, outcome: outcome)
+    operation.completionBlock = { [weak operation] in
+        // If we got an updated issue count, dispatch action to update the state
+        if let issueCount = operation?.updatedIssueCount,
+           let issueId = Int(log.issueId) {
+            DispatchQueue.main.async {
+                // Use existing SetIssueCallCount action to update the count
+                dispatch(.SetIssueCallCount(issueId, issueCount))
+            }
+        }
+        
+        if let error = operation?.error {
+            print("Could not report outcome: \(error.localizedDescription)")
+        }
+    }
+    OperationQueue.main.addOperation(operation)
 }
 
 private func logSearch(searchQuery: String) {

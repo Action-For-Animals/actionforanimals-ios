@@ -22,7 +22,6 @@
 		4F4868BD2AC3A3E900E1733A /* EmailComposerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4868BC2AC3A3E900E1733A /* EmailComposerView.swift */; };
 		4F4D2EB62AB8C59500882759 /* AboutSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F4D2EB52AB8C59500882759 /* AboutSheet.swift */; };
 		4F504DF82AE46A1900F49EF3 /* Welcome.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F504DF72AE46A1900F49EF3 /* Welcome.swift */; };
-		4F7D3D992AE81C9C00CB6572 /* PopoverTip.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F7D3D982AE81C9C00CB6572 /* PopoverTip.swift */; };
 		4FF4ABB42AB23FC8001A064A /* MultipleDayPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4FF4ABB32AB23FC8001A064A /* MultipleDayPicker.swift */; };
 		558C17D1893D9289DF88BC95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54BC1EE211AE6068BB864845 /* CoreMedia.framework */; };
 		60C6E15E18B252A35EF14CFA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */; };
@@ -42,8 +41,6 @@
 		A0D474B4202A22B90012BC94 /* FetchUserStatsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0D474B3202A22B90012BC94 /* FetchUserStatsOperation.swift */; };
 		A5048C6F1F96BCD100C6163D /* AnimalPolicyViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5048C6E1F96BCD000C6163D /* AnimalPolicyViewModel.swift */; };
 		A55647621F909C6F002737D4 /* Category.swift in Sources */ = {isa = PBXBuildFile; fileRef = A55647611F909C6F002737D4 /* Category.swift */; };
-		AACC2AEB1E732775004B2F2B /* StreakCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC2AEA1E732775004B2F2B /* StreakCounter.swift */; };
-		AACC2AED1E735144004B2F2B /* StreakCounterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AACC2AEC1E735144004B2F2B /* StreakCounterTests.swift */; };
 		ADAA03E524B48B38006695DD /* Colors.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = ADAA03E424B48B38006695DD /* Colors.xcassets */; };
 		ADB0976A1F8B212800B81661 /* RatingPromptCounter.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB097691F8B212800B81661 /* RatingPromptCounter.swift */; };
 		B13763C171A7D473EE15FAA1 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC9AA735873694488D24C260 /* QuartzCore.framework */; };
@@ -180,7 +177,6 @@
 		4F4D2EB52AB8C59500882759 /* AboutSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutSheet.swift; sourceTree = "<group>"; };
 		4F504DF72AE46A1900F49EF3 /* Welcome.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Welcome.swift; sourceTree = "<group>"; };
 		4F78E0252AF2B26D00FF23E9 /* AnimalPolicySplitView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalPolicySplitView.swift; sourceTree = "<group>"; };
-		4F7D3D982AE81C9C00CB6572 /* PopoverTip.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopoverTip.swift; sourceTree = "<group>"; };
 		4FF4ABB32AB23FC8001A064A /* MultipleDayPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultipleDayPicker.swift; sourceTree = "<group>"; };
 		54BC1EE211AE6068BB864845 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
@@ -201,8 +197,6 @@
 		A0D474B3202A22B90012BC94 /* FetchUserStatsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchUserStatsOperation.swift; sourceTree = "<group>"; };
 		A5048C6E1F96BCD000C6163D /* AnimalPolicyViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalPolicyViewModel.swift; sourceTree = "<group>"; };
 		A55647611F909C6F002737D4 /* Category.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Category.swift; sourceTree = "<group>"; };
-		AACC2AEA1E732775004B2F2B /* StreakCounter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreakCounter.swift; sourceTree = "<group>"; };
-		AACC2AEC1E735144004B2F2B /* StreakCounterTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StreakCounterTests.swift; sourceTree = "<group>"; };
 		AC9AA735873694488D24C260 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		ADAA03E424B48B38006695DD /* Colors.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Colors.xcassets; sourceTree = "<group>"; };
 		ADB097691F8B212800B81661 /* RatingPromptCounter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RatingPromptCounter.swift; sourceTree = "<group>"; };
@@ -371,7 +365,6 @@
 				D0176E912B33457D0090E6B7 /* ReportParsingTest.swift */,
 				D02FFCE1245F5733003ADA2B /* ScriptCustomizationTests.swift */,
 				4F2178742B488CD70032D592 /* StoreTests.swift */,
-				AACC2AEC1E735144004B2F2B /* StreakCounterTests.swift */,
 				4F3A572A2B597C8E009D4616 /* UserLocationTests.swift */,
 			);
 			path = ActionForAnimalsTests;
@@ -464,7 +457,6 @@
 				D0312DD72A84A27F00F58F6B /* UserLocation.swift */,
 				B50280531E46A91F00749ED7 /* AreaOffice.swift */,
 				B50280551E47875500749ED7 /* ContactLog.swift */,
-				AACC2AEA1E732775004B2F2B /* StreakCounter.swift */,
 				A55647611F909C6F002737D4 /* Category.swift */,
 				A02018D8204E761A006078D1 /* UserStats.swift */,
 				B512506D21E701DE007D32DF /* ContactList.swift */,
@@ -551,7 +543,6 @@
 				D0BFE9CA2A7DD25C007203A3 /* LocationHeader.swift */,
 				4FF4ABB32AB23FC8001A064A /* MultipleDayPicker.swift */,
 				D04A11902AD851AB00989AD6 /* OutcomesView.swift */,
-				4F7D3D982AE81C9C00CB6572 /* PopoverTip.swift */,
 				D0002E182A9DB5FB0098973F /* PrimaryButton.swift */,
 				4F4868B82AC222B300E1733A /* WebView.swift */,
 				D037F36A2BA5F9E600FEB0FB /* MainHeader.swift */,
@@ -847,7 +838,6 @@
 				4F3A572E2B598203009D4616 /* LocationSheetTests.swift in Sources */,
 				B50280681E478BF500749ED7 /* ContactLogsTests.swift in Sources */,
 				D05EDAF62B3282F500FD94BD /* AnimalPolicyParsingTest.swift in Sources */,
-				AACC2AED1E735144004B2F2B /* StreakCounterTests.swift in Sources */,
 				D0176E8B2B3343150090E6B7 /* ContactParsingTest.swift in Sources */,
 				4F3A572B2B597C8E009D4616 /* UserLocationTests.swift in Sources */,
 				D0BC8D2E2CFC23EA00560EDA /* AppStateTests.swift in Sources */,
@@ -913,7 +903,6 @@
 				B52805151E3FA94D00EE832A /* AppDelegate.swift in Sources */,
 				4F11A59E2AAB956C00AF30B9 /* ScheduleReminders.swift in Sources */,
 				D04A11912AD851AB00989AD6 /* OutcomesView.swift in Sources */,
-				AACC2AEB1E732775004B2F2B /* StreakCounter.swift in Sources */,
 				D082961C2A7BFE04005B002A /* Numbered.swift in Sources */,
 				B50280541E46A91F00749ED7 /* AreaOffice.swift in Sources */,
 				ADB0976A1F8B212800B81661 /* RatingPromptCounter.swift in Sources */,
@@ -930,7 +919,6 @@
 				4F504DF82AE46A1900F49EF3 /* Welcome.swift in Sources */,
 				D03A20582AC53C6C008BBA6E /* Store.swift in Sources */,
 				D0D670A12B29854500BEDFBF /* ScriptReplacements.swift in Sources */,
-				4F7D3D992AE81C9C00CB6572 /* PopoverTip.swift in Sources */,
 				4F07B23B2B45F05C00C575DF /* AcknowListView.swift in Sources */,
 				B5EADD2622013B8E00E3EA78 /* CategorizedAnimalPolicyViewModel.swift in Sources */,
 				D0453EBF2A6F8E7000E19A81 /* AppState.swift in Sources */,
@@ -1167,7 +1155,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ActionForAnimals/ActionForAnimals.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 80;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
@@ -1202,7 +1190,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = ActionforAnimalsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 80;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -1281,7 +1269,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 80;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1310,7 +1298,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 79;
+				CURRENT_PROJECT_VERSION = 80;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;

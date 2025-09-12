@@ -9,6 +9,7 @@ struct AnimalPolicyListItem: View {
     let issue: AnimalPolicy
     let contacts: [Contact]
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+    @EnvironmentObject var store: Store
 
     private func usingRegularFonts() -> Bool {
         dynamicTypeSize < .accessibility3
@@ -91,9 +92,22 @@ struct AnimalPolicyListItem: View {
     }
 
     private func callsSubtitle(for issue: AnimalPolicy) -> String {
-        // Use total actions for all campaign types
-        let totalActions = issue.totalActionCount
-        let pretty = totalActions.formatted(.number.notation(.compactName)) // 1.2K, 12K, etc.
+        // Use updated count from issueCallCounts if available, otherwise use original count
+        let totalActions = store.state.issueCallCounts[issue.id] ?? issue.totalActionCount
+        
+        // Format number with compact notation (1.2K, 12K, etc.)
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 1
+        
+        let pretty: String
+        if totalActions >= 1000 {
+            let thousands = Double(totalActions) / 1000.0
+            pretty = "\(formatter.string(from: NSNumber(value: thousands)) ?? "0")K"
+        } else {
+            pretty = "\(totalActions)"
+        }
+        
         return "• \(pretty) actions taken"
     }
     

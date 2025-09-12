@@ -52,11 +52,11 @@
 
 // scheduled reminders
 "scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
-"scheduled-reminder-alert-title"      = "Time to Make Some Calls";
+"scheduled-reminder-alert-title"      = "Time to Take Action!";
 "scheduled-reminder-alert-body"       = "Tap here to open Action for Animals and get started";
 "scheduled-reminders-title"           = "Enable reminder";
-"scheduled-reminders-description"     = "Turn these on to get a quick local reminder to make your calls.";
-"scheduled-reminders-time-label"      = "Select what time of day you'd like to be reminded to make calls:";
+"scheduled-reminders-description"     = "Turn these on to get a quick local reminder to take action.";
+"scheduled-reminders-time-label"      = "Select what time of day you'd like to be reminded to take action:";
 "scheduled-reminders-day-label"       = "Which days of the week?";
 "scheduled-reminders-no-days-warning" = "No days selected yet";
 "scheduled-reminders-no-days-alert"   = "Please select days of the week";
@@ -188,9 +188,9 @@
 "irrelevant-contact-message"          = "This representative is not currently relevant to this policy.";
 
 // done
-"done-title"                          = "You called on **%@**";
-"total-calls"                         = "Total calls";
-"total-policy-calls"                  = "Calls on this topic";
+"done-title"                          = "You took action on **%@**";
+"total-calls"                         = "Total actions";
+"total-policy-calls"                  = "Actions on this topic";
 "support-5calls"                      = "Support Action for Animals";
 "support-5calls-sub"                  = "Keep Action for Animals free and up-to-date";
 "donate-today"                        = "Donate today";
