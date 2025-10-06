@@ -118,6 +118,8 @@ struct AnimalPolicyDetail: View {
         .onAppear {
             forceRefreshID = UUID()
             AnalyticsManager.shared.trackPageview(path: "/issue/\(issue.slug)/")
+            // Clear the change indicator when user views the campaign
+            store.dispatch(action: .ClearChangedCampaign(issue.id))
         }
     }
     
@@ -172,12 +174,7 @@ struct AnimalPolicyDetail: View {
         case .representatives:
             return R.string.localizable.repsListHeader()
         case .corporate:
-            // NEW: Different header for batch vs individual campaigns
-            if isBatchEmailCampaign {
-                return "Target Company"
-            } else {
-                return "Target Companies"
-            }
+            return R.string.localizable.targetsListHeader()
         }
     }
     
@@ -196,21 +193,6 @@ struct AnimalPolicyDetail: View {
                 }
             }
             
-            // NEW: Show available action types for corporate campaigns
-            if issue.contactType == .corporate && !isBatchEmailCampaign {
-                actionTypeButtons
-            }
-        }
-    }
-    
-    // NEW: Show call options for individual corporate campaigns
-    private var actionTypeButtons: some View {
-        HStack(spacing: 12) {
-            if issue.actions?.call?.enabled == true {
-                NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: targetedContacts, actionType: .call)) {
-                    SecondaryButton(title: "Make Calls", systemImageName: "phone")
-                }
-            }
         }
     }
     

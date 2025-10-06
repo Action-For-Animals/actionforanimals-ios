@@ -13,7 +13,7 @@ func appMiddleware() -> Middleware<AppState> {
         case let .FetchStats(issueID):
             fetchStats(issueID: issueID, dispatch: dispatch)
         case .FetchIssues:
-            fetchIssues(dispatch: dispatch)
+            fetchIssues(state: state, dispatch: dispatch)
         case let .FetchContacts(location):
             fetchContacts(location: location, dispatch: dispatch)
         case let .SetLocation(location):
@@ -34,7 +34,8 @@ func appMiddleware() -> Middleware<AppState> {
             logSearch(searchQuery: searchQuery)
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
-                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps, .SetCategoryFilter:
+                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps, .SetCategoryFilter,
+                .SetChangedCampaigns, .ClearChangedCampaign:
             // no middleware actions for these, including for completeness
             break
         }
@@ -76,13 +77,24 @@ private func fetchStats(issueID: Int?, dispatch: @escaping Dispatcher) {
     queue.addOperation(operation)
 }
 
-private func fetchIssues(dispatch: @escaping Dispatcher) {
+private func fetchIssues(state: AppState, dispatch: @escaping Dispatcher) {
     let queue = OperationQueue.main
     let operation = FetchAnimalPolicyOperation()
     operation.completionBlock = { [weak operation] in
-        if let issues = operation?.issuesList {
+        if let newCampaigns = operation?.issuesList {
+            // Get current campaigns from state
+            let currentCampaigns = state.issues
+            
+            // Find changed campaigns
+            let changedIds = findChangedCampaigns(old: currentCampaigns, new: newCampaigns)
+            
+            // Add new changes to existing ones (don't replace)
+            var allChangedIds = state.changedCampaignIds
+            allChangedIds.formUnion(Set(changedIds))
+            
             DispatchQueue.main.async {
-                dispatch(.SetIssues(issues))
+                dispatch(.SetIssues(newCampaigns))
+                dispatch(.SetChangedCampaigns(Array(allChangedIds)))
             }
         } else if let error = operation?.error {
             print("Could not load issues: \(error.localizedDescription)..")
@@ -171,6 +183,33 @@ private func reportOutcome(log: ContactLog, outcome: Outcome, dispatch: @escapin
 private func logSearch(searchQuery: String) {
     // we don't actually care about the result of this so no need to set the callback
     OperationQueue.main.addOperation(LogSearchOperation(searchQuery: searchQuery))
+}
+
+private func findChangedCampaigns(old: [AnimalPolicy], new: [AnimalPolicy]) -> [Int] {
+    var changedIds: [Int] = []
+
+    // If this is the first app launch (no previous campaigns), don't mark anything as changed
+    guard !old.isEmpty else {
+        return changedIds
+    }
+
+    for newCampaign in new {
+        if let oldCampaign = old.first(where: { $0.id == newCampaign.id }) {
+            // Existing campaign - check for content changes
+            if hasContentChanged(old: oldCampaign, new: newCampaign) {
+                changedIds.append(newCampaign.id)
+            }
+        } else {
+            // New campaign - always mark as changed
+            changedIds.append(newCampaign.id)
+        }
+    }
+
+    return changedIds
+}
+
+private func hasContentChanged(old: AnimalPolicy, new: AnimalPolicy) -> Bool {
+    return old.reason != new.reason
 }
 
 enum MiddlewareError: Error {

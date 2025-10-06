@@ -32,4 +32,6 @@ enum Action {
     case GoToNext(AnimalPolicy, [Contact], IssueDetailNavModel.ActionType)
     case SetMissingReps([String])
     case LogSearch(String)
+    case SetChangedCampaigns([Int])
+    case ClearChangedCampaign(Int)
 }

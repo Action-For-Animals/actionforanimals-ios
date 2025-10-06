@@ -128,7 +128,7 @@
 
 // notifications
 "notification-title" = "Nice work!";
-"notification-ask" = "Get alerts before your reps vote on important policies? Usually 1-2 messages per month.";
+"notification-ask" = "Get alerts on important updates to campaigns? Usually 1-2 messages per month.";
 "notification-important" = "Yes, notify me";
 "notification-none" = "No, thanks";
 "notifications-denied-alert-title"    = "Notifications permissions denied.";
@@ -183,6 +183,7 @@
 "set-location-header"                 = "We need a location to find your reps";
 "set-location-button"                 = "Set your location";
 "reps-list-header"                    = "Relevant representatives for this policy";
+"targets-list-header"                 = "Relevant target(s) for this campaign";
 "vacant-seat-title"                   = "Vacant Seat";
 "vacant-seat-message"                 = "This %@ seat is currently vacant.";
 "irrelevant-contact-message"          = "This representative is not currently relevant to this policy.";

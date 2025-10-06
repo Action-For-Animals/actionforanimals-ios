@@ -67,6 +67,13 @@ class AppState: ObservableObject, ReduxState {
     
     @Published var issueRouter: AnimalPolicyRouter = AnimalPolicyRouter()
     
+    @Published var changedCampaignIds: Set<Int> = [] {
+        didSet {
+            // Persist to UserDefaults
+            UserDefaults.standard.set(Array(changedCampaignIds), forKey: "changedCampaignIds")
+        }
+    }
+    
     init() {
         // load user location cache
         if let locationType = UserDefaults.standard.string(forKey: UserDefaultsKey.locationType.rawValue),
@@ -104,6 +111,11 @@ class AppState: ObservableObject, ReduxState {
         self.selectedCategoryFilter = UserDefaults.standard.string(forKey: UserDefaultsKey.selectedCategoryFilter.rawValue)
         if let filter = selectedCategoryFilter {
             Logger().info("loading cached category filter: \(filter)")
+        }
+        
+        // load persisted changed campaign IDs
+        if let savedIds = UserDefaults.standard.array(forKey: "changedCampaignIds") as? [Int] {
+            self.changedCampaignIds = Set(savedIds)
         }
     }
 }

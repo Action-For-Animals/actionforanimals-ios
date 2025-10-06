@@ -14,6 +14,10 @@ struct AnimalPolicyListItem: View {
     private func usingRegularFonts() -> Bool {
         dynamicTypeSize < .accessibility3
     }
+    
+    var showChangeIndicator: Bool {
+        store.state.changedCampaignIds.contains(issue.id)
+    }
 
     var body: some View {
                 
@@ -21,7 +25,12 @@ struct AnimalPolicyListItem: View {
         let status = issue.status.lowercased()
         let isActive = (status == "active")
 
-        HStack(alignment: .center, spacing: 12) {
+        HStack(alignment: .center, spacing: 8) {
+            // Green indicator (like Messages app) - always reserve space
+            Circle()
+                .fill(showChangeIndicator ? Color.afaGreen : Color.clear)
+                .frame(width: 12, height: 12)
+            
             // Category Badge with status styling
             CategoryBadge(issue: issue,
                           dynamicTypeSize: dynamicTypeSize,

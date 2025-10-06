@@ -16,11 +16,18 @@ struct AnimalPolicySplitView: View {
         TabView(selection: $store.state.selectedTab) {
             NavigationSplitView(columnVisibility: .constant(.all)) {
                 Dashboard(selectedIssue: $store.state.issueRouter.selectedIssue)
+                    .navigationSplitViewColumnWidth(ideal: 375)
             } detail: {
                 NavigationStack(path: $store.state.issueRouter.path) {
                     if let selectedIssue = store.state.issueRouter.selectedIssue {
-                        AnimalPolicyDetail(issue: selectedIssue)
+                        // Use fresh data from store to fix iPad stale content issue
+                        let issueToShow = store.state.issues.first(where: { $0.id == selectedIssue.id }) ?? selectedIssue
+                        AnimalPolicyDetail(issue: issueToShow)
                             .toolbar(.hidden, for: .tabBar)
+                            .onChange(of: selectedIssue.id) { newIssueId in
+                                // Clear the green dot when campaign is selected on iPad
+                                store.dispatch(action: .ClearChangedCampaign(newIssueId))
+                            }
                             .navigationDestination(for: IssueDetailNavModel.self) { idnm in
                                 AnimalPolicyContactDetail(issue: idnm.issue, remainingContacts: idnm.contacts, actionType: idnm.actionType)
                             }

@@ -91,6 +91,7 @@ struct ScheduleReminders: View {
                            label: {
                         Text("")
                     }).toggleStyle(.switch)
+                        .fixedSize()
                         .accessibilityLabel(Text(R.string.localizable.scheduledRemindersTitle()))
                 }
             }

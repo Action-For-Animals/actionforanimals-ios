@@ -89,6 +89,10 @@ class Store: ObservableObject {
            } else {
                state.issueRouter.path.append(IssueDoneNavModel(issue: issue, type: "done"))
            }
+        case let .SetChangedCampaigns(changedIds):
+            state.changedCampaignIds = Set(changedIds)
+        case let .ClearChangedCampaign(campaignId):
+            state.changedCampaignIds.remove(campaignId)
         case .FetchStats, .FetchIssues,
                 .FetchContacts(_),
                 .ReportOutcome(_, _, _),
