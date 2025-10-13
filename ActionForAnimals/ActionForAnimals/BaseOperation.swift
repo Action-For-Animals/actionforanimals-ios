@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseAppCheck
 
 class BaseOperation: Operation, @unchecked Sendable {
     var session: URLSession = URLSession.shared

@@ -35,6 +35,7 @@ class AppState: ObservableObject, ReduxState {
     @Published var contacts: [Contact] = []
     @Published var district: String? = nil
     @Published var isSplitDistrict: Bool = false
+    @Published var lowAccuracyMessage: String? = nil
     @Published var missingReps: [String] = []
     @Published var location: UserLocation? {
         didSet {
@@ -44,6 +45,38 @@ class AppState: ObservableObject, ReduxState {
             defaults.set(location.locationValue, forKey: UserDefaultsKey.locationValue.rawValue)
             defaults.set(location.locationDisplay, forKey: UserDefaultsKey.locationDisplay.rawValue)
             Logger().info("saved cached location as \(location)")
+        }
+    }
+
+    // Location metadata from getOfficials API for campaign filtering
+    @Published var city: String? {  // from ContactList.location
+        didSet {
+            let defaults = UserDefaults.standard
+            if let city = city {
+                defaults.set(city, forKey: UserDefaultsKey.locationCity.rawValue)
+            } else {
+                defaults.removeObject(forKey: UserDefaultsKey.locationCity.rawValue)
+            }
+        }
+    }
+    @Published var county: String? { // from ContactList.county
+        didSet {
+            let defaults = UserDefaults.standard
+            if let county = county {
+                defaults.set(county, forKey: UserDefaultsKey.locationCounty.rawValue)
+            } else {
+                defaults.removeObject(forKey: UserDefaultsKey.locationCounty.rawValue)
+            }
+        }
+    }
+    @Published var state: String? {  // from ContactList.state
+        didSet {
+            let defaults = UserDefaults.standard
+            if let state = state {
+                defaults.set(state, forKey: UserDefaultsKey.locationState.rawValue)
+            } else {
+                defaults.removeObject(forKey: UserDefaultsKey.locationState.rawValue)
+            }
         }
     }
     @Published var selectedCategoryFilter: String? {
@@ -94,7 +127,12 @@ class AppState: ObservableObject, ReduxState {
                 Logger().warning("unknown stored location type data: \(locationType)")
             }
         }
-        
+
+        // load cached location metadata
+        self.city = UserDefaults.standard.string(forKey: UserDefaultsKey.locationCity.rawValue)
+        self.county = UserDefaults.standard.string(forKey: UserDefaultsKey.locationCounty.rawValue)
+        self.state = UserDefaults.standard.string(forKey: UserDefaultsKey.locationState.rawValue)
+
         // load the issue completion cache
         if let plistSupportableIssueCache = UserDefaults.standard.object(forKey: UserDefaultsKey.issueCompletionCache.rawValue) as? [String: Data] {
             let decoder = JSONDecoder()
@@ -130,7 +168,7 @@ extension AppState {
         guard let issueFetchTime else {
             return true
         }
-        
+
         if issueFetchTime < Date().addingTimeInterval(-1 * 60) {
             return true
         } else {

@@ -50,6 +50,9 @@ struct CategoryHelper {
         case "farmed": return .farmed
         case "wildlife": return .wildlife
         case "companion": return .companion
+        case "climate": return .climate
+        case "entertainment": return .entertainment
+        case "testing": return .testing
         default: return .none // All other categories map to .none
         }
     }

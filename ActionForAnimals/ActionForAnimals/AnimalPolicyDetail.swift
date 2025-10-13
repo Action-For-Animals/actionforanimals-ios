@@ -67,6 +67,13 @@ struct AnimalPolicyDetail: View {
         }
     }
 
+    // Check if we should show low accuracy warning instead of empty contact list
+    var shouldShowLowAccuracyWarning: Bool {
+        issue.contactType == .representatives &&
+        targetedContacts.isEmpty &&
+        store.state.lowAccuracyMessage != nil
+    }
+
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
@@ -147,15 +154,20 @@ struct AnimalPolicyDetail: View {
                 .padding(.bottom, 2)
                 .padding(.leading, 6)
                 .accessibilityAddTraits(.isHeader)
-            
+
             VStack(spacing: 0) {
-                targetedContactsList
-                
+                // Show low accuracy warning if no local reps are available due to fallback
+                if shouldShowLowAccuracyWarning {
+                    lowAccuracyWarningView
+                } else {
+                    targetedContactsList
+                }
+
                 if !irrelevantContacts.isEmpty {
                     Divider()
                     irrelevantContactsList
                 }
-                
+
                 if !vacantAreas.isEmpty {
                     Divider()
                     vacantContactsList
@@ -303,6 +315,54 @@ struct AnimalPolicyDetail: View {
                 Divider()
             }
         }
+    }
+
+    // Warning view when local reps aren't available due to low accuracy location
+    private var lowAccuracyWarningView: some View {
+        VStack(spacing: 16) {
+            // Location pin icon in light blue circle
+            ZStack {
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: 60, height: 60)
+
+                Image(systemName: "location.fill")
+                    .font(.system(size: 24))
+                    .foregroundColor(.blue)
+            }
+            .padding(.top, 16)
+
+            VStack(spacing: 8) {
+                // Main heading
+                Text("We need a more specific address")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+                    .multilineTextAlignment(.center)
+            }
+
+            // Update Location button
+            Button(action: { showLocationSheet.toggle() }) {
+                HStack {
+                    Text("Update Location")
+                        .font(.system(.title3))
+                        .fontWeight(.medium)
+                        .foregroundColor(.white)
+                    Image(systemName: "location.magnifyingglass")
+                        .imageScale(.large)
+                        .font(.title3)
+                        .foregroundColor(.white)
+                }
+                .padding(.horizontal)
+                .padding(.vertical, 10)
+                .background {
+                    RoundedRectangle(cornerRadius: 20, style: .continuous)
+                        .fill(.blue)
+                }
+            }
+            .padding(.horizontal, 40)
+            .padding(.bottom, 16)
+        }
+        .frame(maxWidth: .infinity)
     }
 }
 

@@ -15,17 +15,20 @@ func appMiddleware() -> Middleware<AppState> {
         case .FetchIssues:
             fetchIssues(state: state, dispatch: dispatch)
         case let .FetchContacts(location):
-            fetchContacts(location: location, dispatch: dispatch)
+            fetchContacts(location: location, state: state, dispatch: dispatch)
         case let .SetLocation(location):
-            fetchContacts(location: location, dispatch: dispatch)
+            fetchContacts(location: location, state: state, dispatch: dispatch)
         case let .ReportOutcome(issue, contactLog, outcome):
             // TODO: migrate ContactLog issueId to Int after UIKit is gone
             // this is always generated in swiftUI from an int so it should always succeed
             if let issueId = Int(contactLog.issueId) {
-                dispatch(.SetIssueContactCompletion(issueId, contactLog))
+                // Only track completion for non-skip outcomes
+                if outcome.status != "skip" {
+                    dispatch(.SetIssueContactCompletion(issueId, contactLog))
+                }
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
-            
+
             // Only report outcome to server if it's not a skip - skips should not update counts
             if outcome.status != "skip" {
                 reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch)
@@ -34,8 +37,8 @@ func appMiddleware() -> Middleware<AppState> {
             logSearch(searchQuery: searchQuery)
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
-                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetMissingReps, .SetCategoryFilter,
-                .SetChangedCampaigns, .ClearChangedCampaign:
+                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetLowAccuracyMessage, .SetMissingReps, .SetCategoryFilter,
+                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata:
             // no middleware actions for these, including for completeness
             break
         }
@@ -78,20 +81,31 @@ private func fetchStats(issueID: Int?, dispatch: @escaping Dispatcher) {
 }
 
 private func fetchIssues(state: AppState, dispatch: @escaping Dispatcher) {
+    // Extract cached location data from state for geographic filtering
+    let city = state.city
+    let stateParam = state.state
+    let county = state.county
+
+    print("🐾 Middleware fetchIssues - AppState values: city=\(city ?? "nil"), state=\(stateParam ?? "nil"), county=\(county ?? "nil")")
+
+    fetchIssuesWithLocation(city: city, county: county, state: stateParam, appState: state, dispatch: dispatch)
+}
+
+private func fetchIssuesWithLocation(city: String?, county: String?, state: String?, appState: AppState, dispatch: @escaping Dispatcher) {
     let queue = OperationQueue.main
-    let operation = FetchAnimalPolicyOperation()
+    
+    print("🐾 [fetchIssuesWithLocation] RECEIVED parameters: city=\(city ?? "nil"), state=\(state ?? "nil"), county=\(county ?? "nil")")
+
+    let operation = FetchAnimalPolicyOperation(city: city, state: state, county: county)
     operation.completionBlock = { [weak operation] in
         if let newCampaigns = operation?.issuesList {
-            // Get current campaigns from state
-            let currentCampaigns = state.issues
-            
             // Find changed campaigns
-            let changedIds = findChangedCampaigns(old: currentCampaigns, new: newCampaigns)
-            
-            // Add new changes to existing ones (don't replace)
-            var allChangedIds = state.changedCampaignIds
+            let changedIds = findChangedCampaigns(old: appState.issues, new: newCampaigns)
+
+            // Add new changes to existing ones (keep disappeared campaign IDs)
+            var allChangedIds = appState.changedCampaignIds
             allChangedIds.formUnion(Set(changedIds))
-            
+
             DispatchQueue.main.async {
                 dispatch(.SetIssues(newCampaigns))
                 dispatch(.SetChangedCampaigns(Array(allChangedIds)))
@@ -112,7 +126,7 @@ private func fetchIssues(state: AppState, dispatch: @escaping Dispatcher) {
     queue.addOperation(operation)
 }
 
-private func fetchContacts(location: UserLocation, dispatch: @escaping Dispatcher) {
+private func fetchContacts(location: UserLocation, state: AppState, dispatch: @escaping Dispatcher) {
     dispatch(.SetFetchingContacts(true))
 
     let queue = OperationQueue.main
@@ -126,6 +140,21 @@ private func fetchContacts(location: UserLocation, dispatch: @escaping Dispatche
         if let split = operation?.splitDistrict {
             dispatch(.SetSplitDistrict(split))
         }
+        if let lowAccuracyMessage = operation?.lowAccuracyMessage {
+            dispatch(.SetLowAccuracyMessage(lowAccuracyMessage))
+        }
+
+        // Store location metadata for campaign filtering
+        let city = operation?.city
+        let county = operation?.county
+        let locationState = operation?.state
+        print("🐾 Middleware dispatching SetLocationMetadata - city: \(city ?? "nil"), county: \(county ?? "nil"), state: \(locationState ?? "nil")")
+        dispatch(.SetLocationMetadata(city: city, county: county, state: locationState))
+        
+        // Refresh issues with new location metadata
+        // Call fetchIssues directly with the location data we just received
+        print("🐾 Middleware calling fetchIssues directly with new location data")
+        fetchIssuesWithLocation(city: city, county: county, state: locationState, appState: state, dispatch: dispatch)
         
         var missingReps: [String] = []
 

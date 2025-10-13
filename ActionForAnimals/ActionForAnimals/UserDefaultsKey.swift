@@ -14,6 +14,11 @@ enum UserDefaultsKey : String {
     case locationDisplay
     case locationType
     case locationValue
+
+    // Location metadata for campaign filtering
+    case locationCity
+    case locationCounty
+    case locationState
     
     case selectedCategoryFilter // user's preferred animal category filter
     

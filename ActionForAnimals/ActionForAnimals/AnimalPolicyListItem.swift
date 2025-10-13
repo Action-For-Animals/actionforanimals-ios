@@ -75,21 +75,16 @@ struct AnimalPolicyListItem: View {
 
     private func getContactsForDisplay() -> [Contact] {
         if issue.contactType == .corporate {
-            // For batch email campaigns, show single company contact
+            // For corporate campaigns, always use targets to match detail view logic
+            guard let targets = issue.targets else { return [] }
+
             if issue.isBatchEmailCampaign {
-                // Create a single contact representing the company
-                let companyName = issue.corporateInfo?.company ?? "Company"
-                return [Contact(
-                    id: "company-\(issue.id)",
-                    name: companyName,
-                    phone: "",
-                    email: "",
-                    contactType: .corporate,
-                    metadata: nil
-                )]
+                // For batch campaigns, show first target but use the actual target's ID
+                // This ensures checkmark logic works with completion tracking
+                guard let firstTarget = targets.first else { return [] }
+                return [Contact.fromTarget(firstTarget)]
             } else {
                 // For individual corporate campaigns, create contacts from targets
-                guard let targets = issue.targets else { return [] }
                 return targets.map { Contact.fromTarget($0) }
             }
         } else {

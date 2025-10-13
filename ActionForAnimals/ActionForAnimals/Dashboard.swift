@@ -57,7 +57,7 @@ struct Dashboard: View {
             if let location = store.state.location, store.state.contacts.isEmpty {
                 store.dispatch(action: .FetchContacts(location))
             }
-            
+
             // Initialize category filter from user preferences
             initializeCategoryFromPreferences()
         }

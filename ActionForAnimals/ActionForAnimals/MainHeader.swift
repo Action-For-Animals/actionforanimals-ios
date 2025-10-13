@@ -19,6 +19,7 @@ struct MainHeader: View {
 
             LocationHeader(location: store.state.location,
                            isSplit: store.state.isSplitDistrict,
+                           lowAccuracyMessage: store.state.lowAccuracyMessage,
                            fetchingContacts: store.state.fetchingContacts)
                 .padding(.bottom, 10)
                 .onTapGesture {

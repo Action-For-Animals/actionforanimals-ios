@@ -32,6 +32,15 @@ struct LocationSheet: View {
                         .padding(.horizontal, 35)
                         .padding(.bottom, 10)
                 }
+                if let lowAccuracyMessage = store.state.lowAccuracyMessage {
+                    Text(
+                        "\(Image(systemName: "exclamationmark.triangle")) \(lowAccuracyMessage)"
+                    )
+                        .font(.footnote)
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 35)
+                        .padding(.bottom, 10)
+                }
                 HStack {
                     HStack {
                         TextField(text: $locationText) {
@@ -134,19 +143,33 @@ struct LocationSheet: View {
     func locationSearch() {
         locationError = nil
 
+        print("🐾 LocationSheet.locationSearch - Input text: '\(locationText)'")
+
         Task {
             do {
                 var locationDisplay = R.string.localizable.unknownLocation()
+                print("🐾 LocationSheet.locationSearch - About to call CLGeocoder with: '\(locationText)'")
                 let placemarks = try await CLGeocoder().geocodeAddressString(locationText)
+                print("🐾 LocationSheet.locationSearch - CLGeocoder SUCCESS - returned \(placemarks.count) placemarks")
+
                 guard let placemark = placemarks.first else {
+                    print("🐾 LocationSheet.locationSearch - No placemarks returned")
                     return
                 }
 
+                print("🐾 LocationSheet.locationSearch - First placemark: locality=\(placemark.locality ?? "nil"), adminArea=\(placemark.administrativeArea ?? "nil"), postalCode=\(placemark.postalCode ?? "nil")")
+
                 locationDisplay = placemark.locality ?? placemark.administrativeArea ?? placemark.postalCode ?? R.string.localizable.unknownLocation()
                 let loc = UserLocation(address: locationText, display: locationDisplay)
+                print("🐾 LocationSheet.locationSearch - Created UserLocation with display: '\(locationDisplay)'")
+                print("🐾 LocationSheet.locationSearch - About to dispatch SetLocation action")
                 store.dispatch(action: .SetLocation(loc))
+                // Clear any previous low accuracy message since location was set successfully
+                store.dispatch(action: .SetLowAccuracyMessage(nil))
                 dismiss()
-            } catch (_) {
+            } catch (let error) {
+                print("🐾 LocationSheet.locationSearch - CLGeocoder FAILED with error: \(error.localizedDescription)")
+                print("🐾 LocationSheet.locationSearch - Error details: \(error)")
                 locationError = R.string.localizable.locationErrorDefault()
             }
         }
@@ -162,6 +185,8 @@ struct LocationSheet: View {
                 let locationInfo = try await getLocationInfo(from: clLoc)
                 let loc = UserLocation(location: clLoc, display: locationInfo["displayName"] as? String ?? R.string.localizable.unknownLocation())
                 store.dispatch(action: .SetLocation(loc))
+                // Clear any previous low accuracy message since location was set successfully
+                store.dispatch(action: .SetLowAccuracyMessage(nil))
                 detectProcessing = false
                 dismiss()
             } catch (let error) {

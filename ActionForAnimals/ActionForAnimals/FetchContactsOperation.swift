@@ -8,6 +8,8 @@
 
 import Foundation
 import OneSignal
+import FirebaseFunctions
+import FirebaseAppCheck
 
 class FetchContactsOperation: BaseOperation, @unchecked Sendable {
 
@@ -18,6 +20,12 @@ class FetchContactsOperation: BaseOperation, @unchecked Sendable {
     var contacts: [Contact]?
     var splitDistrict: Bool?
     var district: String?
+    var lowAccuracyMessage: String?
+
+    // Location metadata for campaign filtering
+    var city: String?
+    var county: String?
+    var state: String?
 
     init(location: UserLocation, config: URLSessionConfiguration? = nil) {
         self.location = location
@@ -28,25 +36,62 @@ class FetchContactsOperation: BaseOperation, @unchecked Sendable {
         }
     }
     
-    var url: URL {
-        var components = URLComponents(string: "https://getcontacts-wv7gpk3bya-uc.a.run.app")
-        let locationQueryParam = URLQueryItem(name: "location", value: location.locationValue)
-        components?.queryItems = [locationQueryParam]
-        return components!.url!
-    }
-    
+
     override func execute() {
-        let request = buildRequest(forURL: url)
-        
-        let task = session.dataTask(with: request) { data, response, error in
-            if let e = error {
-               self.error = e
-            } else {
-                self.handleResponse(data: data, response: response)
+        executeWithFirebaseSDK()
+    }
+
+    private func executeWithFirebaseSDK() {
+        let functions = Functions.functions()
+        let getOfficials = functions.httpsCallable("getOfficialsCallable")
+
+        // Prepare parameters based on location type
+        var parameters: [String: Any] = [:]
+
+        switch location.locationType {
+        case .coordinates:
+            let coords = location.locationValue.split(separator: ",")
+            if coords.count == 2 {
+                parameters["lat"] = String(coords[0])
+                parameters["lon"] = String(coords[1])
             }
+        case .address:
+            let trimmedValue = location.locationValue.trimmingCharacters(in: .whitespacesAndNewlines)
+            if trimmedValue.range(of: "^\\d{5}$", options: .regularExpression) != nil {
+                parameters["zipcode"] = trimmedValue
+            } else {
+                parameters["address"] = location.locationValue
+            }
+        }
+
+        getOfficials.call(parameters) { [weak self] result, error in
+            guard let self = self else { return }
+
+            if let error = error {
+                self.error = error
+                self.finish()
+                return
+            }
+
+            guard let data = result?.data as? [String: Any] else {
+                self.error = NSError(domain: "FetchContactsOperation", code: -1, userInfo: [NSLocalizedDescriptionKey: "Invalid response format"])
+                self.finish()
+                return
+            }
+
+            self.handleFirebaseResponse(data: data)
             self.finish()
         }
-        task.resume()
+    }
+
+    private func handleFirebaseResponse(data: [String: Any]) {
+        do {
+            // Convert the response back to our expected format
+            let jsonData = try JSONSerialization.data(withJSONObject: data)
+            self.contacts = try parseContacts(data: jsonData)
+        } catch {
+            self.error = error
+        }
     }
     
     private func handleResponse(data: Data?, response: URLResponse?) {
@@ -77,6 +122,17 @@ class FetchContactsOperation: BaseOperation, @unchecked Sendable {
             district = contactList.generalizedLocationID
             OneSignal.sendTag("districtID", value: contactList.generalizedLocationID)
         }
+
+        // Handle low accuracy message
+        if contactList.lowAccuracy == true && contactList.message != nil {
+            lowAccuracyMessage = contactList.message
+        }
+
+        // Store location metadata for campaign filtering
+        city = contactList.location
+        county = contactList.county
+        state = contactList.state
+
         return contactList.representatives
     }
 }

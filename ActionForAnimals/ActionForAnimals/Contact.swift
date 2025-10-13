@@ -151,24 +151,8 @@ extension Contact {
             return description.isEmpty ? "Corporate Contact" : description
         }
         
-        // For political contacts, use existing logic
-        switch self.area {
-        case "US House", "House":
-            // TODO: plumb the district through here too
-            return "\(R.string.localizable.usHouse()) \(self.state ?? "")"
-        case "US Senate", "Senate":
-            return "\(R.string.localizable.usSenate()) \(self.state ?? "")"
-        case "StateLower", "StateUpper":
-            return "\(R.string.localizable.stateRep()) \(self.state ?? "")"
-        case "Governor":
-            return "\(R.string.localizable.governor()) \(self.state ?? "")"
-        case "AttorneyGeneral":
-            return "\(R.string.localizable.attorneyGeneral()) \(self.state ?? "")"
-        case "SecretaryOfState":
-            return "\(R.string.localizable.secretaryOfState()) \(self.state ?? "")"
-        default:
-            return ""
-        }
+        // For political contacts, use the reason text if available, otherwise fall back to area
+        return self.reason ?? self.area ?? ""
     }
     
     // ✨ NEW: Get primary contact method based on contact type
@@ -216,21 +200,5 @@ extension Contact {
 
 // AreaToNiceString converts an area name to a generic office name that can be used in the interface
 func AreaToNiceString(area: String) -> String {
-    switch area {
-    case "US House", "House":
-        return R.string.localizable.groupingUsHouse()
-    case "US Senate", "Senate":
-        return R.string.localizable.groupingUsSenate()
-    // state legislatures call themselves different things by state, so let's use a generic term for all of them
-    case "StateLower", "StateUpper":
-        return R.string.localizable.groupingStateRep()
-    case "Governor":
-        return R.string.localizable.groupingGovernor()
-    case "AttorneyGeneral":
-        return R.string.localizable.groupingAttorneyGeneral()
-    case "SecretaryOfState":
-        return R.string.localizable.groupingSecretaryOfState()
-    default:
-        return area
-    }
+    return area
 }

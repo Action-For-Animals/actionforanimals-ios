@@ -9,11 +9,35 @@
 import UIKit
 import SwiftUI
 import OneSignal
+import FirebaseCore
+import FirebaseAppCheck
+
+class AppAttestProviderFactory: NSObject, AppCheckProviderFactory {
+    func createProvider(with app: FirebaseApp) -> AppCheckProvider? {
+        #if targetEnvironment(simulator)
+        // Use debug provider for simulator with hardcoded token
+        print("🔧 Using Debug Provider for iOS Simulator")
+        return AppCheckDebugProviderFactory().createProvider(with: app)
+        #else
+        // Use App Attest for real devices
+        print("🛡️ Using App Attest Provider for Real Device")
+        return AppAttestProvider(app: app)
+        #endif
+    }
+}
 
 class AppDelegate: UIResponder, UIApplicationDelegate {
     var app: ActionForAnimalsApp?
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+
+        // Configure App Check to use App Attest
+        let providerFactory = AppAttestProviderFactory()
+        AppCheck.setAppCheckProviderFactory(providerFactory)
+
+        // Initialize Firebase
+        FirebaseApp.configure()
 
         if isUITesting() {
             resetData()
@@ -23,12 +47,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setAppearance()
 
         resetOrInitializeCountForRating()
-        
+
         oneSignalStartup(launchOptions: launchOptions)
         OneSignal.setExternalUserId(AnalyticsManager.shared.callerID)
-        
+
         UNUserNotificationCenter.current().delegate = self
-                    
+
         return true
     }
 
@@ -104,12 +128,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     static var isRunningUnitTests: Bool {
         return ProcessInfo.processInfo.environment.keys.contains("XCInjectBundleInto")
     }
+
 }
 
 
 //{ "aps": {
 //    "alert": {
-//    "title": "Your reps voted",
+//    "title": {
 //    "body": "A new vote on gun control was recorded"
 //    }
 //  },

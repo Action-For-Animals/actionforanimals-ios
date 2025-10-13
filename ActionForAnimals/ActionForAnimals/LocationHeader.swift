@@ -11,6 +11,7 @@ import SwiftUI
 struct LocationHeader: View {
     let location: UserLocation?
     let isSplit: Bool
+    let lowAccuracyMessage: String?
     let fetchingContacts: Bool
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -46,7 +47,7 @@ struct LocationHeader: View {
             VStack(alignment: .leading) {
                 Text(R.string.localizable.yourLocationIs)
                     .font(.footnote)
-                if isSplit {
+                if isSplit || lowAccuracyMessage != nil {
                     Text(
                         "\(Image(systemName: "exclamationmark.triangle")) \(location!.locationDisplay)"
                     )
@@ -99,16 +100,21 @@ struct LocationHeader: View {
 struct LocationHeader_Previews: PreviewProvider {
     static var previews: some View {
         VStack {
-            LocationHeader(location: nil, isSplit: false, fetchingContacts: true)
-            LocationHeader(location: nil, isSplit: true, fetchingContacts: false)
+            LocationHeader(location: nil, isSplit: false, lowAccuracyMessage: nil, fetchingContacts: true)
+            LocationHeader(location: nil, isSplit: true, lowAccuracyMessage: nil, fetchingContacts: false)
             LocationHeader(
                 location: UserLocation(address: "19444"),
-                isSplit: false, fetchingContacts: false
+                isSplit: false, lowAccuracyMessage: nil, fetchingContacts: false
             )
                 .frame(maxWidth: 250)
             LocationHeader(
                 location: UserLocation(address: "48184"),
-                isSplit: true, fetchingContacts: false
+                isSplit: true, lowAccuracyMessage: nil, fetchingContacts: false
+            )
+                .frame(maxWidth: 250)
+            LocationHeader(
+                location: UserLocation(address: "90210"),
+                isSplit: false, lowAccuracyMessage: "Showing state/federal officials only. For local officials, please use \"Detect Location\" or provide a specific street address.", fetchingContacts: false
             )
                 .frame(maxWidth: 250)
             Spacer()

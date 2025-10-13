@@ -29,7 +29,11 @@ struct ContactCircle: View {
             Group {
                 if let url = contact.photoURL {
                     AsyncImage(url: url) { image in
-                        image.resizable().aspectRatio(contentMode: .fill)
+                        image
+                            .resizable()
+                            .aspectRatio(contentMode: .fill)
+                            .frame(width: size, height: size)
+                            .clipped()
                     } placeholder: { placeholder }
                 } else {
                     placeholder

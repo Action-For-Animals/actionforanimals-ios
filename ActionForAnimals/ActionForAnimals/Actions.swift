@@ -20,6 +20,8 @@ enum Action {
     case SetContacts([Contact])
     case SetDistrict(String)
     case SetSplitDistrict(Bool)
+    case SetLowAccuracyMessage(String?)
+    case SetLocationMetadata(city: String?, county: String?, state: String?)
     case SetLocation(UserLocation)
     case SetCategoryFilter(String)
     case ReportOutcome(AnimalPolicy, ContactLog, Outcome)

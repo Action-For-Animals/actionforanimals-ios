@@ -62,6 +62,14 @@ class Store: ObservableObject {
             state.district = district
         case let .SetSplitDistrict(splitDistrict):
             state.isSplitDistrict = splitDistrict
+        case let .SetLowAccuracyMessage(message):
+            state.lowAccuracyMessage = message
+        case let .SetLocationMetadata(city, county, state_param):
+            print("🐾 Store.reduce SetLocationMetadata - city: \(city ?? "nil"), county: \(county ?? "nil"), state: \(state_param ?? "nil")")
+            state.city = city
+            state.county = county
+            state.state = state_param
+            print("🐾 Store.reduce - After setting: AppState.city=\(state.city ?? "nil"), AppState.county=\(state.county ?? "nil"), AppState.state=\(state.state ?? "nil")")
         case let .SetMissingReps(missingReps):
             state.missingReps = missingReps
         case let .SetLocation(location):
