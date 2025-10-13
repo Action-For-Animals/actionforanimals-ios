@@ -90,3 +90,6 @@ fastlane/xcov_report/resources/xcov_logo.png
 fastlane/xcov_report/xccovarchive-0.xccovarchive/Coverage
 fastlane/xcov_report/xccovarchive-0.xccovarchive/Index
 fastlane/xcov_report/xccovarchive-0.xccovarchive/Metadata.plist
+
+# Xcode workspace settings
+*.xcsettings
