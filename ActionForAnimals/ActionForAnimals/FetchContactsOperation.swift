@@ -57,7 +57,8 @@ class FetchContactsOperation: BaseOperation, @unchecked Sendable {
             }
         case .address:
             let trimmedValue = location.locationValue.trimmingCharacters(in: .whitespacesAndNewlines)
-            if trimmedValue.range(of: "^\\d{5}$", options: .regularExpression) != nil {
+            if trimmedValue.range(of: "^\\d{5}$", options: .regularExpression) != nil ||
+               trimmedValue.range(of: "^\\d{5}-\\d{4}$", options: .regularExpression) != nil {
                 parameters["zipcode"] = trimmedValue
             } else {
                 parameters["address"] = location.locationValue
