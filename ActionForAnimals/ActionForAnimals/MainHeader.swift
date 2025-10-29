@@ -10,6 +10,7 @@ import SwiftUI
 
 struct MainHeader: View {
     @EnvironmentObject var store: Store
+    @EnvironmentObject var impactManager: ImpactManager
 
     @State var showLocationSheet = false
 
@@ -33,8 +34,20 @@ struct MainHeader: View {
                     Spacer()
                 }
 
-            Image(.afaStars)
-                .accessibilityHidden(true)
+            AnimalsCounterView()
+        }
+        .alert("Achievement Unlocked! 🎉", isPresented: .constant(impactManager.showAchievementAlert != nil)) {
+            Button("View Your Impact") {
+                impactManager.dismissAchievementAlert()
+                store.dispatch(action: .ShowYourImpact)
+            }
+            Button("OK") {
+                impactManager.dismissAchievementAlert()
+            }
+        } message: {
+            if let achievement = impactManager.showAchievementAlert {
+                Text("You earned: \(achievement.title)!\n\(achievement.subtitle)")
+            }
         }
     }
 }

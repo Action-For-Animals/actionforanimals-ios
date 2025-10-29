@@ -59,6 +59,13 @@ struct AnimalPolicySplitView: View {
                 .tag("inbox")
         }// the new TabBar style in iOS 18 does not work well with this style, for now override the size class so it uses the old style on iPadOS
         .environment(\.horizontalSizeClass, .compact)
+        .sheet(isPresented: $store.state.showYourImpact) {
+            YourImpact()
+                .environmentObject(store)
+                .onDisappear {
+                    store.state.showYourImpact = false
+                }
+        }
     }
 }
 

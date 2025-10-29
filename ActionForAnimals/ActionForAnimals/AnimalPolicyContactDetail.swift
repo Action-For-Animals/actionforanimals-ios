@@ -72,7 +72,7 @@ struct AnimalPolicyContactDetail: View {
                     .padding(.bottom)
                 
                 OutcomesView(outcomes: getOutcomesForActionType(), report: { outcome in
-                    let log = ContactLog(issueId: String(issue.id), contactId: currentContact.id, phone: "", outcome: outcome.status, date: Date(), reported: true, actionType: actionType == .email || actionType == .batchEmail ? "email" : "call")
+                    let log = ContactLog(issueId: String(issue.id), contactId: currentContact.id, phone: "", outcome: outcome.status, date: Date(), reported: true, actionType: actionType == .email || actionType == .batchEmail ? "email" : "call", animalsHelped: issue.animalsHelpedPerAction, category: CategoryHelper.primaryCategoryKey(from: issue).rawValue)
                     store.dispatch(action: .ReportOutcome(issue, log, outcome))
                     
                     // For batch campaigns, go to completion screen since there's no "next" contact
@@ -87,6 +87,11 @@ struct AnimalPolicyContactDetail: View {
             .padding(.horizontal)
         }
         .clipped()
+        .toolbar {
+            ToolbarItem(placement: .navigationBarTrailing) {
+                AnimalsCounterView()
+            }
+        }
     }
     
     // NEW: Company info view for batch campaigns

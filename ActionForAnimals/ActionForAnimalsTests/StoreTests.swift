@@ -51,8 +51,8 @@ final class StoreTests: XCTestCase {
         state.issueCompletion[issueID] = nil
         let store = Store(state: state)
         XCTAssertNil(store.state.issueCompletion[issueID])
-        let log1 = ContactLog(issueId: String(issueID), contactId: "contact1", phone: "", outcome: "unavailable", date: Date(), reported: true, actionType: "call")
-        let log2 = ContactLog(issueId: String(issueID), contactId: "contact2", phone: "", outcome: "contact", date: Date(), reported: true, actionType: "email")
+        let log1 = ContactLog(issueId: String(issueID), contactId: "contact1", phone: "", outcome: "unavailable", date: Date(), reported: true, actionType: "call", animalsHelped: 1, category: "farmed")
+        let log2 = ContactLog(issueId: String(issueID), contactId: "contact2", phone: "", outcome: "contact", date: Date(), reported: true, actionType: "email", animalsHelped: 1, category: "wildlife")
         _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, log1))
         XCTAssertEqual(store.state.issueCompletion[issueID], [log1])
         _ = store.reduce(store.state, .SetIssueContactCompletion(issueID, log2))

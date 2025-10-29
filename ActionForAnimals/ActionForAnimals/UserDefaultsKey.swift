@@ -36,4 +36,7 @@ enum UserDefaultsKey : String {
     
     case callerID // an anoymous unique id, sometimes the old firebase userid
     case callingGroup // a calling group is a group that tallies their calls together
+
+    case weeklyStreak // current weekly streak count
+    case lastActionWeek // last week user took an action (YYYY-ww format)
 }

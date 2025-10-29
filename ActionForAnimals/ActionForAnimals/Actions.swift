@@ -36,4 +36,7 @@ enum Action {
     case LogSearch(String)
     case SetChangedCampaigns([Int])
     case ClearChangedCampaign(Int)
+    case ShowYourImpact
+    case UpdateWeeklyStreak
+    case TrackImpact(ContactLog, AnimalPolicy)
 }

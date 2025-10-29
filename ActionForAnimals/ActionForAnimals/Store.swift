@@ -40,6 +40,8 @@ class Store: ObservableObject {
         switch action {
         case .ShowWelcomeScreen:
             state.showWelcomeScreen = true
+        case .ShowYourImpact:
+            state.showYourImpact = true
         case let .SetGlobalCallCount(globalCallCount):
             state.globalCallCount = globalCallCount
         case let .SetIssueCallCount(issueID, count):
@@ -50,6 +52,20 @@ class Store: ObservableObject {
             var existingCompletions = state.issueCompletion[issueID] ?? []
             existingCompletions.append(contactLog)
             state.issueCompletion[issueID] = existingCompletions
+
+            print("🐾 DEBUG: Action recorded for issue \(issueID)")
+            print("   - Contact: \(contactLog.contactId)")
+            print("   - Outcome: \(contactLog.outcome)")
+            print("   - Total actions for this issue: \(existingCompletions.count)")
+
+            // Find the issue to show animals helped
+            if let issue = state.issues.first(where: { $0.id == issueID }) {
+                print("   - Issue name: \(issue.name)")
+                print("   - Animals helped per action: \(issue.animalsHelpedPerAction) (raw: \(issue.animalsHelped?.description ?? "nil"))")
+                print("   - Total animals helped from this issue: \(existingCompletions.count * issue.animalsHelpedPerAction)")
+            } else {
+                print("   - Issue not found in state.issues!")
+            }
         case let .SetFetchingContacts(fetching):
             state.fetchingContacts = fetching
         case let .SetIssues(issues):
@@ -101,14 +117,67 @@ class Store: ObservableObject {
             state.changedCampaignIds = Set(changedIds)
         case let .ClearChangedCampaign(campaignId):
             state.changedCampaignIds.remove(campaignId)
+        case .UpdateWeeklyStreak:
+            updateWeeklyStreak(state: state)
         case .FetchStats, .FetchIssues,
                 .FetchContacts(_),
                 .ReportOutcome(_, _, _),
-                .LogSearch(_):
+                .LogSearch(_),
+                .TrackImpact(_, _):
             // handled in middleware
             break
         }
         return state
+    }
+
+    func updateWeeklyStreak(state: AppState) {
+        let calendar = Calendar.current
+        let now = Date()
+        let currentWeekString = weekString(for: now, calendar: calendar)
+
+        // If this is the first action this week
+        if state.lastActionWeek != currentWeekString {
+            if let lastWeek = state.lastActionWeek {
+                let lastWeekDate = dateFromWeekString(lastWeek, calendar: calendar)
+                let currentWeekDate = calendar.dateInterval(of: .weekOfYear, for: now)!.start
+
+                // Check if last action was in the previous consecutive week
+                if calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)!.start == calendar.date(byAdding: .weekOfYear, value: -1, to: currentWeekDate) {
+                    // Consecutive week - increment streak
+                    state.weeklyStreak += 1
+                } else {
+                    // Gap in weeks - reset streak to 1
+                    state.weeklyStreak = 1
+                }
+            } else {
+                // First ever action - start streak
+                state.weeklyStreak = 1
+            }
+
+            state.lastActionWeek = currentWeekString
+        }
+        // If already took action this week, don't change streak
+    }
+
+    private func weekString(for date: Date, calendar: Calendar) -> String {
+        let year = calendar.component(.yearForWeekOfYear, from: date)
+        let week = calendar.component(.weekOfYear, from: date)
+        return String(format: "%04d-%02d", year, week)
+    }
+
+    private func dateFromWeekString(_ weekString: String, calendar: Calendar) -> Date {
+        let components = weekString.split(separator: "-")
+        guard components.count == 2,
+              let year = Int(components[0]),
+              let week = Int(components[1]) else {
+            return Date()
+        }
+
+        var dateComponents = DateComponents()
+        dateComponents.yearForWeekOfYear = year
+        dateComponents.weekOfYear = week
+        dateComponents.weekday = 2 // Monday
+        return calendar.date(from: dateComponents) ?? Date()
     }
 
 }

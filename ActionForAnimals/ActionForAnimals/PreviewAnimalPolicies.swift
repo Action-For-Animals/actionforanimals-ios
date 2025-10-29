@@ -55,6 +55,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1688015904),
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
+        animalsHelped: 3,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -75,6 +76,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1688015904),
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
+        animalsHelped: 3,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -95,6 +97,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1688015904),
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
+        animalsHelped: 3,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -115,6 +118,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1688015904),
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
+        animalsHelped: 3,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -135,6 +139,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1688015904),
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
+        animalsHelped: 3,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -160,6 +165,7 @@ extension AnimalPolicy {
         createdAt: Date(timeIntervalSince1970: 1725811200),
         status: "active",
         stats: Stats(calls: 0, emails: 0, totalActions: 0),
+        animalsHelped: 5,
         targets: [
             Target(
                 id: "petco-customer-service",

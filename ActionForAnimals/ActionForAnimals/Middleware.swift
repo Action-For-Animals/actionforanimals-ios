@@ -25,6 +25,7 @@ func appMiddleware() -> Middleware<AppState> {
                 // Only track completion for non-skip outcomes
                 if outcome.status != "skip" {
                     dispatch(.SetIssueContactCompletion(issueId, contactLog))
+                    dispatch(.TrackImpact(contactLog, issue))
                 }
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
@@ -32,13 +33,21 @@ func appMiddleware() -> Middleware<AppState> {
             // Only report outcome to server if it's not a skip - skips should not update counts
             if outcome.status != "skip" {
                 reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch)
+
+                // Update weekly streak when user takes an action
+                dispatch(.UpdateWeeklyStreak)
             }
         case let .LogSearch(searchQuery):
             logSearch(searchQuery: searchQuery)
+        case let .TrackImpact(contactLog, issue):
+            // Trigger impact tracking and animations
+            DispatchQueue.main.async {
+                ImpactManager.shared?.handleNewAction(contactLog, from: issue, store: Store(state: state, middlewares: []))
+            }
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
-                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .SetDistrict, .SetSplitDistrict, .SetLowAccuracyMessage, .SetMissingReps, .SetCategoryFilter,
-                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata:
+                .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .ShowYourImpact, .SetDistrict, .SetSplitDistrict, .SetLowAccuracyMessage, .SetMissingReps, .SetCategoryFilter,
+                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata, .UpdateWeeklyStreak, .TrackImpact:
             // no middleware actions for these, including for completeness
             break
         }

@@ -104,15 +104,7 @@ struct AnimalPolicyDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                ShareLink(item: issue.shareURL) {
-                    HStack(spacing: 4) {
-                        Text(R.string.localizable.share())
-                            .fontWeight(.medium)
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.body)
-                            .offset(y: -1)
-                    }
-                }
+                AnimalsCounterView()
             }
         }
         .sheet(isPresented: $showLocationSheet) {

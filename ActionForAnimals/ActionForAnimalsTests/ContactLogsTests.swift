@@ -30,7 +30,7 @@ class ContactLogsTests: XCTestCase {
         let dateFormatter = DateFormatter()
         dateFormatter.dateFormat = "yyyy-MM-dd"
         let date = dateFormatter.date(from: "1984-01-24")!
-        let log = ContactLog(issueId: "issue1", contactId: "contact1", phone: "111-222-3333", outcome: "Left Voicemail", date: date, reported: true)
+        let log = ContactLog(issueId: "issue1", contactId: "contact1", phone: "111-222-3333", outcome: "Left Voicemail", date: date, reported: true, actionType: "call", animalsHelped: 1, category: "farmed")
         var logsToSave = ContactLogs()
         logsToSave.all = [log]
         logsToSave.save()

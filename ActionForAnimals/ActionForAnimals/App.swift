@@ -11,6 +11,7 @@ import SwiftUI
 @main
 struct ActionForAnimalsApp: App {
     @StateObject var store: Store = Store(state: AppState(), middlewares: [appMiddleware()])
+    @StateObject var impactManager: ImpactManager = ImpactManager()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     
     @Environment(\.scenePhase) private var scenePhase
@@ -19,13 +20,28 @@ struct ActionForAnimalsApp: App {
 
     var body: some Scene {
         WindowGroup {
-            AnimalPolicySplitView()
-                .environmentObject(store)
-                .sheet(isPresented: $store.state.showWelcomeScreen) {
-                    Welcome().environmentObject(store)
+            ZStack {
+                AnimalPolicySplitView()
+                    .environmentObject(store)
+                    .environmentObject(impactManager)
+                    .sheet(isPresented: $store.state.showWelcomeScreen) {
+                        Welcome().environmentObject(store)
+                    }
+
+                // Achievement celebration overlay
+                if let achievement = impactManager.showAchievementCelebration {
+                    AchievementCelebration(
+                        achievement: achievement,
+                        onDismiss: {
+                            impactManager.dismissAchievementCelebration()
+                        }
+                    )
+                    .zIndex(1000)
                 }
+            }
                 .onAppear {
                     appDelegate.app = self
+                    impactManager.configure(with: store)
                     if !hasShownWelcomeScreen {
                         store.dispatch(action: .ShowWelcomeScreen)
                     }

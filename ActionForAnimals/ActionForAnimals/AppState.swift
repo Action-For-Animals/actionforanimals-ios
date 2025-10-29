@@ -12,9 +12,24 @@ import os
 
 class AppState: ObservableObject, ReduxState {
     @Published var showWelcomeScreen = false
+    @Published var showYourImpact = false
     @Published var selectedTab = "topics"
     @Published var globalCallCount: Int = 0
     @Published var issueCallCounts: [Int: Int] = [:]
+    @Published var weeklyStreak: Int = 0 {
+        didSet {
+            UserDefaults.standard.set(weeklyStreak, forKey: UserDefaultsKey.weeklyStreak.rawValue)
+        }
+    }
+    @Published var lastActionWeek: String? = nil { // Store as "YYYY-ww" format
+        didSet {
+            if let week = lastActionWeek {
+                UserDefaults.standard.set(week, forKey: UserDefaultsKey.lastActionWeek.rawValue)
+            } else {
+                UserDefaults.standard.removeObject(forKey: UserDefaultsKey.lastActionWeek.rawValue)
+            }
+        }
+    }
     // issueCompletion is a local cache of completed calls: an array of contact id and outcomes (B0001234-contact) keyed by an issue id
     @Published var issueCompletion: [Int: [ContactLog]] = [:] {
         didSet {
@@ -155,6 +170,10 @@ class AppState: ObservableObject, ReduxState {
         if let savedIds = UserDefaults.standard.array(forKey: "changedCampaignIds") as? [Int] {
             self.changedCampaignIds = Set(savedIds)
         }
+
+        // load weekly streak data
+        self.weeklyStreak = UserDefaults.standard.integer(forKey: UserDefaultsKey.weeklyStreak.rawValue)
+        self.lastActionWeek = UserDefaults.standard.string(forKey: UserDefaultsKey.lastActionWeek.rawValue)
     }
 }
 

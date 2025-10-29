@@ -27,12 +27,17 @@
 		60C6E15E18B252A35EF14CFA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */; };
 		7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7221C2012E6F85D90031FD52 /* ContactType.swift */; };
 		724B93202E7341BC001E6368 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724B931F2E7341BC001E6368 /* SettingsSheet.swift */; };
+		725AE3FE2EB1755B008D2E73 /* AchievementCelebration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */; };
 		728A872D2E6CF7B1007CF684 /* CompletionCheckmarkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */; };
 		728A87822E6DFC0B007CF684 /* AnimalPolicySplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F78E0252AF2B26D00FF23E9 /* AnimalPolicySplitView.swift */; };
 		728A87872E6DFC55007CF684 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01235BC2B8C5A7D00FEE7A0 /* InboxView.swift */; };
 		7297F9F82E70E0FB00C819F7 /* WelcomeStep1.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */; };
 		7297F9F92E70E0FB00C819F7 /* WelcomeStep2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7297F9F72E70E0FB00C819F7 /* WelcomeStep2.swift */; };
 		72C599882E6FBF500006C8D5 /* CategoryHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72C599872E6FBF470006C8D5 /* CategoryHelper.swift */; };
+		72E9DDD92EB03567002DA44E /* YourImpact.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E9DDD82EB03567002DA44E /* YourImpact.swift */; };
+		72E9DE022EB14E32002DA44E /* ImpactCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E9DE012EB14E32002DA44E /* ImpactCalculator.swift */; };
+		72E9DE072EB14F17002DA44E /* ImpactManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E9DE062EB14F17002DA44E /* ImpactManager.swift */; };
+		72E9DE102EB156C0002DA44E /* AnimalsCounterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72E9DE0F2EB156C0002DA44E /* AnimalsCounterView.swift */; };
 		72FF47C22E9737AC0016DE37 /* RepresentativeDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72FF47C12E9737AC0016DE37 /* RepresentativeDetailView.swift */; };
 		72FF480C2E99EDF80016DE37 /* FirebaseAppCheck in Frameworks */ = {isa = PBXBuildFile; productRef = 72FF480B2E99EDF80016DE37 /* FirebaseAppCheck */; };
 		72FF484F2E9AF4790016DE37 /* FirebaseFunctions in Frameworks */ = {isa = PBXBuildFile; productRef = 72FF484E2E9AF4790016DE37 /* FirebaseFunctions */; };
@@ -172,7 +177,6 @@
 		4F07B23D2B45F25E00C575DF /* Package.resolved */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = Package.resolved; path = ActionForAnimals.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved; sourceTree = "<group>"; };
 		4F11A59D2AAB956C00AF30B9 /* ScheduleReminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleReminders.swift; sourceTree = "<group>"; };
 		4F2178742B488CD70032D592 /* StoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreTests.swift; sourceTree = "<group>"; };
-		4F2C1CA12AD5C1AC000AB39E /* YourImpact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourImpact.swift; sourceTree = "<group>"; };
 		4F3A572A2B597C8E009D4616 /* UserLocationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserLocationTests.swift; sourceTree = "<group>"; };
 		4F3A572D2B598203009D4616 /* LocationSheetTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationSheetTests.swift; sourceTree = "<group>"; };
 		4F4868B82AC222B300E1733A /* WebView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
@@ -188,10 +192,15 @@
 		7221C2012E6F85D90031FD52 /* ContactType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactType.swift; sourceTree = "<group>"; };
 		724B931F2E7341BC001E6368 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		72549E0D2E65088B007E8D87 /* ActionforAnimalsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ActionforAnimalsRelease.entitlements; sourceTree = "<group>"; };
+		725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCelebration.swift; sourceTree = "<group>"; };
 		728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionCheckmarkOverlay.swift; sourceTree = "<group>"; };
 		7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStep1.swift; sourceTree = "<group>"; };
 		7297F9F72E70E0FB00C819F7 /* WelcomeStep2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStep2.swift; sourceTree = "<group>"; };
 		72C599872E6FBF470006C8D5 /* CategoryHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryHelper.swift; sourceTree = "<group>"; };
+		72E9DDD82EB03567002DA44E /* YourImpact.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = YourImpact.swift; sourceTree = "<group>"; };
+		72E9DE012EB14E32002DA44E /* ImpactCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImpactCalculator.swift; sourceTree = "<group>"; };
+		72E9DE062EB14F17002DA44E /* ImpactManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImpactManager.swift; sourceTree = "<group>"; };
+		72E9DE0F2EB156C0002DA44E /* AnimalsCounterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnimalsCounterView.swift; sourceTree = "<group>"; };
 		72FF47C12E9737AC0016DE37 /* RepresentativeDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RepresentativeDetailView.swift; sourceTree = "<group>"; };
 		72FF485F2E9B1C530016DE37 /* GoogleService-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		791C9FD31E4E611C0074A8B7 /* Localizable.strings */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; path = Localizable.strings; sourceTree = "<group>"; };
@@ -479,6 +488,7 @@
 		B5E7626D1E40D72D00D63D62 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				72E9DE062EB14F17002DA44E /* ImpactManager.swift */,
 				D09AA8022B04974C0012FF45 /* StatsViewModel.swift */,
 				B502807B1E498B9B00749ED7 /* ImpactViewModel.swift */,
 				A5048C6E1F96BCD000C6163D /* AnimalPolicyViewModel.swift */,
@@ -518,6 +528,7 @@
 		D0002E132A9DB2E90098973F /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				72E9DDD82EB03567002DA44E /* YourImpact.swift */,
 				724B931F2E7341BC001E6368 /* SettingsSheet.swift */,
 				7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */,
 				7297F9F72E70E0FB00C819F7 /* WelcomeStep2.swift */,
@@ -532,7 +543,6 @@
 				D0A76F242A814786006EC2F5 /* LocationSheet.swift */,
 				4F11A59D2AAB956C00AF30B9 /* ScheduleReminders.swift */,
 				4F504DF72AE46A1900F49EF3 /* Welcome.swift */,
-				4F2C1CA12AD5C1AC000AB39E /* YourImpact.swift */,
 				4F07B23A2B45F05C00C575DF /* AcknowListView.swift */,
 			);
 			name = Screens;
@@ -541,6 +551,8 @@
 		D0002E142A9DB2F70098973F /* View Components */ = {
 			isa = PBXGroup;
 			children = (
+				725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */,
+				72E9DE0F2EB156C0002DA44E /* AnimalsCounterView.swift */,
 				728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */,
 				D07ECA0D2E08698F00948BEC /* SearchBar.swift */,
 				D00E8B682CF056A70028F935 /* NewsletterSignup.swift */,
@@ -615,6 +627,7 @@
 		D05A17D02B05A1260048D5A6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				72E9DE012EB14E32002DA44E /* ImpactCalculator.swift */,
 				D09AA8052B0497C70012FF45 /* UNNotification+ScheduleReminders.swift */,
 			);
 			name = Extensions;
@@ -870,6 +883,7 @@
 				D09AA8032B04974C0012FF45 /* StatsViewModel.swift in Sources */,
 				72C599882E6FBF500006C8D5 /* CategoryHelper.swift in Sources */,
 				A5048C6F1F96BCD100C6163D /* AnimalPolicyViewModel.swift in Sources */,
+				72E9DE072EB14F17002DA44E /* ImpactManager.swift in Sources */,
 				D03A20512AC53B9B008BBA6E /* Actions.swift in Sources */,
 				A55647621F909C6F002737D4 /* Category.swift in Sources */,
 				7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */,
@@ -885,7 +899,10 @@
 				D0480B212A4D4B0400502818 /* PreviewAnimalPolicies.swift in Sources */,
 				B5E98E351E529E66005221B7 /* functions.swift in Sources */,
 				D0480B1E2A4D493B00502818 /* AnimalPolicyListItem.swift in Sources */,
+				72E9DDD92EB03567002DA44E /* YourImpact.swift in Sources */,
 				D0480AE32A4D45A700502818 /* App.swift in Sources */,
+				72E9DE022EB14E32002DA44E /* ImpactCalculator.swift in Sources */,
+				72E9DE102EB156C0002DA44E /* AnimalsCounterView.swift in Sources */,
 				D0DD4570229F11FF00AA94C1 /* AnalyticsManager.swift in Sources */,
 				B5E762591E40374600D63D62 /* FetchStatsOperation.swift in Sources */,
 				D0C465D32AD30BEE00CE3E65 /* AnimalPolicyRouter.swift in Sources */,
@@ -895,6 +912,7 @@
 				4F4868B92AC222B300E1733A /* WebView.swift in Sources */,
 				D0C3C2722A8744EC005528B0 /* AnimalPolicyContactDetail.swift in Sources */,
 				B5E7625B1E4037B400D63D62 /* BaseOperation.swift in Sources */,
+				725AE3FE2EB1755B008D2E73 /* AchievementCelebration.swift in Sources */,
 				B5E762691E40D63800D63D62 /* AnimalPolicy.swift in Sources */,
 				728A872D2E6CF7B1007CF684 /* CompletionCheckmarkOverlay.swift in Sources */,
 				B5E762711E40D8DD00D63D62 /* JSONSerializable.swift in Sources */,

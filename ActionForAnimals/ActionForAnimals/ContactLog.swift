@@ -17,6 +17,20 @@ struct ContactLog : Hashable, Codable {
     let date: Date
     let reported: Bool
     let actionType: String
+    var animalsHelped: Int?  // Optional: lazy loaded and then stored
+    var category: String?    // Optional: lazy loaded and then stored
+
+    init(issueId: String, contactId: String, phone: String, outcome: String, date: Date, reported: Bool, actionType: String, animalsHelped: Int, category: String? = nil) {
+        self.issueId = issueId
+        self.contactId = contactId
+        self.phone = phone
+        self.outcome = outcome
+        self.date = date
+        self.reported = reported
+        self.actionType = actionType
+        self.animalsHelped = animalsHelped
+        self.category = category
+    }
 
     static func localizedOutcomeForStatus(status: String) -> String {
         switch status {
@@ -94,7 +108,7 @@ struct ContactLogs {
         if let index = all.firstIndex(of: log) {
             // ContactLogs are immutable, so we'll need to replace it
             all.remove(at: index)
-            all.append(ContactLog(issueId: log.issueId, contactId: log.contactId, phone: log.phone, outcome: log.outcome, date: log.date, reported: true, actionType: log.actionType))
+            all.append(ContactLog(issueId: log.issueId, contactId: log.contactId, phone: log.phone, outcome: log.outcome, date: log.date, reported: true, actionType: log.actionType, animalsHelped: log.animalsHelped ?? 1, category: log.category))
         }
     }
 

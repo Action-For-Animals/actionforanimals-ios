@@ -305,8 +305,8 @@ struct CountingView: View {
         let state = AppState()
         state.contacts = [.housePreviewContact, .senatePreviewContact1, .senatePreviewContact2]
         state.issueCompletion[AnimalPolicy.basicPreviewIssue.id] = [
-            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.housePreviewContact.id, phone: "", outcome: "voicemail", date: Date(), reported: true, actionType: "call"),
-            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.senatePreviewContact1.id, phone: "", outcome: "contact", date: Date(), reported: true, actionType: "call")
+            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.housePreviewContact.id, phone: "", outcome: "voicemail", date: Date(), reported: true, actionType: "call", animalsHelped: 1, category: "farmed"),
+            ContactLog(issueId: String(AnimalPolicy.basicPreviewIssue.id), contactId: Contact.senatePreviewContact1.id, phone: "", outcome: "contact", date: Date(), reported: true, actionType: "call", animalsHelped: 1, category: "farmed")
         ]
         return state
     }()

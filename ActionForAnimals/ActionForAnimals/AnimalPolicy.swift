@@ -50,7 +50,8 @@ struct AnimalPolicy: Identifiable, Decodable {
     let createdAt: Date
     let status: String
     let stats: Stats
-    
+    let animalsHelped: Int?
+
     // Corporate campaign support
     let targets: [Target]?
     let actions: Actions?
@@ -58,10 +59,11 @@ struct AnimalPolicy: Identifiable, Decodable {
     
     // convenience
     var callCount: Int { stats.calls ?? 0 }
-    
+
     // Additional convenience properties
     var emailCount: Int { stats.emails ?? 0 }
     var totalActionCount: Int { stats.totalActions }
+    var animalsHelpedPerAction: Int { animalsHelped ?? 1 }
     
     // Action For Animals - Not used for now - until we figure it out
     var shareImageURL: URL {
