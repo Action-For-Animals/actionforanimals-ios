@@ -27,8 +27,6 @@ class FetchAnimalPolicyOperation: BaseOperation, @unchecked Sendable {
         self.county = county
         super.init()
         
-        let timestamp = Date().timeIntervalSince1970
-        print("🐾 [\(timestamp)] FetchAnimalPolicyOperation #\(ObjectIdentifier(self)) CREATED - city: \(city ?? "nil"), state: \(state ?? "nil"), county: \(county ?? "nil")")
 
         if let config {
             self.session = URLSession(configuration: config)
@@ -41,35 +39,23 @@ class FetchAnimalPolicyOperation: BaseOperation, @unchecked Sendable {
 
         // Add location parameters for geographic filtering
         if let state = state {
-            print("🐾 Adding state query param: \(state)")
             queryItems.append(URLQueryItem(name: "state", value: state))
-        } else {
-            print("🐾 No state to add")
         }
         if let county = county {
-            print("🐾 Adding county query param: \(county)")
             queryItems.append(URLQueryItem(name: "county", value: county))
-        } else {
-            print("🐾 No county to add")
         }
         if let city = city {
-            print("🐾 Adding city query param: \(city)")
             queryItems.append(URLQueryItem(name: "city", value: city))
-        } else {
-            print("🐾 No city to add")
         }
 
         // Add calling group if it exists
         if let callingGroup = UserDefaults.standard.string(forKey: UserDefaultsKey.callingGroup.rawValue),
            !callingGroup.isEmpty {
-            print("🐾 Adding group query param: \(callingGroup)")
             queryItems.append(URLQueryItem(name: "group", value: callingGroup))
         }
 
         urlComponents.queryItems = queryItems
         let finalURL = urlComponents.url!
-        let timestamp = Date().timeIntervalSince1970
-        print("🐾 [\(timestamp)] FetchAnimalPolicyOperation #\(ObjectIdentifier(self)) Final getIssues URL: \(finalURL.absoluteString)")
         return finalURL
     }
 

@@ -53,19 +53,6 @@ class Store: ObservableObject {
             existingCompletions.append(contactLog)
             state.issueCompletion[issueID] = existingCompletions
 
-            print("🐾 DEBUG: Action recorded for issue \(issueID)")
-            print("   - Contact: \(contactLog.contactId)")
-            print("   - Outcome: \(contactLog.outcome)")
-            print("   - Total actions for this issue: \(existingCompletions.count)")
-
-            // Find the issue to show animals helped
-            if let issue = state.issues.first(where: { $0.id == issueID }) {
-                print("   - Issue name: \(issue.name)")
-                print("   - Animals helped per action: \(issue.animalsHelpedPerAction) (raw: \(issue.animalsHelped?.description ?? "nil"))")
-                print("   - Total animals helped from this issue: \(existingCompletions.count * issue.animalsHelpedPerAction)")
-            } else {
-                print("   - Issue not found in state.issues!")
-            }
         case let .SetFetchingContacts(fetching):
             state.fetchingContacts = fetching
         case let .SetIssues(issues):
@@ -81,11 +68,9 @@ class Store: ObservableObject {
         case let .SetLowAccuracyMessage(message):
             state.lowAccuracyMessage = message
         case let .SetLocationMetadata(city, county, state_param):
-            print("🐾 Store.reduce SetLocationMetadata - city: \(city ?? "nil"), county: \(county ?? "nil"), state: \(state_param ?? "nil")")
             state.city = city
             state.county = county
             state.state = state_param
-            print("🐾 Store.reduce - After setting: AppState.city=\(state.city ?? "nil"), AppState.county=\(state.county ?? "nil"), AppState.state=\(state.state ?? "nil")")
         case let .SetMissingReps(missingReps):
             state.missingReps = missingReps
         case let .SetLocation(location):
@@ -131,9 +116,11 @@ class Store: ObservableObject {
     }
 
     func updateWeeklyStreak(state: AppState) {
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
         let now = Date()
         let currentWeekString = weekString(for: now, calendar: calendar)
+
 
         // If this is the first action this week
         if state.lastActionWeek != currentWeekString {
@@ -141,8 +128,11 @@ class Store: ObservableObject {
                 let lastWeekDate = dateFromWeekString(lastWeek, calendar: calendar)
                 let currentWeekDate = calendar.dateInterval(of: .weekOfYear, for: now)!.start
 
+                let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)!.start
+                let expectedPreviousWeek = calendar.date(byAdding: .weekOfYear, value: -1, to: currentWeekDate)!
+
                 // Check if last action was in the previous consecutive week
-                if calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)!.start == calendar.date(byAdding: .weekOfYear, value: -1, to: currentWeekDate) {
+                if lastWeekStart == expectedPreviousWeek {
                     // Consecutive week - increment streak
                     state.weeklyStreak += 1
                 } else {

@@ -95,7 +95,6 @@ private func fetchIssues(state: AppState, dispatch: @escaping Dispatcher) {
     let stateParam = state.state
     let county = state.county
 
-    print("🐾 Middleware fetchIssues - AppState values: city=\(city ?? "nil"), state=\(stateParam ?? "nil"), county=\(county ?? "nil")")
 
     fetchIssuesWithLocation(city: city, county: county, state: stateParam, appState: state, dispatch: dispatch)
 }
@@ -103,13 +102,12 @@ private func fetchIssues(state: AppState, dispatch: @escaping Dispatcher) {
 private func fetchIssuesWithLocation(city: String?, county: String?, state: String?, appState: AppState, dispatch: @escaping Dispatcher) {
     let queue = OperationQueue.main
     
-    print("🐾 [fetchIssuesWithLocation] RECEIVED parameters: city=\(city ?? "nil"), state=\(state ?? "nil"), county=\(county ?? "nil")")
 
     let operation = FetchAnimalPolicyOperation(city: city, state: state, county: county)
     operation.completionBlock = { [weak operation] in
         if let newCampaigns = operation?.issuesList {
-            // Find changed campaigns
-            let changedIds = findChangedCampaigns(old: appState.issues, new: newCampaigns)
+            // Find changed campaigns using cached issues from previous session
+            let changedIds = findChangedCampaigns(old: appState.lastKnownIssues, new: newCampaigns)
 
             // Add new changes to existing ones (keep disappeared campaign IDs)
             var allChangedIds = appState.changedCampaignIds
@@ -118,7 +116,16 @@ private func fetchIssuesWithLocation(city: String?, county: String?, state: Stri
             DispatchQueue.main.async {
                 dispatch(.SetIssues(newCampaigns))
                 dispatch(.SetChangedCampaigns(Array(allChangedIds)))
+
+                // Save issues to cache for change detection across app sessions
+                let encoder = JSONEncoder()
+                if let data = try? encoder.encode(newCampaigns) {
+                    UserDefaults.standard.set(data, forKey: "lastKnownIssues")
+                }
             }
+
+            // Update in-memory cache immediately (not on main queue to avoid state conflicts)
+            appState.lastKnownIssues = newCampaigns
         } else if let error = operation?.error {
             print("Could not load issues: \(error.localizedDescription)..")
 
@@ -157,13 +164,19 @@ private func fetchContacts(location: UserLocation, state: AppState, dispatch: @e
         let city = operation?.city
         let county = operation?.county
         let locationState = operation?.state
-        print("🐾 Middleware dispatching SetLocationMetadata - city: \(city ?? "nil"), county: \(county ?? "nil"), state: \(locationState ?? "nil")")
         dispatch(.SetLocationMetadata(city: city, county: county, state: locationState))
         
-        // Refresh issues with new location metadata
-        // Call fetchIssues directly with the location data we just received
-        print("🐾 Middleware calling fetchIssues directly with new location data")
-        fetchIssuesWithLocation(city: city, county: county, state: locationState, appState: state, dispatch: dispatch)
+        // Refresh issues with new location metadata only if location data changed
+        // Only check city and state (county can vary without affecting campaign filtering)
+        if city != state.city || locationState != state.state {
+            print("🔄 [fetchContacts completion] Location data CHANGED - calling fetchIssuesWithLocation")
+            print("   New: city=\(city ?? "nil"), county=\(county ?? "nil"), state=\(locationState ?? "nil")")
+            print("   Old: city=\(state.city ?? "nil"), county=\(state.county ?? "nil"), state=\(state.state ?? "nil")")
+            fetchIssuesWithLocation(city: city, county: county, state: locationState, appState: state, dispatch: dispatch)
+        } else {
+            print("✅ [fetchContacts completion] Location data UNCHANGED - skipping duplicate fetchIssuesWithLocation call")
+            print("   Location: city=\(city ?? "nil"), county=\(county ?? "nil"), state=\(locationState ?? "nil")")
+        }
         
         var missingReps: [String] = []
 

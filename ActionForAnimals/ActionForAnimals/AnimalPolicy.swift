@@ -9,8 +9,8 @@
 import Foundation
 import RswiftResources
 
-struct AnimalPolicy: Identifiable, Decodable {
-    struct Stats: Decodable {
+struct AnimalPolicy: Identifiable, Codable {
+    struct Stats: Codable {
         let calls: Int?
         let emails: Int?
         let totalActions: Int
@@ -249,7 +249,7 @@ struct AnimalPolicy: Identifiable, Decodable {
 }
 
 // Supporting models for corporate campaigns
-struct Target: Identifiable, Decodable {
+struct Target: Identifiable, Codable {
     let id: String
     let name: String
     let email: String?
@@ -263,24 +263,24 @@ struct Target: Identifiable, Decodable {
     }
 }
 
-struct CorporateInfo: Decodable {
+struct CorporateInfo: Codable {
     let company: String
     let industry: String?
     let ticker: String?
     let headquarters: String?
 }
 
-struct Actions: Decodable {
+struct Actions: Codable {
     let call: CallAction?
     let email: EmailAction?
 }
 
-struct CallAction: Decodable {
+struct CallAction: Codable {
     let enabled: Bool
     let script: String
 }
 
-struct EmailAction: Decodable {
+struct EmailAction: Codable {
     let enabled: Bool
     let distributionMethod: String?
     let subject: String

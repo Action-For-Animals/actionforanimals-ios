@@ -47,6 +47,8 @@ class AppState: ObservableObject, ReduxState {
     @Published var donateOn = false
     @Published var issues: [AnimalPolicy] = []
     @Published var issueFetchTime: Date? = nil
+    // Cache of last known issues for change detection across app sessions
+    var lastKnownIssues: [AnimalPolicy] = []
     @Published var contacts: [Contact] = []
     @Published var district: String? = nil
     @Published var isSplitDistrict: Bool = false
@@ -174,6 +176,14 @@ class AppState: ObservableObject, ReduxState {
         // load weekly streak data
         self.weeklyStreak = UserDefaults.standard.integer(forKey: UserDefaultsKey.weeklyStreak.rawValue)
         self.lastActionWeek = UserDefaults.standard.string(forKey: UserDefaultsKey.lastActionWeek.rawValue)
+
+        // load cached issues for change detection
+        if let cachedIssuesData = UserDefaults.standard.data(forKey: "lastKnownIssues") {
+            let decoder = JSONDecoder()
+            if let cachedIssues = try? decoder.decode([AnimalPolicy].self, from: cachedIssuesData) {
+                self.lastKnownIssues = cachedIssues
+            }
+        }
     }
 }
 

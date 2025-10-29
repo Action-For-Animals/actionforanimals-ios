@@ -178,6 +178,7 @@ struct AchievementCelebration: View {
         achievement: Achievement(
             title: "Wildlife Warrior",
             subtitle: "5 actions for wildlife.",
+            compactSubtitle: "5 wildlife actions",
             icon: "badge-wildlife",
             category: .animal,
             isUnlocked: true

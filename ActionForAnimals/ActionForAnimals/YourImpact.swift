@@ -18,22 +18,9 @@ struct YourImpact: View {
         store.totalAnimalsHelped
     }
 
-    // Helper function to get category for a log with lazy loading
-    private func getCategory(for log: ContactLog) -> String {
-        if let category = log.category {
-            return category
-        } else {
-            // Lazy lookup from current campaign
-            if let issue = store.state.issues.first(where: { String($0.id) == log.issueId }) {
-                return CategoryHelper.primaryCategoryKey(from: issue).rawValue
-            } else {
-                return "none"  // Default for deleted campaigns
-            }
-        }
-    }
 
     var weeklyStreak: Int {
-        calculateWeeklyStreak()
+        store.state.weeklyStreak
     }
 
     var body: some View {
@@ -54,11 +41,11 @@ struct YourImpact: View {
                     .padding(.horizontal)
 
                     // Animals Helped Card
-                    AnimalsHelpedCard(count: totalActions)
+                    AnimalsHelpedCard(count: totalActions, message: getImpactMessage(for: totalActions))
                         .padding(.horizontal)
 
                     // Weekly Streak
-                    WeeklyStreakSection(streak: weeklyStreak, hasActionThisWeek: hasActionThisWeek())
+                    WeeklyStreakSection(streak: weeklyStreak, hasActionThisWeek: hasActionThisWeek(), actionDays: getActionDaysThisWeek())
                         .padding(.horizontal)
 
                     // Achievements
@@ -107,12 +94,45 @@ struct YourImpact: View {
     }
 
     private func hasActionThisWeek() -> Bool {
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
         let now = Date()
         let thisWeek = calendar.dateInterval(of: .weekOfYear, for: now)!
 
         return store.state.issueCompletion.values.flatMap { $0 }.contains { action in
             thisWeek.contains(action.date)
+        }
+    }
+
+    private func getActionDaysThisWeek() -> Set<Int> {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
+        let now = Date()
+        let thisWeek = calendar.dateInterval(of: .weekOfYear, for: now)!
+
+        let actionsThisWeek = store.state.issueCompletion.values.flatMap { $0 }.filter { action in
+            thisWeek.contains(action.date)
+        }
+
+        return Set(actionsThisWeek.map { action in
+            // Convert to 0-based Monday start (0 = Monday, 6 = Sunday)
+            let weekday = calendar.component(.weekday, from: action.date)
+            return weekday == 1 ? 6 : weekday - 2 // Sunday = 6, Monday-Saturday = 0-5
+        })
+    }
+
+    private func getImpactMessage(for count: Int) -> String {
+        switch count {
+        case 0:
+            return "Ready to make your first impact?"
+        case 1...10:
+            return "Every action makes a difference"
+        case 11...100:
+            return "You've helped an entire sanctuary"
+        case 101...500:
+            return "You're changing the world for animals"
+        default: // 501+
+            return "You're an animal advocacy champion"
         }
     }
 
@@ -128,11 +148,13 @@ enum AchievementCategory {
     case action
     case animal
     case milestone
+    case settings
 }
 
 struct Achievement {
     let title: String
     let subtitle: String
+    let compactSubtitle: String
     let icon: String
     let category: AchievementCategory
     let isUnlocked: Bool
@@ -140,6 +162,7 @@ struct Achievement {
 
 struct AnimalsHelpedCard: View {
     let count: Int
+    let message: String
 
     var body: some View {
         ZStack {
@@ -165,7 +188,7 @@ struct AnimalsHelpedCard: View {
                             .foregroundColor(.white)
                             .shadow(color: .black.opacity(0.5), radius: 3, x: 0, y: 2)
 
-                        Text(count == 1 ? "Every action makes a difference" : "You've helped an entire sanctuary")
+                        Text(message)
                             .font(.subheadline)
                             .foregroundColor(.white)
                             .shadow(color: .black.opacity(0.5), radius: 2, x: 0, y: 1)
@@ -189,6 +212,7 @@ struct AnimalsHelpedCard: View {
 struct WeeklyStreakSection: View {
     let streak: Int
     let hasActionThisWeek: Bool
+    let actionDays: Set<Int>
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -231,17 +255,22 @@ struct WeeklyStreakSection: View {
                 }
 
                 // Weekly calendar
-                WeeklyCalendarView(hasActionThisWeek: hasActionThisWeek)
+                WeeklyCalendarView(actionDays: actionDays)
             }
         }
     }
 }
 
 struct WeeklyCalendarView: View {
-    let hasActionThisWeek: Bool
+    let actionDays: Set<Int>
 
     private let weekdays = ["M", "T", "W", "T", "F", "S", "S"]
-    private let today = Calendar.current.component(.weekday, from: Date()) - 2 // Convert to 0-based Monday start
+    private let today: Int = {
+        var calendar = Calendar.current
+        calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
+        let weekday = calendar.component(.weekday, from: Date())
+        return weekday == 1 ? 6 : weekday - 2 // Sunday = 6, Monday-Saturday = 0-5
+    }()
 
     var body: some View {
         HStack(spacing: 8) {
@@ -252,9 +281,14 @@ struct WeeklyCalendarView: View {
                     .frame(width: 32, height: 32)
                     .background(
                         RoundedRectangle(cornerRadius: 8)
-                            .fill(index == today && hasActionThisWeek ? Color.afaGreen : Color.gray.opacity(0.2))
+                            .fill(actionDays.contains(index) ? Color.afaGreen : Color.gray.opacity(0.2))
                     )
-                    .foregroundColor(index == today && hasActionThisWeek ? .white : .primary)
+                    .foregroundColor(actionDays.contains(index) ? .white : .primary)
+                    .overlay(
+                        // Add a subtle border for today
+                        RoundedRectangle(cornerRadius: 8)
+                            .stroke(index == today ? Color.primary.opacity(0.3) : Color.clear, lineWidth: 1)
+                    )
             }
             Spacer()
         }
@@ -280,49 +314,12 @@ struct ActionAchievementsSection: View {
 
 
     private var achievements: [Achievement] {
-        let phoneCallCount = store.state.issueCompletion.values.flatMap { $0 }.filter { $0.actionType == "call" }.count
-        let emailActionCount = store.state.issueCompletion.values.flatMap { $0 }.filter { $0.actionType == "email" }.count
-        let totalActionCount = store.state.issueCompletion.values.flatMap { $0 }.count
-        let notificationsEnabled = notificationsAuthorized
-        let remindersEnabled = UserDefaults.standard.bool(forKey: UserDefaultsKey.reminderEnabled.rawValue)
+        let actionAchievements = AchievementRegistry.achievementsByCategory(.action)
+        let settingsAchievements = AchievementRegistry.achievementsByCategory(.settings)
 
-        return [
-            Achievement(
-                title: "First Call",
-                subtitle: "Completed your first phone call.",
-                icon: "badge-first-call",
-                category: .action,
-                isUnlocked: phoneCallCount >= 1,
-            ),
-            Achievement(
-                title: "Call Champion",
-                subtitle: "Completed 10 phone calls.",
-                icon: "badge-call-champion",
-                category: .action,
-                isUnlocked: phoneCallCount >= 10,
-            ),
-            Achievement(
-                title: "Email Advocate",
-                subtitle: "Completed your first email action.",
-                icon: "badge-email-advocate",
-                category: .action,
-                isUnlocked: emailActionCount >= 1,
-            ),
-            Achievement(
-                title: "Stay Informed",
-                subtitle: "Signed up for notifications.",
-                icon: "badge-notification",
-                category: .action,
-                isUnlocked: notificationsEnabled,
-            ),
-            Achievement(
-                title: "Remind Me Later",
-                subtitle: "Enabled reminders for actions.",
-                icon: "badge-reminders",
-                category: .action,
-                isUnlocked: remindersEnabled,
-            )
-        ].sorted { $0.isUnlocked && !$1.isUnlocked }
+        return (actionAchievements + settingsAchievements)
+            .map { AchievementRegistry.createAchievement(from: $0, store: store) }
+            .sorted { $0.isUnlocked && !$1.isUnlocked }
     }
 
     var body: some View {
@@ -354,61 +351,11 @@ struct ActionAchievementsSection: View {
 struct AnimalAchievementsSection: View {
     @EnvironmentObject var store: Store
 
-    private func getCategory(for log: ContactLog) -> String {
-        if let category = log.category {
-            return category
-        } else {
-            // Lazy lookup from current campaign
-            if let issue = store.state.issues.first(where: { String($0.id) == log.issueId }) {
-                return CategoryHelper.primaryCategoryKey(from: issue).rawValue
-            } else {
-                return "none"  // Default for deleted campaigns
-            }
-        }
-    }
-
-    private func categoryActionCount(_ category: String) -> Int {
-        return store.state.issueCompletion.values.flatMap { $0 }.filter { log in
-            getCategory(for: log) == category
-        }.count
-    }
 
     private var achievements: [Achievement] {
-        let farmedCount = categoryActionCount("farmed")
-        let wildlifeCount = categoryActionCount("wildlife")
-        let companionCount = categoryActionCount("companion")
-        let entertainmentCount = categoryActionCount("entertainment")
-
-        return [
-            Achievement(
-                title: "Farm Friend",
-                subtitle: "5 actions for farmed animals.",
-                icon: "badge-farmed",
-                category: .animal,
-                isUnlocked: farmedCount >= 5,
-            ),
-            Achievement(
-                title: "Wildlife Warrior",
-                subtitle: "5 actions for wildlife.",
-                icon: "badge-wildlife",
-                category: .animal,
-                isUnlocked: wildlifeCount >= 5,
-            ),
-            Achievement(
-                title: "Freedom Fighter",
-                subtitle: "3 actions for entertainment.",
-                icon: "badge-entertainment",
-                category: .animal,
-                isUnlocked: entertainmentCount >= 3,
-            ),
-            Achievement(
-                title: "Rescue Ally",
-                subtitle: "3 companion-animal actions.",
-                icon: "badge-companion",
-                category: .animal,
-                isUnlocked: companionCount >= 3,
-            )
-        ].sorted { $0.isUnlocked && !$1.isUnlocked }
+        return AchievementRegistry.achievementsByCategory(.animal)
+            .map { AchievementRegistry.createAchievement(from: $0, store: store) }
+            .sorted { $0.isUnlocked && !$1.isUnlocked }
     }
 
     var body: some View {
@@ -440,56 +387,11 @@ struct AnimalAchievementsSection: View {
 struct MilestoneAchievementsSection: View {
     @EnvironmentObject var store: Store
 
-    private var totalAnimalsHelped: Int {
-        store.state.issueCompletion.values.flatMap { $0 }.map { log in
-            // If animalsHelped is not set, look it up from current campaign
-            if let animalsHelped = log.animalsHelped {
-                return animalsHelped
-            } else {
-                // Lazy lookup from current campaign
-                if let issue = store.state.issues.first(where: { String($0.id) == log.issueId }) {
-                    return issue.animalsHelpedPerAction
-                } else {
-                    return 1  // Default for deleted campaigns
-                }
-            }
-        }.reduce(0, +)
-    }
 
     private var achievements: [Achievement] {
-        let totalActionCount = store.state.issueCompletion.values.flatMap { $0 }.count
-        let weeklyStreak = store.state.weeklyStreak
-
-        return [
-            Achievement(
-                title: "Goal Crusher",
-                subtitle: "Completed 10 total actions.",
-                icon: "badge-goal-crusher",
-                category: .milestone,
-                isUnlocked: totalActionCount >= 10,
-            ),
-            Achievement(
-                title: "Century Advocate",
-                subtitle: "Helped 100 animals.",
-                icon: "badge-century-advocate",
-                category: .milestone,
-                isUnlocked: totalAnimalsHelped >= 100,
-            ),
-            Achievement(
-                title: "Hot Streak",
-                subtitle: "Maintained a 4-week streak.",
-                icon: "badge-hot-streak",
-                category: .milestone,
-                isUnlocked: weeklyStreak >= 4,
-            ),
-            Achievement(
-                title: "Peace for All Beings",
-                subtitle: "Lifetime milestone — 500 animals helped.",
-                icon: "badge-peace",
-                category: .milestone,
-                isUnlocked: totalAnimalsHelped >= 500,
-            )
-        ].sorted { $0.isUnlocked && !$1.isUnlocked }
+        return AchievementRegistry.achievementsByCategory(.milestone)
+            .map { AchievementRegistry.createAchievement(from: $0, store: store) }
+            .sorted { $0.isUnlocked && !$1.isUnlocked }
     }
 
     var body: some View {
@@ -522,40 +424,6 @@ struct MilestoneAchievementsSection: View {
 struct AchievementCard: View {
     let achievement: Achievement
 
-    var compactSubtitle: String {
-        // Convert long subtitles to compact versions
-        let subtitle = achievement.subtitle
-
-        if subtitle.contains("Completed your first phone call") {
-            return "First phone call"
-        } else if subtitle.contains("Completed 10 phone calls") {
-            return "10 phone calls"
-        } else if subtitle.contains("Completed your first email action") {
-            return "First email action"
-        } else if subtitle.contains("Signed up for notifications") {
-            return "Signed up for notifications"
-        } else if subtitle.contains("Enabled reminders for actions") {
-            return "Enabled reminders"
-        } else if subtitle.contains("5 actions for farmed animals") {
-            return "5 farm actions"
-        } else if subtitle.contains("5 actions for wildlife") {
-            return "5 wildlife actions"
-        } else if subtitle.contains("3 companion-animal actions") {
-            return "3 companion actions"
-        } else if subtitle.contains("3 actions for entertainment") {
-            return "3 entertainment actions"
-        } else if subtitle.contains("Completed 10 total actions") {
-            return "10 total actions"
-        } else if subtitle.contains("Helped 100 animals") {
-            return "100 animals helped"
-        } else if subtitle.contains("Maintained a 4-week streak") {
-            return "4-week streak"
-        } else if subtitle.contains("500 animals helped") {
-            return "500 animals helped"
-        } else {
-            return subtitle
-        }
-    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -596,7 +464,7 @@ struct AchievementCard: View {
                     .lineLimit(nil)
                     .fixedSize(horizontal: false, vertical: true)
 
-                Text(compactSubtitle)
+                Text(achievement.compactSubtitle)
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
                     .multilineTextAlignment(.center)

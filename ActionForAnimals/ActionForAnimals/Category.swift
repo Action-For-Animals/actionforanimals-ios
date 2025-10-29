@@ -13,7 +13,7 @@
  */
 
 // Category to which an issue may belong.
-struct Category : Decodable {
+struct Category : Codable {
     let name: String
 }
 
