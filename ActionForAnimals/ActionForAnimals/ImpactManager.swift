@@ -38,12 +38,12 @@ class ImpactManager: ObservableObject {
             showIncrementAnimation = true
         }
 
-        // Play subtle counter sound
-        AudioServicesPlaySystemSound(1105)
+        // Play counter sound
+        AudioServicesPlaySystemSound(1013)
 
-        // Add light haptic feedback for counter
+        // Add heavy haptic feedback for counter
         if #available(iOS 10.0, *) {
-            let impactFeedback = UIImpactFeedbackGenerator(style: .light)
+            let impactFeedback = UIImpactFeedbackGenerator(style: .heavy)
             impactFeedback.impactOccurred()
         }
 

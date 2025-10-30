@@ -86,7 +86,11 @@ struct AnimalPolicyDetail: View {
                 Text(issue.markdownIssueReason)
                     .padding(.bottom, 16)
                     .accentColor(.afaDarkBlueText)
-                
+
+                // Impact preview section
+                ImpactPreviewView(animalsHelped: issue.animalsHelpedPerAction)
+                    .padding(.bottom, 20)
+
                 if requiresLocation && store.state.location == nil {
                     // Show location setup for political campaigns
                     locationSetupSection
@@ -413,3 +417,84 @@ struct SecondaryButton: View {
         .cornerRadius(8)
     }
 }
+
+struct ImpactPreviewView: View {
+    let animalsHelped: Int
+    @State private var showInfoPopover = false
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "heart.fill")
+                .foregroundColor(.red)
+                .font(.system(size: 14))
+
+            Text("Take action, help save \(animalsHelped) animals")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            Button(action: {
+                withAnimation(.easeInOut(duration: 0.2)) {
+                    showInfoPopover.toggle()
+                }
+            }) {
+                Image(systemName: "info.circle")
+                    .foregroundColor(.secondary)
+                    .font(.system(size: 14))
+            }
+            .buttonStyle(PlainButtonStyle())
+            .overlay(
+                Group {
+                    if showInfoPopover {
+                        SimplePopover()
+                            .onTapGesture {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    showInfoPopover = false
+                                }
+                            }
+                            .offset(x: -90, y: -50)
+                            .zIndex(1000)
+                    }
+                }
+            )
+
+            Spacer()
+        }
+        .overlay(
+            Group {
+                if showInfoPopover {
+                    // Invisible background to catch taps
+                    Color.clear
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                        .onTapGesture {
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                showInfoPopover = false
+                            }
+                        }
+                }
+            }
+        )
+    }
+}
+
+struct SimplePopover: View {
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            Text("Impact Estimate")
+                .font(.caption)
+                .fontWeight(.semibold)
+                .foregroundColor(.primary)
+
+            Text("This shows relative impact - campaigns with higher numbers have greater potential to help animals.")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+                .lineLimit(nil)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(10)
+        .background(Color(.systemBackground))
+        .cornerRadius(6)
+        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+        .frame(width: 180)
+    }
+}
+
