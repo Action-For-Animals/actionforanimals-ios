@@ -177,6 +177,35 @@ class AppState: ObservableObject, ReduxState {
         self.weeklyStreak = UserDefaults.standard.integer(forKey: UserDefaultsKey.weeklyStreak.rawValue)
         self.lastActionWeek = UserDefaults.standard.string(forKey: UserDefaultsKey.lastActionWeek.rawValue)
 
+        // Initialize weekly streak for app upgrades
+        let hasSeenImpactCounter = UserDefaults.standard.bool(forKey: "hasSeenImpactCounter")
+        if !hasSeenImpactCounter && self.weeklyStreak == 0 && self.lastActionWeek == nil {
+            // This is likely an app upgrade - check for actions this week
+            let completionLogs = self.issueCompletion.values.flatMap { $0 }
+
+            var calendar = Calendar.current
+            calendar.firstWeekday = 2 // Monday = 2
+            let now = Date()
+            let currentWeekString = String(format: "%04d-%02d",
+                                         calendar.component(.yearForWeekOfYear, from: now),
+                                         calendar.component(.weekOfYear, from: now))
+
+            let thisWeekLogs = completionLogs.filter { log in
+                let logYear = calendar.component(.yearForWeekOfYear, from: log.date)
+                let logWeek = calendar.component(.weekOfYear, from: log.date)
+                let logWeekString = String(format: "%04d-%02d", logYear, logWeek)
+                return logWeekString == currentWeekString
+            }
+
+            if !thisWeekLogs.isEmpty {
+                // User has actions this week - set initial streak
+                self.weeklyStreak = 1
+                self.lastActionWeek = currentWeekString
+                UserDefaults.standard.set(1, forKey: UserDefaultsKey.weeklyStreak.rawValue)
+                UserDefaults.standard.set(currentWeekString, forKey: UserDefaultsKey.lastActionWeek.rawValue)
+            }
+        }
+
         // load cached issues for change detection
         if let cachedIssuesData = UserDefaults.standard.data(forKey: "lastKnownIssues") {
             let decoder = JSONDecoder()

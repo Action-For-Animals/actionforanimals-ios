@@ -18,6 +18,8 @@ struct MainHeader: View {
         HStack {
             MenuView(showingWelcomeScreen: store.state.showWelcomeScreen)
 
+            Spacer()
+
             LocationHeader(location: store.state.location,
                            isSplit: store.state.isSplitDistrict,
                            lowAccuracyMessage: store.state.lowAccuracyMessage,

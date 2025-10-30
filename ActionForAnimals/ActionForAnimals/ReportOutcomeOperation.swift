@@ -25,7 +25,7 @@ class ReportOutcomeOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        return URL(string: "https://reportcall-2xumh6zxaa-uc.a.run.app")!
+        return URL(string: "https://reportcall-wv7gpk3bya-uc.a.run.app")!
     }
 
     override func execute() {

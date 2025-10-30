@@ -34,7 +34,7 @@ class FetchAnimalPolicyOperation: BaseOperation, @unchecked Sendable {
     }
     
     var url: URL {
-        var urlComponents = URLComponents(string: "https://getissues-2xumh6zxaa-uc.a.run.app")!
+        var urlComponents = URLComponents(string: "https://getissues-wv7gpk3bya-uc.a.run.app")!
         var queryItems: [URLQueryItem] = []
 
         // Add location parameters for geographic filtering
