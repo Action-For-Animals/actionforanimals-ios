@@ -38,5 +38,8 @@ enum Action {
     case ClearChangedCampaign(Int)
     case ShowYourImpact
     case UpdateWeeklyStreak
+    case IncrementMonthlyAnimals(Int) // increment by number of animals helped
     case TrackImpact(ContactLog, AnimalPolicy)
+    case FetchCurrentLeaderboard
+    case SetCurrentLeaderboard([LeagueParticipant], LeagueMeta?)
 }

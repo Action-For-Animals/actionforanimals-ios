@@ -16,6 +16,20 @@ class AppState: ObservableObject, ReduxState {
     @Published var selectedTab = "topics"
     @Published var globalCallCount: Int = 0
     @Published var issueCallCounts: [Int: Int] = [:]
+    @Published var animalsHelpedThisMonth: Int = 0 {
+        didSet {
+            UserDefaults.standard.set(animalsHelpedThisMonth, forKey: UserDefaultsKey.animalsHelpedThisMonth.rawValue)
+        }
+    }
+    @Published var lastMonthlyCountUpdate: String? = nil { // Store as "YYYY-MM" format
+        didSet {
+            if let month = lastMonthlyCountUpdate {
+                UserDefaults.standard.set(month, forKey: UserDefaultsKey.lastMonthlyCountUpdate.rawValue)
+            } else {
+                UserDefaults.standard.removeObject(forKey: UserDefaultsKey.lastMonthlyCountUpdate.rawValue)
+            }
+        }
+    }
     @Published var weeklyStreak: Int = 0 {
         didSet {
             UserDefaults.standard.set(weeklyStreak, forKey: UserDefaultsKey.weeklyStreak.rawValue)
@@ -54,6 +68,10 @@ class AppState: ObservableObject, ReduxState {
     @Published var isSplitDistrict: Bool = false
     @Published var lowAccuracyMessage: String? = nil
     @Published var missingReps: [String] = []
+
+    // Monthly challenge current leaderboard caching
+    @Published var cachedCurrentLeaderboard: [LeagueParticipant] = []
+    @Published var cachedCurrentMeta: LeagueMeta?
     @Published var location: UserLocation? {
         didSet {
             guard let location = self.location else { return }
@@ -177,6 +195,13 @@ class AppState: ObservableObject, ReduxState {
         self.weeklyStreak = UserDefaults.standard.integer(forKey: UserDefaultsKey.weeklyStreak.rawValue)
         self.lastActionWeek = UserDefaults.standard.string(forKey: UserDefaultsKey.lastActionWeek.rawValue)
 
+        // load monthly animals helped data with reset check
+        self.animalsHelpedThisMonth = UserDefaults.standard.integer(forKey: UserDefaultsKey.animalsHelpedThisMonth.rawValue)
+        self.lastMonthlyCountUpdate = UserDefaults.standard.string(forKey: UserDefaultsKey.lastMonthlyCountUpdate.rawValue)
+
+        // Check if we need to reset monthly counter
+        checkAndResetMonthlyCounter()
+
         // Initialize weekly streak for app upgrades
         let hasSeenImpactCounter = UserDefaults.standard.bool(forKey: "hasSeenImpactCounter")
         if !hasSeenImpactCounter && self.weeklyStreak == 0 && self.lastActionWeek == nil {
@@ -206,12 +231,45 @@ class AppState: ObservableObject, ReduxState {
             }
         }
 
-        // load cached issues for change detection
+        // load cached issues for change detection AND immediate display
         if let cachedIssuesData = UserDefaults.standard.data(forKey: "lastKnownIssues") {
             let decoder = JSONDecoder()
             if let cachedIssues = try? decoder.decode([AnimalPolicy].self, from: cachedIssuesData) {
                 self.lastKnownIssues = cachedIssues
+                self.issues = cachedIssues // Show cached data immediately
+                print("📰 [AppState.init] Loaded \(cachedIssues.count) cached issues")
+                // Don't set issueFetchTime - we still want the 1-minute refresh check
+            } else {
+                print("❌ [AppState.init] Failed to decode cached issues")
             }
+        } else {
+            print("📰 [AppState.init] No cached issues found")
+        }
+
+        // load cached contacts for immediate display (representatives change less frequently)
+        if let cachedContactsData = UserDefaults.standard.data(forKey: "cachedContacts") {
+            let decoder = JSONDecoder()
+            if let cachedContacts = try? decoder.decode([Contact].self, from: cachedContactsData) {
+                self.contacts = cachedContacts
+                print("📋 [AppState.init] Loaded \(cachedContacts.count) cached contacts")
+
+                // Log cache age
+                if let cacheTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
+                    let ageSeconds = Date().timeIntervalSince(cacheTime)
+                    if ageSeconds < 3600 { // Less than 1 hour
+                        let ageMinutes = ageSeconds / 60
+                        print("📋 [AppState.init] Contacts cache age: \(String(format: "%.1f", ageMinutes)) minutes")
+                    } else {
+                        let ageHours = ageSeconds / 3600
+                        print("📋 [AppState.init] Contacts cache age: \(String(format: "%.1f", ageHours)) hours")
+                    }
+                }
+                // Don't set contactsFetchTime - we'll check cache expiration in needsContactRefresh
+            } else {
+                print("❌ [AppState.init] Failed to decode cached contacts")
+            }
+        } else {
+            print("📋 [AppState.init] No cached contacts found")
         }
     }
 }
@@ -221,7 +279,32 @@ extension AppState {
         let contactLogsForIssue = self.issueCompletion[issueID] ?? []
         return contactLogsForIssue.contains { $0.contactId == contactID }
     }
-    
+
+    func checkAndResetMonthlyCounter() {
+        let calendar = Calendar.current
+        let now = Date()
+        let currentMonth = String(format: "%04d-%02d",
+                                calendar.component(.year, from: now),
+                                calendar.component(.month, from: now))
+
+        // If we don't have a stored month or it's different from current month, reset
+        if lastMonthlyCountUpdate == nil || lastMonthlyCountUpdate != currentMonth {
+            // Reset monthly counter
+            animalsHelpedThisMonth = 0
+            lastMonthlyCountUpdate = currentMonth
+
+            Logger().info("Monthly counter reset for new month: \(currentMonth)")
+        }
+    }
+
+    var needsContactsRefresh: Bool {
+        // Check if cached contacts are stale (7 days - representatives change very infrequently)
+        if let contactsFetchTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
+            return contactsFetchTime < Date().addingTimeInterval(-7 * 24 * 60 * 60) // 7 days
+        }
+        return true // No cache time means we need to fetch
+    }
+
     var needsIssueRefresh: Bool {
         guard let issueFetchTime else {
             return true

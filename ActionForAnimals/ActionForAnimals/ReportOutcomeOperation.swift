@@ -13,15 +13,17 @@ class ReportOutcomeOperation: BaseOperation, @unchecked Sendable {
     //Input properties
     var log: ContactLog
     var outcome: Outcome
+    var animalsHelpedThisMonth: Int
     
     //Output properties
     var httpResponse: HTTPURLResponse?
     var error: Error?
     var updatedIssueCount: Int?
     
-    init(log: ContactLog, outcome: Outcome) {
+    init(log: ContactLog, outcome: Outcome, animalsHelpedThisMonth: Int) {
         self.log = log
         self.outcome = outcome
+        self.animalsHelpedThisMonth = animalsHelpedThisMonth
     }
     
     var url: URL {
@@ -51,7 +53,8 @@ class ReportOutcomeOperation: BaseOperation, @unchecked Sendable {
             "issueid": log.issueId,
             "phone": log.phone,
             "via": via,
-            "callerid": AnalyticsManager.shared.callerID
+            "callerid": AnalyticsManager.shared.callerID,
+            "animalsHelpedThisMonth": String(animalsHelpedThisMonth)
         ]
         
         // Add calling group if it exists

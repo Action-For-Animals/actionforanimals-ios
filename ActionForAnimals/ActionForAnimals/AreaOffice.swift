@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct AreaOffice: Decodable, Identifiable {
+struct AreaOffice: Codable, Identifiable {
     let city: String
     let phone: String
     

@@ -29,6 +29,19 @@
 		724B93202E7341BC001E6368 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724B931F2E7341BC001E6368 /* SettingsSheet.swift */; };
 		725AE3FE2EB1755B008D2E73 /* AchievementCelebration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */; };
 		725AE41A2EB19E2E008D2E73 /* AchievementRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725AE4192EB19E2E008D2E73 /* AchievementRegistry.swift */; };
+		72624A012EC569270048FCD9 /* GetMonthlyLeagueResultsOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72624A002EC569270048FCD9 /* GetMonthlyLeagueResultsOperation.swift */; };
+		72624A052EC569540048FCD9 /* MonthTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 72624A042EC569540048FCD9 /* MonthTransitionView.swift */; };
+		726A7EAE2EBD921C00D95388 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EAD2EBD921C00D95388 /* UserProfile.swift */; };
+		726A7EB12EBD923C00D95388 /* SaveUserInfoOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB02EBD923C00D95388 /* SaveUserInfoOperation.swift */; };
+		726A7EB92EBD92B300D95388 /* AvatarSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB42EBD92B300D95388 /* AvatarSelectionView.swift */; };
+		726A7EBA2EBD92B300D95388 /* ProfileCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB72EBD92B300D95388 /* ProfileCardView.swift */; };
+		726A7EBB2EBD92B300D95388 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB82EBD92B300D95388 /* ProfileDetailView.swift */; };
+		726A7EBC2EBD92B300D95388 /* EmailEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB52EBD92B300D95388 /* EmailEditView.swift */; };
+		726A7EBD2EBD92B300D95388 /* NameEditView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EB62EBD92B300D95388 /* NameEditView.swift */; };
+		726A7EC12EBD93CA00D95388 /* ProfileManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7EC02EBD93CA00D95388 /* ProfileManager.swift */; };
+		726A7ECC2EBEADC000D95388 /* MonthlyLeagueView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7ECB2EBEADC000D95388 /* MonthlyLeagueView.swift */; };
+		726A7ED02EBEAE8000D95388 /* LeagueOperations.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7ECF2EBEAE8000D95388 /* LeagueOperations.swift */; };
+		726A7ED42EBEAE9C00D95388 /* LeaderboardComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 726A7ED32EBEAE9C00D95388 /* LeaderboardComponents.swift */; };
 		728A872D2E6CF7B1007CF684 /* CompletionCheckmarkOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */; };
 		728A87822E6DFC0B007CF684 /* AnimalPolicySplitView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F78E0252AF2B26D00FF23E9 /* AnimalPolicySplitView.swift */; };
 		728A87872E6DFC55007CF684 /* InboxView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D01235BC2B8C5A7D00FEE7A0 /* InboxView.swift */; };
@@ -195,6 +208,19 @@
 		72549E0D2E65088B007E8D87 /* ActionforAnimalsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ActionforAnimalsRelease.entitlements; sourceTree = "<group>"; };
 		725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCelebration.swift; sourceTree = "<group>"; };
 		725AE4192EB19E2E008D2E73 /* AchievementRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementRegistry.swift; sourceTree = "<group>"; };
+		72624A002EC569270048FCD9 /* GetMonthlyLeagueResultsOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMonthlyLeagueResultsOperation.swift; sourceTree = "<group>"; };
+		72624A042EC569540048FCD9 /* MonthTransitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthTransitionView.swift; sourceTree = "<group>"; };
+		726A7EAD2EBD921C00D95388 /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		726A7EB02EBD923C00D95388 /* SaveUserInfoOperation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SaveUserInfoOperation.swift; sourceTree = "<group>"; };
+		726A7EB42EBD92B300D95388 /* AvatarSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvatarSelectionView.swift; sourceTree = "<group>"; };
+		726A7EB52EBD92B300D95388 /* EmailEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmailEditView.swift; sourceTree = "<group>"; };
+		726A7EB62EBD92B300D95388 /* NameEditView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NameEditView.swift; sourceTree = "<group>"; };
+		726A7EB72EBD92B300D95388 /* ProfileCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileCardView.swift; sourceTree = "<group>"; };
+		726A7EB82EBD92B300D95388 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
+		726A7EC02EBD93CA00D95388 /* ProfileManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileManager.swift; sourceTree = "<group>"; };
+		726A7ECB2EBEADC000D95388 /* MonthlyLeagueView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonthlyLeagueView.swift; sourceTree = "<group>"; };
+		726A7ECF2EBEAE8000D95388 /* LeagueOperations.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeagueOperations.swift; sourceTree = "<group>"; };
+		726A7ED32EBEAE9C00D95388 /* LeaderboardComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeaderboardComponents.swift; sourceTree = "<group>"; };
 		728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompletionCheckmarkOverlay.swift; sourceTree = "<group>"; };
 		7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStep1.swift; sourceTree = "<group>"; };
 		7297F9F72E70E0FB00C819F7 /* WelcomeStep2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WelcomeStep2.swift; sourceTree = "<group>"; };
@@ -468,6 +494,7 @@
 		B5E7626C1E40D72400D63D62 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				726A7EAD2EBD921C00D95388 /* UserProfile.swift */,
 				725AE4192EB19E2E008D2E73 /* AchievementRegistry.swift */,
 				7221C2012E6F85D90031FD52 /* ContactType.swift */,
 				B5E762701E40D8DD00D63D62 /* JSONSerializable.swift */,
@@ -491,6 +518,7 @@
 		B5E7626D1E40D72D00D63D62 /* View Models */ = {
 			isa = PBXGroup;
 			children = (
+				726A7EC02EBD93CA00D95388 /* ProfileManager.swift */,
 				72E9DE062EB14F17002DA44E /* ImpactManager.swift */,
 				D09AA8022B04974C0012FF45 /* StatsViewModel.swift */,
 				B502807B1E498B9B00749ED7 /* ImpactViewModel.swift */,
@@ -503,6 +531,9 @@
 		B5E7626F1E40D74900D63D62 /* Operations */ = {
 			isa = PBXGroup;
 			children = (
+				72624A002EC569270048FCD9 /* GetMonthlyLeagueResultsOperation.swift */,
+				726A7ECF2EBEAE8000D95388 /* LeagueOperations.swift */,
+				726A7EB02EBD923C00D95388 /* SaveUserInfoOperation.swift */,
 				D07ECA062E08675E00948BEC /* LogSearchOperation.swift */,
 				B5E7625A1E4037B400D63D62 /* BaseOperation.swift */,
 				B5E762581E40374600D63D62 /* FetchStatsOperation.swift */,
@@ -531,6 +562,13 @@
 		D0002E132A9DB2E90098973F /* Screens */ = {
 			isa = PBXGroup;
 			children = (
+				72624A042EC569540048FCD9 /* MonthTransitionView.swift */,
+				726A7ECB2EBEADC000D95388 /* MonthlyLeagueView.swift */,
+				726A7EB42EBD92B300D95388 /* AvatarSelectionView.swift */,
+				726A7EB52EBD92B300D95388 /* EmailEditView.swift */,
+				726A7EB62EBD92B300D95388 /* NameEditView.swift */,
+				726A7EB72EBD92B300D95388 /* ProfileCardView.swift */,
+				726A7EB82EBD92B300D95388 /* ProfileDetailView.swift */,
 				72E9DDD82EB03567002DA44E /* YourImpact.swift */,
 				724B931F2E7341BC001E6368 /* SettingsSheet.swift */,
 				7297F9F62E70E0FB00C819F7 /* WelcomeStep1.swift */,
@@ -554,6 +592,7 @@
 		D0002E142A9DB2F70098973F /* View Components */ = {
 			isa = PBXGroup;
 			children = (
+				726A7ED32EBEAE9C00D95388 /* LeaderboardComponents.swift */,
 				725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */,
 				72E9DE0F2EB156C0002DA44E /* AnimalsCounterView.swift */,
 				728A872C2E6CF7A3007CF684 /* CompletionCheckmarkOverlay.swift */,
@@ -880,9 +919,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				728A87872E6DFC55007CF684 /* InboxView.swift in Sources */,
+				726A7ED42EBEAE9C00D95388 /* LeaderboardComponents.swift in Sources */,
 				728A87822E6DFC0B007CF684 /* AnimalPolicySplitView.swift in Sources */,
 				D09AA8062B0497C70012FF45 /* UNNotification+ScheduleReminders.swift in Sources */,
 				D0983DD92A8209DA00DC90A6 /* LocationCoordinator.swift in Sources */,
+				726A7EC12EBD93CA00D95388 /* ProfileManager.swift in Sources */,
 				D09AA8032B04974C0012FF45 /* StatsViewModel.swift in Sources */,
 				72C599882E6FBF500006C8D5 /* CategoryHelper.swift in Sources */,
 				A5048C6F1F96BCD100C6163D /* AnimalPolicyViewModel.swift in Sources */,
@@ -891,6 +932,7 @@
 				A55647621F909C6F002737D4 /* Category.swift in Sources */,
 				7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */,
 				D0002E172A9DB34D0098973F /* ContactListItem.swift in Sources */,
+				726A7EAE2EBD921C00D95388 /* UserProfile.swift in Sources */,
 				B512506E21E701DE007D32DF /* ContactList.swift in Sources */,
 				D037F36B2BA5F9E600FEB0FB /* MainHeader.swift in Sources */,
 				9C46B1FA1E46EA58009B2C11 /* ReportOutcomeOperation.swift in Sources */,
@@ -904,14 +946,17 @@
 				D0480B1E2A4D493B00502818 /* AnimalPolicyListItem.swift in Sources */,
 				72E9DDD92EB03567002DA44E /* YourImpact.swift in Sources */,
 				D0480AE32A4D45A700502818 /* App.swift in Sources */,
+				72624A012EC569270048FCD9 /* GetMonthlyLeagueResultsOperation.swift in Sources */,
 				72E9DE022EB14E32002DA44E /* ImpactCalculator.swift in Sources */,
 				72E9DE102EB156C0002DA44E /* AnimalsCounterView.swift in Sources */,
 				D0DD4570229F11FF00AA94C1 /* AnalyticsManager.swift in Sources */,
+				72624A052EC569540048FCD9 /* MonthTransitionView.swift in Sources */,
 				B5E762591E40374600D63D62 /* FetchStatsOperation.swift in Sources */,
 				D0C465D32AD30BEE00CE3E65 /* AnimalPolicyRouter.swift in Sources */,
 				A02018D9204E761A006078D1 /* UserStats.swift in Sources */,
 				D03A20562AC53C54008BBA6E /* Middleware.swift in Sources */,
 				B50280561E47875500749ED7 /* ContactLog.swift in Sources */,
+				726A7ED02EBEAE8000D95388 /* LeagueOperations.swift in Sources */,
 				4F4868B92AC222B300E1733A /* WebView.swift in Sources */,
 				D0C3C2722A8744EC005528B0 /* AnimalPolicyContactDetail.swift in Sources */,
 				725AE41A2EB19E2E008D2E73 /* AchievementRegistry.swift in Sources */,
@@ -928,6 +973,7 @@
 				B5E762651E40480300D63D62 /* UserDefaultsKey.swift in Sources */,
 				D07ECA072E08675E00948BEC /* LogSearchOperation.swift in Sources */,
 				D029C6D01F6F42EA00E56CC7 /* Outcome.swift in Sources */,
+				726A7ECC2EBEADC000D95388 /* MonthlyLeagueView.swift in Sources */,
 				D07ECA0E2E08698F00948BEC /* SearchBar.swift in Sources */,
 				B5D5C95A1E441FEC00C80D5F /* AnimalPolicyManager.swift in Sources */,
 				D0BFE9CB2A7DD25C007203A3 /* LocationHeader.swift in Sources */,
@@ -942,12 +988,18 @@
 				B50280541E46A91F00749ED7 /* AreaOffice.swift in Sources */,
 				72FF47C22E9737AC0016DE37 /* RepresentativeDetailView.swift in Sources */,
 				ADB0976A1F8B212800B81661 /* RatingPromptCounter.swift in Sources */,
+				726A7EB12EBD923C00D95388 /* SaveUserInfoOperation.swift in Sources */,
 				D0312DDC2A868D9A00F58F6B /* AnimalPolicyDetail.swift in Sources */,
 				D0BFE9C92A7C9C21007203A3 /* ContactImages.swift in Sources */,
 				D0002E192A9DB5FB0098973F /* PrimaryButton.swift in Sources */,
 				4F4D2EB62AB8C59500882759 /* AboutSheet.swift in Sources */,
 				F57BD8BA1E438E7600BD554C /* AppearanceProxies.swift in Sources */,
 				D0A76F252A814786006EC2F5 /* LocationSheet.swift in Sources */,
+				726A7EB92EBD92B300D95388 /* AvatarSelectionView.swift in Sources */,
+				726A7EBA2EBD92B300D95388 /* ProfileCardView.swift in Sources */,
+				726A7EBB2EBD92B300D95388 /* ProfileDetailView.swift in Sources */,
+				726A7EBC2EBD92B300D95388 /* EmailEditView.swift in Sources */,
+				726A7EBD2EBD92B300D95388 /* NameEditView.swift in Sources */,
 				D0480AE52A4D462500502818 /* Dashboard.swift in Sources */,
 				4FF4ABB42AB23FC8001A064A /* MultipleDayPicker.swift in Sources */,
 				4F4868BD2AC3A3E900E1733A /* EmailComposerView.swift in Sources */,

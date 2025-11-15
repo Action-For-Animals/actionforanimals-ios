@@ -75,6 +75,11 @@ class Store: ObservableObject {
             state.missingReps = missingReps
         case let .SetLocation(location):
             state.location = location
+            // Clear contacts when location changes so spinner shows for new area
+            state.contacts = []
+            // Also clear cached contacts since they're for the old location
+            UserDefaults.standard.removeObject(forKey: "cachedContacts")
+            UserDefaults.standard.removeObject(forKey: "contactsFetchTime")
         case let .SetCategoryFilter(filter):
             state.selectedCategoryFilter = filter
         case let .SetLoadingStatsError(error):
@@ -104,7 +109,12 @@ class Store: ObservableObject {
             state.changedCampaignIds.remove(campaignId)
         case .UpdateWeeklyStreak:
             updateWeeklyStreak(state: state)
-        case .FetchStats, .FetchIssues,
+        case let .IncrementMonthlyAnimals(animalsHelped):
+            state.animalsHelpedThisMonth += animalsHelped
+        case let .SetCurrentLeaderboard(participants, meta):
+            state.cachedCurrentLeaderboard = participants
+            state.cachedCurrentMeta = meta
+        case .FetchStats, .FetchIssues, .FetchCurrentLeaderboard,
                 .FetchContacts(_),
                 .ReportOutcome(_, _, _),
                 .LogSearch(_),

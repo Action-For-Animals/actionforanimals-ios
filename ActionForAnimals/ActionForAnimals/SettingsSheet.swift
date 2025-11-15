@@ -14,13 +14,14 @@ private let appUrl = URL(string: "https://itunes.apple.com/us/app/myapp/id\(appI
 struct SettingsSheet: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var store: Store
-    
+
     // Sheet states
     @State var showRemindersSheet = false
     @State var showEmailComposer = false
     @State var showEmailComposerAlert = false
     @State var showWelcome = false
     @State private var callingGroup: String = UserDefaults.standard.string(forKey: UserDefaultsKey.callingGroup.rawValue) ?? ""
+    @ObservedObject private var profileManager = ProfileManager.shared
     
     private var versionString: String? = {
         guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
@@ -32,6 +33,13 @@ struct SettingsSheet: View {
     var body: some View {
         NavigationStack {
             List {
+                // Profile Section
+                Section {
+                    NavigationLink(destination: ProfileDetailView()) {
+                        ProfileCardView(profile: profileManager.currentProfile)
+                    }
+                }
+
                 // General Section
                 Section {
                     AboutListItem(title: R.string.localizable.menuScheduledReminders(),

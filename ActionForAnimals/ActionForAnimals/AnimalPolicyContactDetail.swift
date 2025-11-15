@@ -147,31 +147,14 @@ struct AnimalPolicyContactDetail: View {
                     Spacer()
                 }
 
-                if actionType == .email {
-                    // Individual email link
-                    if let email = currentContact.email, !email.isEmpty {
-                        Text(email)
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color.afaDarkBlueText)
-                            .onTapGesture {
-                                self.openEmail(email: email)
-                            }
-                            .onLongPressGesture(minimumDuration: 1.0) {
-                                copyContactInfo(email)
-                            }
-                            .accessibilityAddTraits(.isButton)
-                            .accessibilityHint("Tap to open email app, long press to copy email address")
-                    } else {
-                        Text("No email available")
-                            .font(.title)
-                            .fontWeight(.semibold)
-                            .foregroundColor(Color.secondary)
-                    }
-                } else if actionType == .batchEmail {
-                    // NEW: Batch email compose button
+                if actionType == .email || actionType == .batchEmail {
+                    // Email compose button for both individual and batch emails
                     Button(action: {
-                        self.openBatchEmail()
+                        if actionType == .batchEmail {
+                            self.openBatchEmail()
+                        } else if let email = currentContact.email, !email.isEmpty {
+                            self.openEmail(email: email)
+                        }
                     }) {
                         HStack(spacing: 8) {
                             Image(systemName: "envelope.fill")
@@ -187,8 +170,12 @@ struct AnimalPolicyContactDetail: View {
                         .cornerRadius(10)
                     }
                     .onLongPressGesture(minimumDuration: 1.0) {
-                        let emailList = getAllTargetEmails()
-                        copyContactInfo(emailList)
+                        if actionType == .batchEmail {
+                            let emailList = getAllTargetEmails()
+                            copyContactInfo(emailList)
+                        } else if let email = currentContact.email, !email.isEmpty {
+                            copyContactInfo(email)
+                        }
                     }
                     .accessibilityAddTraits(.isButton)
                     .accessibilityHint("Tap to open email app, long press to copy all email addresses")

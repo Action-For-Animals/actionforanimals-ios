@@ -9,7 +9,7 @@
 import Foundation
 import RswiftResources
 
-struct Contact : Decodable {
+struct Contact : Codable {
     let id: String
     let area: String
     let name: String

@@ -14,9 +14,13 @@ func appMiddleware() -> Middleware<AppState> {
             fetchStats(issueID: issueID, dispatch: dispatch)
         case .FetchIssues:
             fetchIssues(state: state, dispatch: dispatch)
+        case .FetchCurrentLeaderboard:
+            fetchCurrentLeaderboard(dispatch: dispatch)
         case let .FetchContacts(location):
             fetchContacts(location: location, state: state, dispatch: dispatch)
         case let .SetLocation(location):
+            // Always show loading for location changes (getting new representatives)
+            dispatch(.SetFetchingContacts(true))
             fetchContacts(location: location, state: state, dispatch: dispatch)
         case let .ReportOutcome(issue, contactLog, outcome):
             // TODO: migrate ContactLog issueId to Int after UIKit is gone
@@ -26,16 +30,28 @@ func appMiddleware() -> Middleware<AppState> {
                 if outcome.status != "skip" {
                     dispatch(.SetIssueContactCompletion(issueId, contactLog))
                     dispatch(.TrackImpact(contactLog, issue))
+
+                    // Increment monthly animals counter
+                    let animalsHelped = contactLog.animalsHelped ?? 1
+                    dispatch(.IncrementMonthlyAnimals(animalsHelped))
                 }
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
 
             // Only report outcome to server if it's not a skip - skips should not update counts
             if outcome.status != "skip" {
-                reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch)
+                // Calculate updated count to send to server (current count + this action)
+                let animalsHelped = contactLog.animalsHelped ?? 1
+                let updatedMonthlyCount = state.animalsHelpedThisMonth + animalsHelped
+                reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch, updatedCount: updatedMonthlyCount)
 
                 // Update weekly streak when user takes an action
                 dispatch(.UpdateWeeklyStreak)
+
+                // Refresh leaderboard cache only if user is in current month's league
+                if isUserInCurrentMonthLeague() {
+                    dispatch(.FetchCurrentLeaderboard)
+                }
             }
         case let .LogSearch(searchQuery):
             logSearch(searchQuery: searchQuery)
@@ -47,7 +63,7 @@ func appMiddleware() -> Middleware<AppState> {
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
                 .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .ShowYourImpact, .SetDistrict, .SetSplitDistrict, .SetLowAccuracyMessage, .SetMissingReps, .SetCategoryFilter,
-                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata, .UpdateWeeklyStreak, .TrackImpact:
+                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata, .UpdateWeeklyStreak, .IncrementMonthlyAnimals, .TrackImpact, .SetCurrentLeaderboard:
             // no middleware actions for these, including for completeness
             break
         }
@@ -143,7 +159,10 @@ private func fetchIssuesWithLocation(city: String?, county: String?, state: Stri
 }
 
 private func fetchContacts(location: UserLocation, state: AppState, dispatch: @escaping Dispatcher) {
-    dispatch(.SetFetchingContacts(true))
+    // Only show loading spinner if we have no cached contacts (new location scenario)
+    if state.contacts.isEmpty {
+        dispatch(.SetFetchingContacts(true))
+    }
 
     let queue = OperationQueue.main
     let operation = FetchContactsOperation(location: location)
@@ -198,6 +217,13 @@ private func fetchContacts(location: UserLocation, state: AppState, dispatch: @e
             }
             dispatch(.SetMissingReps(missingReps))
             dispatch(.SetContacts(contacts))
+
+            // Save contacts to cache for future app launches
+            let encoder = JSONEncoder()
+            if let data = try? encoder.encode(contacts) {
+                UserDefaults.standard.set(data, forKey: "cachedContacts")
+                UserDefaults.standard.set(Date(), forKey: "contactsFetchTime")
+            }
         } else if let error = operation?.error {
             DispatchQueue.main.async {
                 dispatch(.SetLoadingContactsError(error))
@@ -212,8 +238,8 @@ private func fetchContacts(location: UserLocation, state: AppState, dispatch: @e
     queue.addOperation(operation)
 }
 
-private func reportOutcome(log: ContactLog, outcome: Outcome, dispatch: @escaping Dispatcher) {
-    let operation = ReportOutcomeOperation(log: log, outcome: outcome)
+private func reportOutcome(log: ContactLog, outcome: Outcome, dispatch: @escaping Dispatcher, updatedCount: Int) {
+    let operation = ReportOutcomeOperation(log: log, outcome: outcome, animalsHelpedThisMonth: updatedCount)
     operation.completionBlock = { [weak operation] in
         // If we got an updated issue count, dispatch action to update the state
         if let issueCount = operation?.updatedIssueCount,
@@ -234,6 +260,34 @@ private func reportOutcome(log: ContactLog, outcome: Outcome, dispatch: @escapin
 private func logSearch(searchQuery: String) {
     // we don't actually care about the result of this so no need to set the callback
     OperationQueue.main.addOperation(LogSearchOperation(searchQuery: searchQuery))
+}
+
+private func fetchCurrentLeaderboard(dispatch: @escaping Dispatcher) {
+    let queue = OperationQueue.main
+    let operation = FetchCurrentMonthLeaderboardOperation()
+    operation.completionBlock = { [weak operation] in
+        if let participants = operation?.currentLeaderboard, let meta = operation?.currentMeta {
+            DispatchQueue.main.async {
+                dispatch(.SetCurrentLeaderboard(participants, meta))
+                print("🏆 [fetchCurrentLeaderboard] Successfully cached \(participants.count) participants")
+            }
+        } else if let error = operation?.error {
+            print("❌ [fetchCurrentLeaderboard] Error: \\(error.localizedDescription)")
+        }
+    }
+    queue.addOperation(operation)
+}
+
+private func isUserInCurrentMonthLeague() -> Bool {
+    var calendar = Calendar(identifier: .gregorian)
+    calendar.timeZone = TimeZone(identifier: "UTC")!
+    let now = Date()
+    let currentMonthKey = String(format: "%04d-%02d",
+                               calendar.component(.year, from: now),
+                               calendar.component(.month, from: now))
+
+    let lastLeagueMonth = UserDefaults.standard.string(forKey: UserDefaultsKey.lastLeagueMonth.rawValue)
+    return lastLeagueMonth == currentMonthKey
 }
 
 private func findChangedCampaigns(old: [AnimalPolicy], new: [AnimalPolicy]) -> [Int] {

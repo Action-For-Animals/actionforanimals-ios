@@ -13,24 +13,28 @@ struct ScriptReplacements {
     
     static func replacing(script: String, contact: Contact, location: UserLocation?) -> String {
         var replacedScript = ScriptReplacements.chooseSubscript(script: script, contact: contact)
-        
+
         replacedScript = ScriptReplacements.replacingContact(script: replacedScript, contact: contact)
-        
+
         if let location {
             replacedScript = ScriptReplacements.replacingLocation(script: replacedScript, location: location)
         }
-        
+
+        replacedScript = ScriptReplacements.replacingUserName(script: replacedScript)
+
         return replacedScript
     }
     
     // Method for corporate targets - now requires issue context for corporateInfo
     static func replacing(script: String, target: Target, issue: AnimalPolicy, location: UserLocation?) -> String {
         var replacedScript = ScriptReplacements.replacingTarget(script: script, target: target, issue: issue)
-        
+
         if let location {
             replacedScript = ScriptReplacements.replacingLocation(script: replacedScript, location: location)
         }
-        
+
+        replacedScript = ScriptReplacements.replacingUserName(script: replacedScript)
+
         return replacedScript
     }
     
@@ -41,11 +45,13 @@ struct ScriptReplacements {
         } else if let target = target, let issue = issue {
             return replacing(script: script, target: target, issue: issue, location: location)
         } else {
-            // Just replace location if provided
+            // Just replace location and user name if provided
+            var replacedScript = script
             if let location = location {
-                return ScriptReplacements.replacingLocation(script: script, location: location)
+                replacedScript = ScriptReplacements.replacingLocation(script: replacedScript, location: location)
             }
-            return script
+            replacedScript = ScriptReplacements.replacingUserName(script: replacedScript)
+            return replacedScript
         }
     }
     
@@ -123,6 +129,22 @@ struct ScriptReplacements {
     static func replacingLocation(script: String, location: UserLocation) -> String {
         let pattern = /\[CITY,\s?ZIP\]|\[CITY,\s?STATE\]|\*{2}\[CITY, ZIP\]\*{2}/
         return script.replacing(Regex(pattern), with: location.locationDisplay)
+    }
+
+    static func replacingUserName(script: String) -> String {
+        let pattern = /\[Name\]|\[NAME\]/
+        let userProfile = ProfileManager.shared.currentProfile
+
+        // Check if user has set a meaningful name
+        let hasValidFirstName = userProfile.firstName != nil && !userProfile.firstName!.isEmpty
+
+        if hasValidFirstName {
+            // Use the actual name (displayName handles firstName + lastName logic)
+            return script.replacing(Regex(pattern), with: userProfile.displayName)
+        } else {
+            // User hasn't set their name - keep placeholder
+            return script.replacing(Regex(pattern), with: "[Your Name]")
+        }
     }
 }
 

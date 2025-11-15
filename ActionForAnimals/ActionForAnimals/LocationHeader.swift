@@ -59,15 +59,14 @@ struct LocationHeader: View {
                         .fontWeight(.medium)
                 }
             }
-            .padding(.horizontal, usingRegularFonts() ? 15 : 5)
+            .padding(.horizontal, usingRegularFonts() ? 8 : 5)
             .padding(.vertical, 10)
             if usingRegularFonts() {
                 Image(systemName: "location.circle")
                     .imageScale(.large)
                     .symbolRenderingMode(.hierarchical)
                     .font(.title3)
-                    .padding(.trailing)
-                    .padding(.leading, 7)
+                    .padding(.trailing, 5)
             }
         }
         .accessibilityElement(children: .ignore)
@@ -88,8 +87,7 @@ struct LocationHeader: View {
                 .imageScale(.large)
                 .symbolRenderingMode(.hierarchical)
                 .font(.title3)
-                .padding(.trailing)
-                .padding(.leading, 7)
+                .padding(.trailing, 5)
         }
         .accessibilityElement(children: .ignore)
         .accessibilityLabel(Text(R.string.localizable.setYourLocation))

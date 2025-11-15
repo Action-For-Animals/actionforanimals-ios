@@ -249,14 +249,14 @@ struct AnimalPolicy: Identifiable, Codable {
 }
 
 // Supporting models for corporate campaigns
-struct Target: Identifiable, Codable {
+struct Target: Identifiable, Codable, Equatable {
     let id: String
     let name: String
     let email: String?
     let phone: String?
     let department: String?
     let jobTitle: String?
-    
+
     enum CodingKeys: String, CodingKey {
         case id, name, email, phone, department
         case jobTitle = "title"
@@ -270,22 +270,22 @@ struct CorporateInfo: Codable {
     let headquarters: String?
 }
 
-struct Actions: Codable {
+struct Actions: Codable, Equatable {
     let call: CallAction?
     let email: EmailAction?
 }
 
-struct CallAction: Codable {
+struct CallAction: Codable, Equatable {
     let enabled: Bool
     let script: String
 }
 
-struct EmailAction: Codable {
+struct EmailAction: Codable, Equatable {
     let enabled: Bool
     let distributionMethod: String?
     let subject: String
     let template: String
-    
+
     enum CodingKeys: String, CodingKey {
         case enabled
         case distributionMethod = "distribution_method"
@@ -303,9 +303,19 @@ enum ActionType {
 
 extension AnimalPolicy: Equatable, Hashable {
     static func == (lhs: AnimalPolicy, rhs: AnimalPolicy) -> Bool {
-        return lhs.id == rhs.id
+        return lhs.id == rhs.id &&
+               lhs.name == rhs.name &&
+               lhs.contactType == rhs.contactType &&
+               lhs.totalActionCount == rhs.totalActionCount &&
+               lhs.contactAreas == rhs.contactAreas &&
+               lhs.status == rhs.status &&
+               lhs.targets == rhs.targets &&
+               lhs.actions?.call?.enabled == rhs.actions?.call?.enabled &&
+               lhs.actions?.email?.enabled == rhs.actions?.email?.enabled &&
+               lhs.actions?.email?.distributionMethod == rhs.actions?.email?.distributionMethod &&
+               lhs.categories.first?.name == rhs.categories.first?.name
     }
-    
+
     func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }

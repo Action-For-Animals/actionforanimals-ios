@@ -39,4 +39,7 @@ enum UserDefaultsKey : String {
 
     case weeklyStreak // current weekly streak count
     case lastActionWeek // last week user took an action (YYYY-ww format)
+    case animalsHelpedThisMonth // animals helped in current month for league
+    case lastMonthlyCountUpdate // last month when counter was updated (YYYY-MM format)
+    case lastLeagueMonth // last month user joined a league (YYYY-MM format)
 }
