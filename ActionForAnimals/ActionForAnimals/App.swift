@@ -66,6 +66,51 @@ struct ActionForAnimalsApp: App {
                             print("✅ [App] Using cached issues - still fresh")
                         }
 
+                        // Handle contacts cache and fetching - consolidate all contacts logic here
+                        if let location = store.state.location {
+                            if store.state.needsContactsRefresh {
+                                if let contactsFetchTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
+                                    let ageMinutes = Date().timeIntervalSince(contactsFetchTime) / 60
+                                    print("🔄 [App] Fetching fresh contacts - cache expired (\(String(format: "%.1f", ageMinutes)) minutes old)")
+                                } else {
+                                    print("🔄 [App] Fetching fresh contacts - no previous fetch time")
+                                }
+                                store.dispatch(action: .FetchContacts(location))
+                            } else {
+                                // Cache is fresh, but check if contacts are actually loaded in memory
+                                if store.state.contacts.isEmpty {
+                                    print("⚠️ [App] Contacts cache is fresh but not in memory - reloading from disk")
+                                    // Reload contacts from disk cache
+                                    if let cachedContactsData = UserDefaults.standard.data(forKey: "cachedContacts") {
+                                        let decoder = JSONDecoder()
+                                        do {
+                                            let cachedContacts = try decoder.decode([Contact].self, from: cachedContactsData)
+                                            store.dispatch(action: .SetContacts(cachedContacts))
+                                            print("📋 [App] Reloaded \(cachedContacts.count) contacts from disk cache")
+                                        } catch {
+                                            print("❌ [App] Failed to decode cached contacts from disk: \(error)")
+                                            // Clear corrupted cache and fetch fresh
+                                            UserDefaults.standard.removeObject(forKey: "cachedContacts")
+                                            UserDefaults.standard.removeObject(forKey: "contactsFetchTime")
+                                            store.dispatch(action: .FetchContacts(location))
+                                        }
+                                    } else {
+                                        print("❌ [App] No cached contacts on disk despite fresh timestamp - fetching fresh")
+                                        store.dispatch(action: .FetchContacts(location))
+                                    }
+                                } else {
+                                    if let contactsFetchTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
+                                        let ageMinutes = Date().timeIntervalSince(contactsFetchTime) / 60
+                                        print("✅ [App] Using cached contacts - still fresh (\(String(format: "%.1f", ageMinutes)) minutes old)")
+                                    } else {
+                                        print("✅ [App] Using cached contacts - no timestamp available")
+                                    }
+                                }
+                            }
+                        } else {
+                            print("📍 [App] No location set - contacts will be fetched when location is available")
+                        }
+
                         // Refresh leaderboard cache only if user is in current month's league
                         if isUserInCurrentMonthLeague() {
                             print("🏆 [App] User is in league - refreshing leaderboard cache")

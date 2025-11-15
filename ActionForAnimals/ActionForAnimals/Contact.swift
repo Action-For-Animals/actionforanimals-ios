@@ -15,47 +15,38 @@ struct Contact : Codable {
     let name: String
     let party: String
     let phone: String
-    let photoURL: URL?
+    private let photoURLString: String?
     let reason: String?
     let state: String?
     let fieldOffices: [AreaOffice]
-    
+
     // ✨ NEW: Corporate support fields
     let email: String?
-    let contactType: ContactType
+    private let contactTypeRaw: ContactType?
     let metadata: [String: String]?
-    
+
+    // Computed properties for special handling
+    var photoURL: URL? {
+        photoURLString.flatMap(URL.init)
+    }
+
+    var contactType: ContactType {
+        contactTypeRaw ?? .representatives
+    }
+
     enum CodingKeys: String, CodingKey {
         case id
         case area
         case name
         case party
         case phone
-        case photoURL
+        case photoURLString = "photoURL"
         case reason
         case state
         case fieldOffices = "field_offices"
         case email
-        case contactType
+        case contactTypeRaw = "contactType"
         case metadata
-    }
-    
-    init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        id = try container.decode(String.self, forKey: .id)
-        area = try container.decode(String.self, forKey: .area)
-        name = try container.decode(String.self, forKey: .name)
-        party = try container.decode(String.self, forKey: .party)
-        phone = try container.decode(String.self, forKey: .phone)
-        photoURL = (try container.decode(String?.self, forKey: .photoURL)).flatMap(URL.init)
-        reason = try container.decode(String.self, forKey: .reason)
-        state = try container.decode(String.self, forKey: .state)
-        fieldOffices = try container.decode([AreaOffice]?.self, forKey: .fieldOffices) ?? []
-        
-        // ✨ NEW: Decode new fields with defaults for backward compatibility
-        email = try container.decodeIfPresent(String.self, forKey: .email)
-        contactType = try container.decodeIfPresent(ContactType.self, forKey: .contactType) ?? .representatives
-        metadata = try container.decodeIfPresent([String: String].self, forKey: .metadata)
     }
 
     // 🔄 CHANGED: Updated legacy initializer for political contacts
@@ -65,17 +56,17 @@ struct Contact : Codable {
         self.name = name
         self.party = party
         self.phone = phone
-        self.photoURL = photoURL
+        self.photoURLString = photoURL?.absoluteString
         self.reason = nil
         self.state = nil
         self.fieldOffices = fieldOffices
-        
+
         // ✨ NEW: Default values for new fields
         self.email = nil
-        self.contactType = .representatives
+        self.contactTypeRaw = .representatives
         self.metadata = nil
     }
-    
+
     // ✨ NEW: Initializer for corporate contacts (used when creating from Target)
     init(id: String,
          name: String,
@@ -87,13 +78,13 @@ struct Contact : Codable {
         self.name = name
         self.phone = phone ?? ""
         self.email = email
-        self.contactType = contactType
+        self.contactTypeRaw = contactType
         self.metadata = metadata
-        
+
         // Political fields (not relevant for corporate but required)
         self.area = ""
         self.party = ""
-        self.photoURL = nil
+        self.photoURLString = nil
         self.reason = nil
         self.state = nil
         self.fieldOffices = []
@@ -105,7 +96,7 @@ struct Contact : Codable {
         self.name = target.name
         self.phone = target.phone ?? ""
         self.email = target.email
-        self.contactType = .corporate
+        self.contactTypeRaw = .corporate
         // Create metadata dictionary from Target properties
         var metadata: [String: String] = [:]
         if let department = target.department {
@@ -115,11 +106,11 @@ struct Contact : Codable {
             metadata["title"] = jobTitle
         }
         self.metadata = metadata.isEmpty ? nil : metadata
-        
+
         // Political fields (not relevant for corporate but required)
         self.area = ""
         self.party = ""
-        self.photoURL = nil
+        self.photoURLString = nil
         self.reason = nil
         self.state = nil
         self.fieldOffices = []

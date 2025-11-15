@@ -55,45 +55,8 @@ struct Dashboard: View {
             AnalyticsManager.shared.trackPageview(path: "/")
             print("📱 [Dashboard] onAppear() triggered")
 
-            if let location = store.state.location {
-                print("📍 [Dashboard] Location exists: \(location.locationDisplay)")
-                if store.state.needsContactsRefresh {
-                    if let contactsFetchTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
-                        let ageSeconds = Date().timeIntervalSince(contactsFetchTime)
-                        if ageSeconds < 3600 { // Less than 1 hour
-                            let ageMinutes = ageSeconds / 60
-                            print("🔄 [Dashboard] Fetching fresh contacts - cache expired (\(String(format: "%.1f", ageMinutes)) minutes old)")
-                        } else if ageSeconds < 86400 { // Less than 1 day
-                            let ageHours = ageSeconds / 3600
-                            print("🔄 [Dashboard] Fetching fresh contacts - cache expired (\(String(format: "%.1f", ageHours)) hours old)")
-                        } else {
-                            let ageDays = ageSeconds / (24 * 60 * 60)
-                            print("🔄 [Dashboard] Fetching fresh contacts - cache expired (\(String(format: "%.1f", ageDays)) days old)")
-                        }
-                    } else {
-                        print("🔄 [Dashboard] Fetching fresh contacts - no previous fetch time")
-                    }
-                    store.dispatch(action: .FetchContacts(location))
-                } else {
-                    if let contactsFetchTime = UserDefaults.standard.object(forKey: "contactsFetchTime") as? Date {
-                        let ageSeconds = Date().timeIntervalSince(contactsFetchTime)
-                        if ageSeconds < 3600 { // Less than 1 hour
-                            let ageMinutes = ageSeconds / 60
-                            print("✅ [Dashboard] Using cached contacts - still fresh (\(String(format: "%.1f", ageMinutes)) minutes old)")
-                        } else if ageSeconds < 86400 { // Less than 1 day
-                            let ageHours = ageSeconds / 3600
-                            print("✅ [Dashboard] Using cached contacts - still fresh (\(String(format: "%.1f", ageHours)) hours old)")
-                        } else {
-                            let ageDays = ageSeconds / (24 * 60 * 60)
-                            print("✅ [Dashboard] Using cached contacts - still fresh (\(String(format: "%.1f", ageDays)) days old)")
-                        }
-                    } else {
-                        print("✅ [Dashboard] Using cached contacts - no timestamp available")
-                    }
-                }
-            } else {
-                print("❌ [Dashboard] No location set")
-            }
+            // All contacts loading is now handled by App.scenePhase
+            print("📱 [Dashboard] onAppear - contacts handled by App lifecycle")
 
             // Initialize category filter from user preferences
             initializeCategoryFromPreferences()

@@ -132,7 +132,7 @@ struct ScriptReplacements {
     }
 
     static func replacingUserName(script: String) -> String {
-        let pattern = /\[Name\]|\[NAME\]/
+        let pattern = /\*{2}\[Name\]\*{2}|\*{2}\[NAME\]\*{2}|\[Name\]|\[NAME\]/
         let userProfile = ProfileManager.shared.currentProfile
 
         // Check if user has set a meaningful name
