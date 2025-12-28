@@ -207,12 +207,18 @@ struct AnimalPolicyDetail: View {
     // MARK: - Helper Methods
     private func getPreferredActionType() -> IssueDetailNavModel.ActionType {
         if issue.contactType == .corporate {
-            // For corporate campaigns, prefer email if enabled, otherwise call
-            if issue.actions?.email?.enabled == true {
+            // For corporate campaigns, prefer email if enabled, fallback to call
+            if issue.isEmailEnabled() {
                 return .email
             }
+            return .call
+        } else {
+            // For representative campaigns, prefer call if enabled, fallback to email
+            if issue.isCallEnabled() {
+                return .call
+            }
+            return .email
         }
-        return .call
     }
     
     // MARK: - Contact Lists

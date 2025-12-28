@@ -48,6 +48,9 @@ class FetchAnimalPolicyOperation: BaseOperation, @unchecked Sendable {
             queryItems.append(URLQueryItem(name: "city", value: city))
         }
 
+        // Use v2 API to get representative campaigns with email support
+        queryItems.append(URLQueryItem(name: "v", value: "2"))
+
         // Add calling group if it exists
         if let callingGroup = UserDefaults.standard.string(forKey: UserDefaultsKey.callingGroup.rawValue),
            !callingGroup.isEmpty {
