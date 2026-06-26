@@ -68,7 +68,7 @@ struct AnimalPolicyContactDetail: View {
                 // Contact method section (phone, email, or batch email)
                 contactMethodSection
                 
-                Text(issueMarkdown)
+                SelectableTextView(attributedString: issueMarkdown)
                     .padding(.bottom)
                 
                 OutcomesView(outcomes: getOutcomesForActionType(), report: { outcome in

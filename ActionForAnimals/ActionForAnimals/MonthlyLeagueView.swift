@@ -224,7 +224,7 @@ struct MonthlyLeagueView: View {
                         Text("Let's get your profile ready!")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
 
                         Text("Add your nickname and email to participate in this month's challenge!")
                             .font(.body)
@@ -235,7 +235,7 @@ struct MonthlyLeagueView: View {
                         Text("Ready to make a difference!")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
 
                         Text("Take your first action to join the challenge!")
                             .font(.body)
@@ -246,7 +246,7 @@ struct MonthlyLeagueView: View {
                         Text("Ready to compete!")
                             .font(.title2)
                             .fontWeight(.semibold)
-                            .foregroundColor(.black)
+                            .foregroundColor(.primary)
 
                         Text(userWasInPreviousMonth()
                              ? "Continue your streak in this month's challenge!"
@@ -348,7 +348,7 @@ struct MonthlyLeagueView: View {
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(8)
                     }
                     .padding(.horizontal)
@@ -397,7 +397,7 @@ struct MonthlyLeagueView: View {
                         }
                         .padding(.horizontal, 8)
                         .padding(.vertical, 4)
-                        .background(Color.white)
+                        .background(Color(.systemBackground))
                         .cornerRadius(8)
                     }
                     .padding(.horizontal)

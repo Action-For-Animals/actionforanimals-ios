@@ -11,7 +11,8 @@ import SwiftUI
 struct AnimalPolicySplitView: View {
     @EnvironmentObject var store: Store
     @Environment(\.horizontalSizeClass) private var originalSizeClass
-    
+    @State private var pendingDeepLinkSlug: String?
+
     var body: some View {
         TabView(selection: $store.state.selectedTab) {
             NavigationSplitView(columnVisibility: .constant(.all)) {
@@ -63,6 +64,24 @@ struct AnimalPolicySplitView: View {
                 .tag("leagues")
         }// the new TabBar style in iOS 18 does not work well with this style, for now override the size class so it uses the old style on iPadOS
         .environment(\.horizontalSizeClass, .compact)
+        .onContinueUserActivity(NSUserActivityTypeBrowsingWeb) { activity in
+            guard let url = activity.webpageURL,
+                  url.pathComponents.count >= 3,
+                  url.pathComponents[1] == "campaign" else { return }
+            let slug = url.pathComponents[2]
+            store.state.selectedTab = "issues"
+            if let issue = store.state.issues.first(where: { $0.slug == slug }) {
+                store.state.issueRouter.selectedIssue = issue
+            } else {
+                pendingDeepLinkSlug = slug
+            }
+        }
+        .onChange(of: store.state.issues) { issues in
+            guard let slug = pendingDeepLinkSlug,
+                  let issue = issues.first(where: { $0.slug == slug }) else { return }
+            store.state.issueRouter.selectedIssue = issue
+            pendingDeepLinkSlug = nil
+        }
         .sheet(isPresented: $store.state.showYourImpact) {
             YourImpact()
                 .environmentObject(store)

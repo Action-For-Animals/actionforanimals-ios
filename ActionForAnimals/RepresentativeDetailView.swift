@@ -138,7 +138,7 @@ struct RepresentativeDetailView: View {
                         VStack(spacing: 0) {
                             contactMethodsCards
                         }
-                        .background(Color.white)
+                        .background(Color(.secondarySystemGroupedBackground))
                         .cornerRadius(10)
                         .padding(.horizontal, 16)
                     }

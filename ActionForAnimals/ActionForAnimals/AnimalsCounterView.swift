@@ -40,7 +40,7 @@ struct AnimalsCounterView: View {
             }
             .padding(.horizontal, 8)
             .padding(.vertical, 6)
-            .background(Color.gray.opacity(0.1))
+            .background(Color(.systemGray5))
             .cornerRadius(16)
             // Discovery hint glow effect
             .overlay(

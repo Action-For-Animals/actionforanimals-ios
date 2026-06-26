@@ -477,7 +477,7 @@ struct AchievementCard: View {
         .frame(width: 140, height: 160)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .fill(achievement.isUnlocked ? Color.white : Color.gray.opacity(0.1))
+                .fill(achievement.isUnlocked ? Color(.systemBackground) : Color.gray.opacity(0.1))
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(achievement.isUnlocked ? Color.afaGreen : Color.gray.opacity(0.3), lineWidth: achievement.isUnlocked ? 2 : 1)

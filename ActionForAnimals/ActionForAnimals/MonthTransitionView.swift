@@ -132,7 +132,7 @@ struct MonthTransitionView: View {
                                             .padding(.horizontal, 16)
                                             .background(
                                                 RoundedRectangle(cornerRadius: 12)
-                                                    .fill(Color.white)
+                                                    .fill(Color(.systemBackground))
                                             )
                                         }
                                     }

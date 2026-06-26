@@ -71,7 +71,7 @@ struct AnimalPolicy: Identifiable, Codable {
     }
 
     var shareURL: URL {
-        return URL(string: String(format: "https://actionforanimals.substack.com/p/%@", self.slug.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? self.slug))!
+        return URL(string: String(format: "https://sxfa.org/campaign/%@", self.slug.trimmingCharacters(in: .whitespacesAndNewlines).addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? self.slug))!
     }
     
     var hasHouse: Bool { contactAreas.contains("US House") }

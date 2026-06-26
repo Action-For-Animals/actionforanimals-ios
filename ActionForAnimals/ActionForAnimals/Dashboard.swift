@@ -62,6 +62,7 @@ struct Dashboard: View {
             initializeCategoryFromPreferences()
         }
         .onOpenURL(perform: { url in
+            store.state.selectedTab = "issues"
             if store.state.issues.isEmpty {
                 selectedIssueUrl = url
             } else {

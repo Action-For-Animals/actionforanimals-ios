@@ -26,6 +26,7 @@
 		558C17D1893D9289DF88BC95 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 54BC1EE211AE6068BB864845 /* CoreMedia.framework */; };
 		60C6E15E18B252A35EF14CFA /* CoreVideo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */; };
 		7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7221C2012E6F85D90031FD52 /* ContactType.swift */; };
+		723EE3EC2FEDF76A00C3F752 /* SelectableText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 723EE3EB2FEDF76A00C3F752 /* SelectableText.swift */; };
 		724B93202E7341BC001E6368 /* SettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 724B931F2E7341BC001E6368 /* SettingsSheet.swift */; };
 		725AE3FE2EB1755B008D2E73 /* AchievementCelebration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */; };
 		725AE41A2EB19E2E008D2E73 /* AchievementRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 725AE4192EB19E2E008D2E73 /* AchievementRegistry.swift */; };
@@ -204,6 +205,7 @@
 		5ABA0689883ACB6DB0A09A37 /* CoreVideo.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreVideo.framework; path = System/Library/Frameworks/CoreVideo.framework; sourceTree = SDKROOT; };
 		714B1EC1C91D8E5AED00D1D6 /* Bridging-Header.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Bridging-Header.h"; sourceTree = "<group>"; };
 		7221C2012E6F85D90031FD52 /* ContactType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContactType.swift; sourceTree = "<group>"; };
+		723EE3EB2FEDF76A00C3F752 /* SelectableText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectableText.swift; sourceTree = "<group>"; };
 		724B931F2E7341BC001E6368 /* SettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsSheet.swift; sourceTree = "<group>"; };
 		72549E0D2E65088B007E8D87 /* ActionforAnimalsRelease.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ActionforAnimalsRelease.entitlements; sourceTree = "<group>"; };
 		725AE3FD2EB1755B008D2E73 /* AchievementCelebration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCelebration.swift; sourceTree = "<group>"; };
@@ -454,6 +456,7 @@
 		B52805131E3FA94D00EE832A /* ActionForAnimals */ = {
 			isa = PBXGroup;
 			children = (
+				723EE3EB2FEDF76A00C3F752 /* SelectableText.swift */,
 				D0BA59B71F9547270069DA58 /* ActionForAnimals.entitlements */,
 				72FF485F2E9B1C530016DE37 /* GoogleService-Info.plist */,
 				B502806D1E497C1400749ED7 /* Resources */,
@@ -931,6 +934,7 @@
 				D03A20512AC53B9B008BBA6E /* Actions.swift in Sources */,
 				A55647621F909C6F002737D4 /* Category.swift in Sources */,
 				7221C2022E6F85E70031FD52 /* ContactType.swift in Sources */,
+				723EE3EC2FEDF76A00C3F752 /* SelectableText.swift in Sources */,
 				D0002E172A9DB34D0098973F /* ContactListItem.swift in Sources */,
 				726A7EAE2EBD921C00D95388 /* UserProfile.swift in Sources */,
 				B512506E21E701DE007D32DF /* ContactList.swift in Sources */,
@@ -1260,7 +1264,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				ONE_SIGNAL_APP_ID = "1c7c4049-267a-4566-9007-1dea19ab335a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1296,7 +1300,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				ONE_SIGNAL_APP_ID = "1c7c4049-267a-4566-9007-1dea19ab335a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1361,7 +1365,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 88;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1372,7 +1376,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals.app.notifications;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1390,7 +1394,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 88;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1401,7 +1405,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.5.0;
+				MARKETING_VERSION = 1.6.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals.notifications;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

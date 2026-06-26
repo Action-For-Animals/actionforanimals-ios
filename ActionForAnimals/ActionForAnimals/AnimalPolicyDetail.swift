@@ -83,9 +83,8 @@ struct AnimalPolicyDetail: View {
                     .padding(.top, 1)
                     .padding(.bottom, 8)
                     
-                Text(issue.markdownIssueReason)
+                SelectableTextView(attributedString: issue.markdownIssueReason)
                     .padding(.bottom, 16)
-                    .accentColor(.afaDarkBlueText)
 
                 // Impact preview section
                 ImpactPreviewView(animalsHelped: issue.animalsHelpedPerAction)
@@ -108,7 +107,12 @@ struct AnimalPolicyDetail: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                AnimalsCounterView()
+                HStack(spacing: 0) {
+                    ShareLink(item: issue.shareURL) {
+                        Image(systemName: "square.and.arrow.up")
+                    }
+                    AnimalsCounterView()
+                }
             }
         }
         .sheet(isPresented: $showLocationSheet) {
