@@ -1248,7 +1248,7 @@
 				CODE_SIGN_ENTITLEMENTS = ActionForAnimals/ActionForAnimals.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 90;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
@@ -1264,7 +1264,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.7.0;
 				ONE_SIGNAL_APP_ID = "1c7c4049-267a-4566-9007-1dea19ab335a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1285,7 +1285,7 @@
 				CODE_SIGN_ENTITLEMENTS = ActionforAnimalsRelease.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 87;
+				CURRENT_PROJECT_VERSION = 90;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -1300,7 +1300,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.7.0;
 				ONE_SIGNAL_APP_ID = "1c7c4049-267a-4566-9007-1dea19ab335a";
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1365,7 +1365,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 90;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1376,7 +1376,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals.app.notifications;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -1394,7 +1394,7 @@
 				CODE_SIGN_ENTITLEMENTS = NotificationsService/NotificationsService.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 88;
+				CURRENT_PROJECT_VERSION = 90;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = CBPAFRBADP;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -1405,7 +1405,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.6.0;
+				MARKETING_VERSION = 1.7.0;
 				PRODUCT_BUNDLE_IDENTIFIER = org.actionforanimals.notifications;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;

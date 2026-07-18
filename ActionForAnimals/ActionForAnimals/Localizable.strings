@@ -191,11 +191,11 @@
 // done
 "done-title"                          = "You took action on **%@**";
 "total-calls"                         = "Total actions";
-"total-policy-calls"                  = "Actions on this topic";
+"total-policy-calls"                  = "Actions on this campaign";
 "support-5calls"                      = "Support Action for Animals";
 "support-5calls-sub"                  = "Keep Action for Animals free and up-to-date";
 "donate-today"                        = "Donate today";
-"share-this-topic"                    = "Share this topic";
+"share-this-topic"                    = "Share this campaign";
 "done-screen-button"                  = "Done";
 "done-screen-title"                   = "Nice work!";
 "contact-summary-header"              = "Contacts";

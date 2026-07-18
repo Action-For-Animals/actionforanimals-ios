@@ -6,6 +6,9 @@
  //  Copyright © 2023 5calls. All rights reserved.
  //
  import Foundation
+ import UserNotifications
+
+let streakRiskNotificationIdentifier = "actionforanimals-streak-risk"
 
 func appMiddleware() -> Middleware<AppState> {
     return { state, action, dispatch in
@@ -34,6 +37,16 @@ func appMiddleware() -> Middleware<AppState> {
                     // Increment monthly animals counter
                     let animalsHelped = contactLog.animalsHelped ?? 1
                     dispatch(.IncrementMonthlyAnimals(animalsHelped))
+
+                    // Keep the completion-time deadline snapshot in sync whenever the
+                    // campaign is (still) fully completed after this action. Build the
+                    // up-to-date completions list explicitly rather than reading
+                    // state.issueCompletion back, since dispatch()'s reducer mutation is
+                    // deferred (DispatchQueue.main.async) and wouldn't reflect this log yet.
+                    let updatedCompletions = (state.issueCompletion[issueId] ?? []) + [contactLog]
+                    if state.isFullyCompleted(issue: issue, completions: updatedCompletions) {
+                        dispatch(.RecordCampaignCompletionDeadline(issue.id, issue.deadline))
+                    }
                 }
             }
             AnalyticsManager.shared.trackEvent(name: "Outcome-\(outcome.status)", path: "/issue/\(issue.slug)/")
@@ -45,8 +58,12 @@ func appMiddleware() -> Middleware<AppState> {
                 let updatedMonthlyCount = state.animalsHelpedThisMonth + animalsHelped
                 reportOutcome(log: contactLog, outcome: outcome, dispatch: dispatch, updatedCount: updatedMonthlyCount)
 
-                // Update weekly streak when user takes an action
+                // Compute the resulting streak directly rather than reading state back
+                // after dispatch(), since dispatch()'s reducer mutation is deferred via
+                // DispatchQueue.main.async and wouldn't reflect this action's update yet.
+                let (resultingStreak, _) = computeNextWeeklyStreak(currentStreak: state.weeklyStreak, lastActionWeek: state.lastActionWeek)
                 dispatch(.UpdateWeeklyStreak)
+                scheduleStreakRiskReminder(currentStreak: resultingStreak)
 
                 // Refresh leaderboard cache only if user is in current month's league
                 if isUserInCurrentMonthLeague() {
@@ -63,7 +80,7 @@ func appMiddleware() -> Middleware<AppState> {
         case .SetGlobalCallCount, .SetIssueCallCount, .SetDonateOn, .SetIssueContactCompletion, .SetContacts,
                 .SetFetchingContacts, .SetIssues, .SetLoadingStatsError, .SetLoadingIssuesError, .SetLoadingContactsError,
                 .GoBack, .GoToRoot, .GoToNext, .ShowWelcomeScreen, .ShowYourImpact, .SetDistrict, .SetSplitDistrict, .SetLowAccuracyMessage, .SetMissingReps, .SetCategoryFilter,
-                .SetChangedCampaigns, .ClearChangedCampaign, .SetLocationMetadata, .UpdateWeeklyStreak, .IncrementMonthlyAnimals, .TrackImpact, .SetCurrentLeaderboard:
+                .SetChangedCampaigns, .ClearChangedCampaign, .RecordCampaignCompletionDeadline, .SetLocationMetadata, .UpdateWeeklyStreak, .IncrementMonthlyAnimals, .TrackImpact, .SetCurrentLeaderboard:
             // no middleware actions for these, including for completeness
             break
         }
@@ -315,6 +332,46 @@ private func findChangedCampaigns(old: [AnimalPolicy], new: [AnimalPolicy]) -> [
 
 private func hasContentChanged(old: AnimalPolicy, new: AnimalPolicy) -> Bool {
     return old.reason != new.reason
+}
+
+// Schedules a one-shot reminder for Friday midday of the current streak week, so users
+// still have business hours left to call before offices close for the weekend. Cancels
+// any previously scheduled streak reminder first, so this is safe to call on every action.
+private func scheduleStreakRiskReminder(currentStreak: Int) {
+    let center = UNUserNotificationCenter.current()
+    center.removePendingNotificationRequests(withIdentifiers: [streakRiskNotificationIdentifier])
+
+    guard currentStreak > 0 else {
+        return
+    }
+    guard let triggerDate = nextFridayMidday(from: Date()), triggerDate > Date() else {
+        return
+    }
+
+    center.getNotificationSettings { settings in
+        guard settings.authorizationStatus == .authorized else { return }
+
+        let content = UNMutableNotificationContent.streakRiskContent(streak: currentStreak)
+        let trigger = UNCalendarNotificationTrigger.oneShotTrigger(date: triggerDate)
+        let request = UNNotificationRequest(identifier: streakRiskNotificationIdentifier, content: content, trigger: trigger)
+        center.add(request)
+    }
+}
+
+// Targets the Friday of the week AFTER `date`'s week, since this is only ever called
+// right after a real action - which already secures the current week's streak, so the
+// only week still at risk is the next one.
+private func nextFridayMidday(from date: Date) -> Date? {
+    var calendar = Calendar.current
+    calendar.firstWeekday = 2 // Monday - matches the weekly streak's week definition
+
+    guard let currentWeekStart = calendar.dateInterval(of: .weekOfYear, for: date)?.start,
+          let nextWeekStart = calendar.date(byAdding: .day, value: 7, to: currentWeekStart),
+          let friday = calendar.date(byAdding: .day, value: 4, to: nextWeekStart) else {
+        return nil
+    }
+
+    return calendar.date(bySettingHour: 12, minute: 0, second: 0, of: friday)
 }
 
 enum MiddlewareError: Error {

@@ -20,16 +20,9 @@ struct AnimalPolicyDone: View {
 
     init(issue: AnimalPolicy) {
         self.issue = issue
-
-        if let titleString = try? AttributedString(markdown:  R.string.localizable.doneTitle(issue.name)) {
-            self.markdownTitle = titleString
-        } else {
-            self.markdownTitle = AttributedString(R.string.localizable.doneScreenTitle())
-        }
     }
 
     let donateURL = URL(string: "https://secure.actblue.com/donate/5calls-donate?refcode=ios&refcode2=\(AnalyticsManager.shared.callerID)")!
-    var markdownTitle: AttributedString!
 
     func latestOutcomeForContact(contact: Contact, issueCompletions: [ContactLog]) -> String {
         // For corporate campaigns, handle completion tracking differently
@@ -73,6 +66,79 @@ struct AnimalPolicyDone: View {
         return latestOutcomeForContact != "Skip"
     }
 
+    var shareMessageText: String {
+        let message: String
+        if let issueCalls = store.state.issueCallCounts[issue.id], issueCalls > 0 {
+            message = "I just joined \(issueCalls) others speaking up for animals on \"\(issue.name)\" — add your voice too:"
+        } else {
+            message = "I just took action for animals on \"\(issue.name)\" — add your voice too:"
+        }
+        return "\(message)\n\(issue.shareURL.absoluteString)"
+    }
+
+    private var celebrationCard: some View {
+        VStack(spacing: 16) {
+            Text("Nice work!")
+                .font(.system(.subheadline, design: .rounded))
+                .fontWeight(.semibold)
+                .foregroundColor(.white)
+                .shadow(color: .black.opacity(0.35), radius: 3, x: 0, y: 1)
+
+            Text("Campaign complete")
+                .font(.system(size: 30, weight: .heavy, design: .rounded))
+                .foregroundColor(.white)
+                .lineLimit(1)
+                .minimumScaleFactor(0.7)
+                .shadow(color: .black.opacity(0.35), radius: 3, x: 0, y: 1)
+
+            ShareLink(item: shareMessageText) {
+                HStack(spacing: 6) {
+                    Text("Share this campaign")
+                        .font(.system(.subheadline, design: .rounded))
+                        .fontWeight(.bold)
+                        .lineLimit(1)
+                    Image(systemName: "square.and.arrow.up")
+                        .fontWeight(.bold)
+                }
+                .foregroundColor(.afaDarkBlue)
+                .padding(.vertical, 10)
+                .frame(maxWidth: .infinity)
+                .background {
+                    Capsule()
+                        .foregroundColor(.white)
+                }
+                .shadow(color: .black.opacity(0.15), radius: 5, x: 0, y: 2)
+            }
+            .padding(.horizontal, 20)
+            .padding(.top, 10)
+            .accessibilityLabel(Text("\(R.string.localizable.shareThisTopic()): \(issue.name)"))
+        }
+        .padding(.top, 60)
+        .padding(.bottom, 40)
+        .frame(maxWidth: .infinity)
+        .background {
+            Image("sanctuary-empty")
+                .resizable()
+                .aspectRatio(contentMode: .fill)
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 24))
+        .shadow(color: Color.afaGreen.opacity(0.3), radius: 12, x: 0, y: 6)
+        .overlay(alignment: .top) {
+            ZStack {
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 64, height: 64)
+                    .shadow(color: .black.opacity(0.15), radius: 6, x: 0, y: 3)
+                Image("animals-high-five")
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(width: 56, height: 56)
+                    .clipShape(Circle())
+            }
+            .offset(y: -32)
+        }
+    }
+
     var getContactsToDisplay: () -> [Contact] {
         return {
             if issue.contactType == .corporate {
@@ -103,21 +169,17 @@ struct AnimalPolicyDone: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading) {
-                HStack {
-                    Spacer()
-                    Text(markdownTitle)
-                        .font(.title2)
-                    Spacer()
-                }.padding(.vertical, 16)
-                VStack {
-                    CountingView(title: R.string.localizable.totalCalls(), count: store.state.globalCallCount)
-                        .padding(.bottom, 14)
+                celebrationCard
+                    .padding(.top, 28)
+                    .padding(.bottom, 16)
+
+                HStack(spacing: 10) {
+                    StatTile(value: store.state.globalCallCount, title: R.string.localizable.totalCalls())
                     if let issueCalls = store.state.issueCallCounts[issue.id] {
-                        CountingView(title: R.string.localizable.totalPolicyCalls(), count: issueCalls)
-                            .padding(.bottom, 14)
+                        StatTile(value: issueCalls, title: R.string.localizable.totalPolicyCalls())
                     }
                 }
-                .padding(.bottom, 16)
+                .padding(.bottom, 14)
 
                 Text(R.string.localizable.contactSummaryHeader())
                     .font(.caption).fontWeight(.bold)
@@ -141,30 +203,6 @@ struct AnimalPolicyDone: View {
                     }
                     .padding(.bottom, 16)
                 }
-
-                // Action For Animals - Share topic for now
-                // Add local image and also need to share to open up to app
-                /*
-                Text(R.string.localizable.shareThisTopic())
-                    .font(.caption).fontWeight(.bold)
-                    .accessibilityAddTraits(.isHeader)
-
-                ShareLink(item: issue.shareURL) {
-                    ZStack {
-                        // make the share link show up for VoiceOver
-                        Text("")
-                        AsyncImage(url: issue.shareImageURL,
-                                   content: { image in
-                            image.resizable()
-                                .aspectRatio(contentMode: .fill)
-                        }, placeholder: { EmptyView() })
-                    }
-                }
-                .padding(.bottom, 16)
-                .accessibilityElement(children: .ignore)
-                .accessibilityAddTraits(.isButton)
-                .accessibilityLabel(Text("\(R.string.localizable.shareThisTopic()): \(issue.name)"))
-                 */
 
                 Button(action: {
                     store.dispatch(action: .GoToRoot)
@@ -234,69 +272,28 @@ extension AnimalPolicyDone {
     }
 }
 
-struct CountingView: View {
+struct StatTile: View {
+    let value: Int
     let title: String
-    let count: Int
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 0) {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(value, format: .number)
+                .font(.system(.title2, design: .rounded))
+                .fontWeight(.bold)
+                .foregroundColor(.afaDarkBlue)
             Text(title)
-                .font(.title3)
-                .fontWeight(.medium)
-                .padding(.bottom, 4)
-            ZStack(alignment: .leading) {
-                Canvas { context, size in
-                    let drawRect = CGRect(origin: .zero, size: size)
-
-                    context.fill(Rectangle().size(size).path(in: drawRect), with: .color(.afaLightBG))
-                    context.fill(Rectangle().size(width: progressWidth(size: size), height: size.height).path(in: drawRect), with: .color(.afaDarkBlue))
-                }
-                .clipShape(RoundedRectangle(cornerRadius: 5.0))
-                Text("\(count)")
-                    .foregroundStyle(.white)
-                    // yes, blue background may be redundant, but it ensures that the white text can always be read, even with very large fonts
-                    .background(.afaDarkBlue)
-                    .padding(.vertical, 2)
-                    .padding(.horizontal, 6)
-            }
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 10)
+        .padding(.horizontal, 12)
+        .background {
+            RoundedRectangle(cornerRadius: 12)
+                .foregroundColor(Color.afaGreen.opacity(0.12))
         }
         .accessibilityElement(children: .combine)
-    }
-
-    func progressWidth(size: CGSize) -> CGFloat {
-        return size.width * (CGFloat(count) / nextMilestone)
-    }
-
-    var nextMilestone: CGFloat {
-        if count < 80 {
-            return 100
-        } else if count < 450 {
-            return 500
-        } else if count < 900 {
-            return 1000
-        } else if count < 4500 {
-            return 5000
-        } else if count < 9000 {
-            return 10000
-        } else if count < 45000 {
-            return 50000
-        } else if count < 90000 {
-            return 100000
-        } else if count < 450000 {
-            return 500000
-        } else if count < 900000 {
-            return 1000000
-        } else if count < 1500000 {
-            return 2000000
-        } else if count < 4500000 {
-            return 5000000
-        } else if count < 9500000 {
-            return 10000000
-        } else if count < 12500000 {
-            return 13000000
-        }
-
-        return 0
     }
 }
 

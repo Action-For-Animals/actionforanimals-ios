@@ -21,9 +21,9 @@ struct ContactCircle: View {
     
     var body: some View {
         GeometryReader { geo in
-            let showComplete = issueID.flatMap {
-                store.state.issueCalledOn(issueID: $0, contactID: contact.id)
-            } ?? false
+            let completionState = issueID.flatMap {
+                store.state.contactCompletionState(issueID: $0, contactID: contact.id)
+            } ?? .neverContacted
             let size = min(geo.size.width, geo.size.height)
 
             Group {
@@ -40,11 +40,30 @@ struct ContactCircle: View {
                 }
             }
             .clipShape(Circle())
-            .completionCheckmarkOverlay(show: showComplete, containerSize: size, mode: .replace)
+            .opacity(completionState == .neverContacted ? 1 : 0)
+            .overlay {
+                switch completionState {
+                case .contactedThisRound:
+                    statusIcon(systemName: "checkmark.circle.fill", color: .afaGreen, size: size)
+                case .needsRedo:
+                    statusIcon(systemName: "arrow.clockwise.circle.fill", color: Color(red: 0.72, green: 0.53, blue: 0.04), size: size)
+                case .neverContacted:
+                    EmptyView()
+                }
+            }
         }
         .aspectRatio(1, contentMode: .fit)
     }
-    
+
+    private func statusIcon(systemName: String, color: Color, size: CGFloat) -> some View {
+        Image(systemName: systemName)
+            .resizable()
+            .frame(width: size, height: size)
+            .foregroundColor(color)
+            .background { Circle().foregroundColor(.white) }
+            .accessibilityHidden(true)
+    }
+
     var placeholder: some View {
         Image(uiImage: defaultImage(forContact: contact))
             .resizable()

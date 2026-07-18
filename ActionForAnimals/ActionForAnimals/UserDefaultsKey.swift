@@ -42,4 +42,7 @@ enum UserDefaultsKey : String {
     case animalsHelpedThisMonth // animals helped in current month for league
     case lastMonthlyCountUpdate // last month when counter was updated (YYYY-MM format)
     case lastLeagueMonth // last month user joined a league (YYYY-MM format)
+
+    case completedCampaignDeadlines // map of issue id -> deadline as of when the user finished it
+    case lastFullCompletionDate // map of issue id -> date the user last fully completed it
 }

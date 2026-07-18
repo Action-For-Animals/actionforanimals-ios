@@ -141,7 +141,27 @@ class AppState: ObservableObject, ReduxState {
             UserDefaults.standard.set(Array(changedCampaignIds), forKey: "changedCampaignIds")
         }
     }
-    
+
+    // Deadline value recorded at the moment a campaign was fully completed - used to
+    // detect whether the deadline has changed since, so a finished campaign can bubble
+    // back up if there's a genuine new ask rather than a routine content edit.
+    @Published var completedCampaignDeadlines: [Int: Date] = [:] {
+        didSet {
+            let plistSupportable = Dictionary(uniqueKeysWithValues: completedCampaignDeadlines.map { (String($0.key), $0.value) })
+            UserDefaults.standard.set(plistSupportable, forKey: UserDefaultsKey.completedCampaignDeadlines.rawValue)
+        }
+    }
+
+    // Date the user last fully completed a campaign - only ContactLog entries dated after
+    // this count toward satisfying a fresh round, so stale logs from a previous round
+    // (before a deadline changed) can't cover for a contact that hasn't been redone.
+    @Published var lastFullCompletionDate: [Int: Date] = [:] {
+        didSet {
+            let plistSupportable = Dictionary(uniqueKeysWithValues: lastFullCompletionDate.map { (String($0.key), $0.value) })
+            UserDefaults.standard.set(plistSupportable, forKey: UserDefaultsKey.lastFullCompletionDate.rawValue)
+        }
+    }
+
     init() {
         // load user location cache
         if let locationType = UserDefaults.standard.string(forKey: UserDefaultsKey.locationType.rawValue),
@@ -189,6 +209,22 @@ class AppState: ObservableObject, ReduxState {
         // load persisted changed campaign IDs
         if let savedIds = UserDefaults.standard.array(forKey: "changedCampaignIds") as? [Int] {
             self.changedCampaignIds = Set(savedIds)
+        }
+
+        // load persisted completed-campaign deadline snapshots
+        if let savedDeadlines = UserDefaults.standard.dictionary(forKey: UserDefaultsKey.completedCampaignDeadlines.rawValue) as? [String: Date] {
+            self.completedCampaignDeadlines = Dictionary(uniqueKeysWithValues: savedDeadlines.compactMap { key, value in
+                guard let intKey = Int(key) else { return nil }
+                return (intKey, value)
+            })
+        }
+
+        // load persisted last-full-completion dates
+        if let savedDates = UserDefaults.standard.dictionary(forKey: UserDefaultsKey.lastFullCompletionDate.rawValue) as? [String: Date] {
+            self.lastFullCompletionDate = Dictionary(uniqueKeysWithValues: savedDates.compactMap { key, value in
+                guard let intKey = Int(key) else { return nil }
+                return (intKey, value)
+            })
         }
 
         // load weekly streak data
@@ -271,6 +307,23 @@ class AppState: ObservableObject, ReduxState {
         } else {
             print("📋 [AppState.init] No cached contacts found")
         }
+
+        // Backfill lastFullCompletionDate (and completedCampaignDeadlines where applicable)
+        // for any already-fully-completed campaign that doesn't have an entry yet.
+        // needsAction(issue:) gates purely on lastFullCompletionDate being set, so without
+        // this, every pre-existing completed campaign would look like it still needs
+        // action. Checked per-campaign rather than gated on the whole map being empty, so
+        // this safely runs every launch and picks up anything missed - including campaigns
+        // completed in older sessions before this feature existed.
+        for issue in lastKnownIssues {
+            guard lastFullCompletionDate[issue.id] == nil, isFullyCompleted(issue: issue) else { continue }
+            if let deadline = issue.deadline {
+                completedCampaignDeadlines[issue.id] = deadline
+            }
+            if let mostRecent = (issueCompletion[issue.id] ?? []).map(\.date).max() {
+                lastFullCompletionDate[issue.id] = mostRecent
+            }
+        }
     }
 }
 
@@ -278,6 +331,90 @@ extension AppState {
     func issueCalledOn(issueID: Int, contactID: String) -> Bool {
         let contactLogsForIssue = self.issueCompletion[issueID] ?? []
         return contactLogsForIssue.contains { $0.contactId == contactID }
+    }
+
+    enum ContactCompletionState: Equatable {
+        case contactedThisRound
+        case needsRedo
+        case neverContacted
+    }
+
+    // Round-aware version of issueCalledOn, for UI that needs to distinguish "done this
+    // round" from "done before, but not since the campaign's last full completion" -
+    // e.g. list-row contact circles, which sit right next to a badge/position that
+    // signals whether the campaign currently needs fresh action.
+    func contactCompletionState(issueID: Int, contactID: String) -> ContactCompletionState {
+        let mostRecent = (issueCompletion[issueID] ?? [])
+            .filter { $0.contactId == contactID }
+            .map(\.date)
+            .max()
+
+        guard let mostRecent else { return .neverContacted }
+
+        // Only apply the cutoff distinction while the campaign actually needs action
+        // (i.e. it's mid-bubble-up after a deadline change). lastFullCompletionDate is
+        // always recorded slightly after the completions that triggered it, so if the
+        // campaign is already settled, every one of its own completions would otherwise
+        // look like it's "before the cutoff" - there's no round to distinguish once
+        // nothing has changed, so just show it as done.
+        if let issue = issues.first(where: { $0.id == issueID }), !needsAction(issue: issue) {
+            return .contactedThisRound
+        }
+
+        if let cutoff = lastFullCompletionDate[issueID], mostRecent <= cutoff {
+            return .needsRedo
+        }
+        return .contactedThisRound
+    }
+
+    // Has the user completed every contact (political) or target (corporate) required
+    // for this campaign? Batch email corporate campaigns only need a single completion.
+    // Only counts ContactLog entries dated after the last time this campaign was fully
+    // completed, so a stale log from a previous round (before a deadline changed) can't
+    // cover for a contact that hasn't actually been redone this round.
+    func isFullyCompleted(issue: AnimalPolicy) -> Bool {
+        isFullyCompleted(issue: issue, completions: issueCompletion[issue.id] ?? [])
+    }
+
+    // Same check, but takes an explicit completions list rather than reading
+    // issueCompletion directly - needed because Store.dispatch() defers its reducer
+    // mutation via DispatchQueue.main.async, so state read back immediately after a
+    // dispatch() call can be one action stale. Callers that just dispatched a new
+    // ContactLog should pass the up-to-date list themselves.
+    func isFullyCompleted(issue: AnimalPolicy, completions allCompletions: [ContactLog]) -> Bool {
+        guard !allCompletions.isEmpty else { return false }
+
+        let completions: [ContactLog]
+        if let cutoff = lastFullCompletionDate[issue.id] {
+            completions = allCompletions.filter { $0.date > cutoff }
+        } else {
+            completions = allCompletions
+        }
+        guard !completions.isEmpty else { return false }
+
+        if issue.contactType == .corporate {
+            guard let targets = issue.targets, !targets.isEmpty else { return false }
+            if issue.isBatchEmailCampaign {
+                return targets.contains { target in completions.contains { $0.contactId == target.id } }
+            }
+            return targets.allSatisfy { target in completions.contains { $0.contactId == target.id } }
+        } else {
+            let relevantContacts = issue.contactsForIssue(allContacts: contacts)
+            guard !relevantContacts.isEmpty else { return false }
+            return relevantContacts.allSatisfy { contact in completions.contains { $0.contactId == contact.id } }
+        }
+    }
+
+    // True if this campaign still needs the user's attention: either it has never been
+    // fully completed, or it was completed but the deadline has changed since then.
+    // Deliberately does NOT re-run the live, cutoff-filtered isFullyCompleted(issue:) check
+    // here - that check's cutoff is set at the moment of completion, so it would exclude
+    // the very completions that just satisfied it on every subsequent call. Once a
+    // completion is durably recorded (lastFullCompletionDate is set), that fact alone
+    // is what settles it, not a live re-derivation.
+    func needsAction(issue: AnimalPolicy) -> Bool {
+        guard lastFullCompletionDate[issue.id] != nil else { return true }
+        return issue.deadline != completedCampaignDeadlines[issue.id]
     }
 
     func checkAndResetMonthlyCounter() {

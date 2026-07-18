@@ -27,6 +27,21 @@ extension UNCalendarNotificationTrigger {
         components.weekday = fromZeroBased ? dayIndex + 1 : dayIndex
         return UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
     }
+
+    static func oneShotTrigger(date: Date) -> UNCalendarNotificationTrigger {
+        let components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        return UNCalendarNotificationTrigger(dateMatching: components, repeats: false)
+    }
+}
+
+extension UNMutableNotificationContent {
+    static func streakRiskContent(streak: Int) -> UNMutableNotificationContent {
+        let notificationContent = UNMutableNotificationContent()
+        notificationContent.title = "Don't lose your streak!"
+        notificationContent.body = "Your \(streak)-week streak is at risk — call or email today to keep it going before the weekend."
+        notificationContent.badge = NSNumber(value: UIApplication.shared.applicationIconBadgeNumber + 1)
+        return notificationContent
+    }
 }
 
 extension UNNotificationRequest {

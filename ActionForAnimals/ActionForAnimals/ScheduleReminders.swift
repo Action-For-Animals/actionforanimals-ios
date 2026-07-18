@@ -119,7 +119,10 @@ struct ScheduleReminders: View {
     }
     
     private func clearNotifications() {
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        // Only clear this screen's own reminder identifiers - removeAllPendingNotificationRequests()
+        // would also wipe out the unrelated streak-risk reminder scheduled elsewhere.
+        let identifiers = (1...7).map { "actionforanimals-reminder-\($0)" }
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
     }
     
     private func onDismiss() {

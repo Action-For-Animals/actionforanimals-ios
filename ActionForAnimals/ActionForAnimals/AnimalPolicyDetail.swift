@@ -61,9 +61,20 @@ struct AnimalPolicyDetail: View {
     // NEW: Check if batch campaign has been completed
     var batchCampaignCompleted: Bool {
         guard isBatchEmailCampaign else { return false }
-        // For batch campaigns, check if any of the target contacts have been called on
+        // Reuses the durable, already-recorded settlement fact (same as the list-row
+        // sort/badge) rather than re-deriving completeness live from contactCompletionState -
+        // that live check's cutoff excludes the very completion that settled the round once
+        // recorded, so it would self-invalidate for a campaign that's already fully done.
+        return !store.state.needsAction(issue: issue)
+    }
+
+    // True if this batch campaign isn't settled but has been contacted before - i.e. it
+    // needs a fresh touch this round, same "needs redo" concept used for individual
+    // contacts/targets, just at the whole-campaign level since batch only needs any one.
+    var batchCampaignNeedsRedo: Bool {
+        guard isBatchEmailCampaign, !batchCampaignCompleted else { return false }
         return targetedContacts.contains { contact in
-            store.state.issueCalledOn(issueID: issue.id, contactID: contact.id)
+            store.state.contactCompletionState(issueID: issue.id, contactID: contact.id) != .neverContacted
         }
     }
 
@@ -72,6 +83,10 @@ struct AnimalPolicyDetail: View {
         issue.contactType == .representatives &&
         targetedContacts.isEmpty &&
         store.state.lowAccuracyMessage != nil
+    }
+
+    var shareMessageText: String {
+        "I found this campaign and thought you'd want to help too — \"\(issue.name)\":\n\(issue.shareURL.absoluteString)"
     }
 
     var body: some View {
@@ -108,7 +123,7 @@ struct AnimalPolicyDetail: View {
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
                 HStack(spacing: 0) {
-                    ShareLink(item: issue.shareURL) {
+                    ShareLink(item: shareMessageText) {
                         Image(systemName: "square.and.arrow.up")
                     }
                     AnimalsCounterView()
@@ -204,7 +219,11 @@ struct AnimalPolicyDetail: View {
                     PrimaryButton(title: "Take Action", systemImageName: "person.wave.2.fill")
                 }
             }
-            
+
+            ShareLink(item: shareMessageText) {
+                SecondaryButton(title: R.string.localizable.shareThisTopic(), systemImageName: "square.and.arrow.up")
+            }
+            .accessibilityLabel(Text("\(R.string.localizable.shareThisTopic()): \(issue.name)"))
         }
     }
     
@@ -242,12 +261,22 @@ struct AnimalPolicyDetail: View {
                                 .foregroundColor(.secondary)
                         }
                         .overlay {
-                            // Show completion checkmark for batch campaigns
+                            // Show completion/redo status for batch campaigns
                             if batchCampaignCompleted {
                                 Image(systemName: "checkmark.circle.fill")
                                     .resizable()
                                     .frame(width: 20, height: 20)
                                     .foregroundColor(.afaGreen)
+                                    .background {
+                                        Circle().foregroundColor(.white)
+                                    }
+                                    .offset(x: 20, y: 15)
+                                    .accessibilityHidden(true)
+                            } else if batchCampaignNeedsRedo {
+                                Image(systemName: "arrow.clockwise.circle.fill")
+                                    .resizable()
+                                    .frame(width: 20, height: 20)
+                                    .foregroundColor(Color(red: 0.72, green: 0.53, blue: 0.04))
                                     .background {
                                         Circle().foregroundColor(.white)
                                     }
@@ -278,7 +307,7 @@ struct AnimalPolicyDetail: View {
                 NavigationLink(value: IssueDetailNavModel(issue: issue, contacts: Array(targetedContacts[contact.number..<targetedContacts.endIndex]), actionType: getPreferredActionType())) {
                     ContactListItem(
                         contact: contact.element,
-                        showComplete: store.state.issueCalledOn(issueID: issue.id, contactID: contact.element.id)
+                        completionState: store.state.contactCompletionState(issueID: issue.id, contactID: contact.element.id)
                     )
                     .id(forceRefreshID)
                 }
@@ -294,8 +323,8 @@ struct AnimalPolicyDetail: View {
         ForEach(irrelevantContacts, id: \.id) { contact in
             ContactListItem(
                 contact: contact,
-                showComplete: store.state.issueCalledOn(issueID: issue.id, contactID: contact.id),
-                contactNote: R.string.localizable.irrelevantContactMessage()
+                contactNote: R.string.localizable.irrelevantContactMessage(),
+                completionState: store.state.contactCompletionState(issueID: issue.id, contactID: contact.id)
             )
             .opacity(0.4)
             .id(forceRefreshID)
@@ -410,21 +439,27 @@ extension IssueDetailNavModel: Equatable, Hashable {
     }
 }
 
-// Secondary button component for email actions
 struct SecondaryButton: View {
     let title: String
     let systemImageName: String
-    
+
     var body: some View {
         HStack {
-            Image(systemName: systemImageName)
             Text(title)
+                .font(.title3)
+                .fontWeight(.semibold)
+                .foregroundColor(.afaDarkBlue)
+                .lineLimit(1)
+            Image(systemName: systemImageName)
+                .foregroundColor(.afaDarkBlue)
         }
+        .accessibilityElement(children: .combine)
+        .padding(.vertical)
         .frame(maxWidth: .infinity)
-        .padding()
-        .background(Color.secondary.opacity(0.1))
-        .foregroundColor(.primary)
-        .cornerRadius(8)
+        .background {
+            RoundedRectangle(cornerRadius: 6)
+                .strokeBorder(Color.afaDarkBlue, lineWidth: 1.5)
+        }
     }
 }
 

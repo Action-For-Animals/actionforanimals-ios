@@ -107,6 +107,13 @@ class Store: ObservableObject {
             state.changedCampaignIds = Set(changedIds)
         case let .ClearChangedCampaign(campaignId):
             state.changedCampaignIds.remove(campaignId)
+        case let .RecordCampaignCompletionDeadline(issueId, deadline):
+            if let deadline {
+                state.completedCampaignDeadlines[issueId] = deadline
+            } else {
+                state.completedCampaignDeadlines.removeValue(forKey: issueId)
+            }
+            state.lastFullCompletionDate[issueId] = Date()
         case .UpdateWeeklyStreak:
             updateWeeklyStreak(state: state)
         case let .IncrementMonthlyAnimals(animalsHelped):
@@ -126,58 +133,63 @@ class Store: ObservableObject {
     }
 
     func updateWeeklyStreak(state: AppState) {
-        var calendar = Calendar.current
-        calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
-        let now = Date()
-        let currentWeekString = weekString(for: now, calendar: calendar)
-
-
-        // If this is the first action this week
-        if state.lastActionWeek != currentWeekString {
-            if let lastWeek = state.lastActionWeek {
-                let lastWeekDate = dateFromWeekString(lastWeek, calendar: calendar)
-                let currentWeekDate = calendar.dateInterval(of: .weekOfYear, for: now)!.start
-
-                let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)!.start
-                let expectedPreviousWeek = calendar.date(byAdding: .weekOfYear, value: -1, to: currentWeekDate)!
-
-                // Check if last action was in the previous consecutive week
-                if lastWeekStart == expectedPreviousWeek {
-                    // Consecutive week - increment streak
-                    state.weeklyStreak += 1
-                } else {
-                    // Gap in weeks - reset streak to 1
-                    state.weeklyStreak = 1
-                }
-            } else {
-                // First ever action - start streak
-                state.weeklyStreak = 1
-            }
-
-            state.lastActionWeek = currentWeekString
-        }
-        // If already took action this week, don't change streak
+        let (newStreak, newWeekString) = computeNextWeeklyStreak(currentStreak: state.weeklyStreak, lastActionWeek: state.lastActionWeek)
+        state.weeklyStreak = newStreak
+        state.lastActionWeek = newWeekString
     }
 
-    private func weekString(for date: Date, calendar: Calendar) -> String {
-        let year = calendar.component(.yearForWeekOfYear, from: date)
-        let week = calendar.component(.weekOfYear, from: date)
-        return String(format: "%04d-%02d", year, week)
+}
+
+// Pure computation, callable without a Store instance or a state mutation - lets callers
+// (like Middleware.swift) compute the resulting streak directly instead of dispatching
+// and reading state back, since Store.dispatch()'s reducer mutation is deferred via
+// DispatchQueue.main.async and wouldn't be reflected in a synchronous read afterward.
+func computeNextWeeklyStreak(currentStreak: Int, lastActionWeek: String?, now: Date = Date()) -> (streak: Int, weekString: String) {
+    var calendar = Calendar.current
+    calendar.firstWeekday = 2 // Monday = 2 (Sunday = 1)
+    let currentWeekString = weekStringFor(now, calendar: calendar)
+
+    guard lastActionWeek != currentWeekString else {
+        // Already acted this week - no change.
+        return (currentStreak, lastActionWeek ?? currentWeekString)
     }
 
-    private func dateFromWeekString(_ weekString: String, calendar: Calendar) -> Date {
-        let components = weekString.split(separator: "-")
-        guard components.count == 2,
-              let year = Int(components[0]),
-              let week = Int(components[1]) else {
-            return Date()
-        }
-
-        var dateComponents = DateComponents()
-        dateComponents.yearForWeekOfYear = year
-        dateComponents.weekOfYear = week
-        dateComponents.weekday = 2 // Monday
-        return calendar.date(from: dateComponents) ?? Date()
+    guard let lastWeek = lastActionWeek else {
+        // First ever action - start streak.
+        return (1, currentWeekString)
     }
 
+    let lastWeekDate = dateFromWeekString(lastWeek, calendar: calendar)
+    let currentWeekDate = calendar.dateInterval(of: .weekOfYear, for: now)!.start
+    let lastWeekStart = calendar.dateInterval(of: .weekOfYear, for: lastWeekDate)!.start
+    let expectedPreviousWeek = calendar.date(byAdding: .weekOfYear, value: -1, to: currentWeekDate)!
+
+    if lastWeekStart == expectedPreviousWeek {
+        // Consecutive week - increment streak.
+        return (currentStreak + 1, currentWeekString)
+    } else {
+        // Gap in weeks - reset streak to 1.
+        return (1, currentWeekString)
+    }
+}
+
+func weekStringFor(_ date: Date, calendar: Calendar) -> String {
+    let year = calendar.component(.yearForWeekOfYear, from: date)
+    let week = calendar.component(.weekOfYear, from: date)
+    return String(format: "%04d-%02d", year, week)
+}
+
+func dateFromWeekString(_ weekString: String, calendar: Calendar) -> Date {
+    let components = weekString.split(separator: "-")
+    guard components.count == 2,
+          let year = Int(components[0]),
+          let week = Int(components[1]) else {
+        return Date()
+    }
+
+    var dateComponents = DateComponents()
+    dateComponents.yearForWeekOfYear = year
+    dateComponents.weekOfYear = week
+    dateComponents.weekday = 2 // Monday
+    return calendar.date(from: dateComponents) ?? Date()
 }

@@ -56,6 +56,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
         animalsHelped: 3,
+        deadline: nil,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -77,6 +78,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
         animalsHelped: 3,
+        deadline: nil,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -98,6 +100,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
         animalsHelped: 3,
+        deadline: nil,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -119,6 +122,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
         animalsHelped: 3,
+        deadline: nil,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -140,6 +144,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: nil, totalActions: 0),
         animalsHelped: 3,
+        deadline: nil,
         targets: nil,
         actions: nil,
         corporateInfo: nil
@@ -166,6 +171,7 @@ extension AnimalPolicy {
         status: "active",
         stats: Stats(calls: 0, emails: 0, totalActions: 0),
         animalsHelped: 5,
+        deadline: nil,
         targets: [
             Target(
                 id: "petco-customer-service",

@@ -36,6 +36,7 @@ enum Action {
     case LogSearch(String)
     case SetChangedCampaigns([Int])
     case ClearChangedCampaign(Int)
+    case RecordCampaignCompletionDeadline(Int, Date?)
     case ShowYourImpact
     case UpdateWeeklyStreak
     case IncrementMonthlyAnimals(Int) // increment by number of animals helped

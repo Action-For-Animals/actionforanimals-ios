@@ -13,6 +13,13 @@ struct ContactListItem: View {
     let showComplete: Bool
     var contactNote: String
     let listType: ContactListType
+    // Optional round-aware completion state. When provided, takes precedence over
+    // showComplete and can also render a distinct "needs redo" indicator - used by
+    // screens (like the campaign detail contact list) that sit next to a badge/position
+    // signaling whether the campaign currently needs fresh action. Callers that don't
+    // pass this (e.g. the done screen, which has a different meaning for its checkmark)
+    // keep the original plain showComplete behavior unchanged.
+    var completionState: AppState.ContactCompletionState? = nil
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
@@ -20,11 +27,12 @@ struct ContactListItem: View {
         dynamicTypeSize < DynamicTypeSize.accessibility3
     }
 
-    init(contact: Contact, showComplete: Bool = false, contactNote: String = "", listType: ContactListType = .standard) {
+    init(contact: Contact, showComplete: Bool = false, contactNote: String = "", listType: ContactListType = .standard, completionState: AppState.ContactCompletionState? = nil) {
         self.contact = contact
         self.showComplete = showComplete
         self.contactNote = contactNote
         self.listType = listType
+        self.completionState = completionState
     }
 
     var body: some View {
@@ -35,16 +43,17 @@ struct ContactListItem: View {
                 .padding(.leading, contactCircleLeadingPadding)
                 .padding(.trailing, contactCircleTrailingPadding)
                 .overlay {
-                    if showComplete {
-                        Image(systemName: "checkmark.circle.fill")
-                            .resizable()
-                            .frame(width: completedCircleFrameSize, height: completedCircleFrameSize)
-                            .foregroundColor(.afaGreen)
-                            .background {
-                                Circle().foregroundColor(.white)
-                            }
-                            .offset(x: completedCircleOffset.x, y: completedCircleOffset.y)
-                            .accessibilityHidden(true)
+                    if let completionState {
+                        switch completionState {
+                        case .contactedThisRound:
+                            statusIcon(systemName: "checkmark.circle.fill", color: .afaGreen)
+                        case .needsRedo:
+                            statusIcon(systemName: "arrow.clockwise.circle.fill", color: Color(red: 0.72, green: 0.53, blue: 0.04))
+                        case .neverContacted:
+                            EmptyView()
+                        }
+                    } else if showComplete {
+                        statusIcon(systemName: "checkmark.circle.fill", color: .afaGreen)
                     }
                 }
             VStack(alignment: .leading) {
@@ -64,6 +73,18 @@ struct ContactListItem: View {
         .padding(2)
         .padding(.vertical, 4)
         .accessibilityElement(children: .combine)
+    }
+
+    private func statusIcon(systemName: String, color: Color) -> some View {
+        Image(systemName: systemName)
+            .resizable()
+            .frame(width: completedCircleFrameSize, height: completedCircleFrameSize)
+            .foregroundColor(color)
+            .background {
+                Circle().foregroundColor(.white)
+            }
+            .offset(x: completedCircleOffset.x, y: completedCircleOffset.y)
+            .accessibilityHidden(true)
     }
 
     enum ContactListType {

@@ -52,11 +52,15 @@ struct AnimalPolicy: Identifiable, Codable {
     let stats: Stats
     let animalsHelped: Int?
 
+    // Optional action deadline (ISO8601, matches createdAt's format). Absent/null for
+    // campaigns with no deadline - decodes to nil automatically via decodeIfPresent.
+    let deadline: Date?
+
     // Corporate campaign support
     let targets: [Target]?
     let actions: Actions?
     let corporateInfo: CorporateInfo?
-    
+
     // convenience
     var callCount: Int { stats.calls ?? 0 }
 
@@ -64,6 +68,20 @@ struct AnimalPolicy: Identifiable, Codable {
     var emailCount: Int { stats.emails ?? 0 }
     var totalActionCount: Int { stats.totalActions }
     var animalsHelpedPerAction: Int { animalsHelped ?? 1 }
+
+    // Whole calendar days remaining until the deadline, if one exists. Negative once the
+    // deadline has passed; callers should generally treat < 0 as "no longer relevant."
+    // Normalizes both dates to the start of their calendar day before diffing, so this
+    // reflects "how many dates away" rather than "how many full 24-hour periods have
+    // elapsed" - otherwise a deadline later today (by clock time) than the current time
+    // of day would undercount by one.
+    var daysUntilDeadline: Int? {
+        guard let deadline else { return nil }
+        let calendar = Calendar.current
+        let startOfToday = calendar.startOfDay(for: Date())
+        let startOfDeadlineDay = calendar.startOfDay(for: deadline)
+        return calendar.dateComponents([.day], from: startOfToday, to: startOfDeadlineDay).day
+    }
     
     // Action For Animals - Not used for now - until we figure it out
     var shareImageURL: URL {
@@ -313,7 +331,8 @@ extension AnimalPolicy: Equatable, Hashable {
                lhs.actions?.call?.enabled == rhs.actions?.call?.enabled &&
                lhs.actions?.email?.enabled == rhs.actions?.email?.enabled &&
                lhs.actions?.email?.distributionMethod == rhs.actions?.email?.distributionMethod &&
-               lhs.categories.first?.name == rhs.categories.first?.name
+               lhs.categories.first?.name == rhs.categories.first?.name &&
+               lhs.deadline == rhs.deadline
     }
 
     func hash(into hasher: inout Hasher) {

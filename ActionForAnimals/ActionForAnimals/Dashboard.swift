@@ -215,7 +215,9 @@ struct IssuesList: View {
     @Binding var selectedIssue: AnimalPolicy?
     @Binding var searchText: String
     @Binding var selectedCategories: Set<CategoryKey>
-    
+
+    @State private var showCompleted = false
+
     var isSearching: Bool {
         searchText.count >= 3
     }
@@ -259,9 +261,42 @@ struct IssuesList: View {
                 let bm = b.name.localizedCaseInsensitiveContains(searchText)
                 return am && !bm
             }
+        } else {
+            // Campaigns that still need action come first; within that group, campaigns
+            // with a deadline are ordered by proximity, everything else keeps the existing
+            // backend/editorial order (Swift's sort is stable, so equal-priority pairs
+            // don't get reshuffled). Fully completed, unchanged campaigns sink to the bottom.
+            issues = issues.sorted { a, b in
+                let aNeedsAction = store.state.needsAction(issue: a)
+                let bNeedsAction = store.state.needsAction(issue: b)
+                if aNeedsAction != bNeedsAction {
+                    return aNeedsAction && !bNeedsAction
+                }
+
+                // A passed deadline shouldn't outrank a genuinely upcoming one, so treat
+                // it the same as "no deadline" here.
+                let aDays = (a.daysUntilDeadline ?? -1) >= 0 ? a.daysUntilDeadline : nil
+                let bDays = (b.daysUntilDeadline ?? -1) >= 0 ? b.daysUntilDeadline : nil
+                switch (aDays, bDays) {
+                case let (da?, db?): return da < db
+                case (.some, nil): return true
+                case (nil, .some): return false
+                case (nil, nil): return false
+                }
+            }
         }
-        
+
         return issues
+    }
+
+    // Splits from the already-sorted filteredIssues, so relative ordering within each
+    // group (deadline proximity, then backend order) carries over unchanged.
+    var needsActionIssues: [AnimalPolicy] {
+        filteredIssues.filter { store.state.needsAction(issue: $0) }
+    }
+
+    var completedIssues: [AnimalPolicy] {
+        filteredIssues.filter { !store.state.needsAction(issue: $0) }
     }
 
     var body: some View {
@@ -289,8 +324,8 @@ struct IssuesList: View {
                 Spacer()
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else {
-            // Flat list showing filtered results
+        } else if isSearching {
+            // Flat list while actively searching, unchanged behavior
             List(filteredIssues, selection: $selectedIssue) { issue in
                 NavigationLink(value: issue) {
                     AnimalPolicyListItem(issue: issue, contacts: store.state.contacts)
@@ -299,6 +334,141 @@ struct IssuesList: View {
             }
             .tint(Color.afaLightBG)
             .listStyle(.plain)
+        } else {
+            // Split into a primary list and a separate "Completed" section, so fully
+            // settled campaigns are visually set apart rather than just sorted lower
+            // within one continuous list.
+            List(selection: $selectedIssue) {
+                ForEach(needsActionIssues) { issue in
+                    NavigationLink(value: issue) {
+                        AnimalPolicyListItem(issue: issue, contacts: store.state.contacts)
+                    }
+                    .listRowSeparatorTint(.afaDarkGray)
+                }
+
+                if !completedIssues.isEmpty {
+                    CompletedSectionHeaderCard(
+                        count: completedIssues.count,
+                        isExpanded: $showCompleted
+                    )
+                    .plainListRow()
+
+                    if showCompleted {
+                        ForEach(completedIssues) { issue in
+                            NavigationLink(value: issue) {
+                                AnimalPolicyListItem(issue: issue, contacts: store.state.contacts, isCompletedRow: true)
+                                    .padding(.horizontal, 16)
+                                    .background(Color(.systemGray6).opacity(0.5))
+                            }
+                            .listRowInsets(EdgeInsets())
+                            .listRowSeparatorTint(.afaDarkGray)
+                        }
+                    }
+
+                    ImpactStatsCard(
+                        campaignsCompleted: completedIssues.count,
+                        totalActionsTaken: store.totalActionCount
+                    )
+                    .plainListRow()
+                }
+            }
+            .tint(Color.afaLightBG)
+            .listStyle(.plain)
         }
+    }
+}
+
+private extension View {
+    // Strips default List row chrome (insets, separator, background) so a card
+    // can float freely instead of looking like a table row.
+    func plainListRow() -> some View {
+        self
+            .listRowInsets(EdgeInsets())
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+    }
+}
+
+struct CompletedSectionHeaderCard: View {
+    let count: Int
+    @Binding var isExpanded: Bool
+
+    var body: some View {
+        Button {
+            withAnimation(.easeInOut(duration: 0.2)) {
+                isExpanded.toggle()
+            }
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "checkmark.circle.fill")
+                    .foregroundColor(.afaGreen)
+                    .font(.title3)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Completed (\(count))")
+                        .font(.subheadline)
+                        .fontWeight(.semibold)
+                        .foregroundColor(.primary)
+                    Text("You've taken action on \(count) campaign\(count == 1 ? "" : "s")")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                }
+
+                Spacer(minLength: 0)
+
+                Image(systemName: "chevron.down")
+                    .font(.footnote)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .rotationEffect(.degrees(isExpanded ? 180 : 0))
+            }
+            .padding(12)
+            .background(Color(.systemGray6))
+            .cornerRadius(12)
+        }
+        .buttonStyle(.plain)
+        .padding(.horizontal, 16)
+        .padding(.top, 8)
+        .padding(.bottom, 10)
+        .accessibilityLabel("Completed, \(count) campaigns")
+        .accessibilityHint(isExpanded ? "Double tap to collapse" : "Double tap to expand")
+    }
+}
+
+struct ImpactStatsCard: View {
+    let campaignsCompleted: Int
+    let totalActionsTaken: Int
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "chart.bar.fill")
+                .foregroundColor(.afaGreen)
+                .font(.title3)
+                .frame(width: 32, height: 32)
+                .background(Color.white)
+                .clipShape(Circle())
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text("You're making an impact!")
+                    .font(.subheadline)
+                    .fontWeight(.semibold)
+                    .foregroundColor(.afaGreen)
+                Text("\(campaignsCompleted) campaign\(campaignsCompleted == 1 ? "" : "s") completed")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+                Text("\(totalActionsTaken) total action\(totalActionsTaken == 1 ? "" : "s") taken")
+                    .font(.footnote)
+                    .foregroundColor(.secondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .background(Color.afaGreen.opacity(0.12))
+        .cornerRadius(12)
+        .padding(.horizontal, 16)
+        .padding(.top, 10)
+        .padding(.bottom, 8)
+        .accessibilityElement(children: .combine)
     }
 }

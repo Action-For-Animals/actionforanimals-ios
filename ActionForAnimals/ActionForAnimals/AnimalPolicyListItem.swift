@@ -8,6 +8,9 @@ import SwiftUI
 struct AnimalPolicyListItem: View {
     let issue: AnimalPolicy
     let contacts: [Contact]
+    // Completed rows drop the redundant "Call"/"Email" pill so they read as
+    // archival rather than competing visually with the active campaigns above.
+    var isCompletedRow: Bool = false
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject var store: Store
 
@@ -26,24 +29,24 @@ struct AnimalPolicyListItem: View {
         let isActive = (status == "active")
 
         HStack(alignment: .center, spacing: 8) {
-            // Green indicator (like Messages app) - always reserve space
-            Circle()
-                .fill(showChangeIndicator ? Color.afaGreen : Color.clear)
-                .frame(width: 12, height: 12)
-            
             // Category Badge with status styling
             CategoryBadge(issue: issue,
                           dynamicTypeSize: dynamicTypeSize,
-                          status: status)
+                          status: status,
+                          showChangeIndicator: showChangeIndicator)
             
             VStack(alignment: .leading, spacing: 6) {
+                if let deadline = issue.deadline, let daysLeft = issue.daysUntilDeadline, daysLeft >= 0, store.state.needsAction(issue: issue) {
+                    DeadlineBadge(deadline: deadline, daysLeft: daysLeft)
+                }
+
                 Text(issue.name)
                     .font(.headline)
                     .fontWeight(.semibold)
                     .foregroundColor(isActive ? .primary : .secondary)
                     .lineLimit(2)
                     .multilineTextAlignment(.leading)
-                
+
                 // Enhanced: contacts row + subtitle with campaign type
                 HStack(spacing: 0) {
                     let contactsForIssue = getContactsForDisplay()
@@ -57,8 +60,10 @@ struct AnimalPolicyListItem: View {
                     
                     // Campaign type label + stats
                     HStack(spacing: 4) {
-                        CampaignTypeLabel(issue: issue)
-                        
+                        if !isCompletedRow {
+                            CampaignTypeLabel(issue: issue)
+                        }
+
                         Text(callsSubtitle(for: issue))
                             .font(.footnote)
                             .foregroundColor(.secondary)
@@ -176,10 +181,50 @@ private struct CampaignTypeLabel: View {
     }
 }
 
+private struct DeadlineBadge: View {
+    let deadline: Date
+    let daysLeft: Int
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "clock")
+            Text(label)
+        }
+        .font(.caption)
+        .fontWeight(.bold)
+        .padding(.horizontal, 8)
+        .padding(.vertical, 3)
+        .background(color.opacity(0.15))
+        .foregroundColor(color)
+        .cornerRadius(4)
+    }
+
+    private var label: String {
+        switch daysLeft {
+        case 0: return "URGENT • TODAY"
+        case 1: return "URGENT • TOMORROW"
+        default: return "TAKE ACTION BY \(formattedDate)"
+        }
+    }
+
+    private var formattedDate: String {
+        deadline.formatted(.dateTime.month(.abbreviated).day()).uppercased()
+    }
+
+    private var color: Color {
+        switch daysLeft {
+        case 0...2: return .red
+        case 3...7: return .orange
+        default: return .blue
+        }
+    }
+}
+
 private struct CategoryBadge: View {
     let issue: AnimalPolicy
     let dynamicTypeSize: DynamicTypeSize
     let status: String   // pass full status
+    var showChangeIndicator: Bool = false
 
     private var badgeSize: CGFloat {
         switch dynamicTypeSize {
@@ -194,19 +239,37 @@ private struct CategoryBadge: View {
         let iconName = categoryIconName(for: issue)
         let isActive = (status == "active")
         let isSuccess = (status == "success")
-        
-        ZStack(alignment: .bottomTrailing) {
-                Image(iconName)
-                    .resizable()
-                    .scaledToFit()
-                    .saturation(isActive ? 1 : 0)
-                    .opacity(isActive ? 1 : 0.75)
-                    .padding(badgeSize *  ((1 - iconScale) / 2))
-                    .frame(width: badgeSize, height: badgeSize)
-                    .completionCheckmarkOverlay(show: isSuccess, containerSize: badgeSize, mode: .overlay)
-                    .padding(.vertical, 2)
-                    .accessibilityHidden(true)
 
+        ZStack {
+                if showChangeIndicator {
+                    Circle()
+                        .stroke(
+                            AngularGradient(
+                                gradient: Gradient(colors: [
+                                    Color(red: 0.62, green: 0.93, blue: 0.30), // vivid lime
+                                    Color(red: 0.0, green: 0.90, blue: 0.46),  // vivid emerald
+                                    Color(red: 0.11, green: 0.91, blue: 0.71), // vivid mint
+                                    Color(red: 0.62, green: 0.93, blue: 0.30)  // back to lime
+                                ]),
+                                center: .center
+                            ),
+                            lineWidth: 2.5
+                        )
+                        .frame(width: badgeSize, height: badgeSize)
+                }
+
+                ZStack(alignment: .bottomTrailing) {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .saturation(isActive ? 1 : 0)
+                        .opacity(isActive ? 1 : 0.75)
+                        .padding(badgeSize *  ((1 - iconScale) / 2))
+                        .frame(width: badgeSize, height: badgeSize)
+                        .completionCheckmarkOverlay(show: isSuccess, containerSize: badgeSize, mode: .overlay)
+                        .padding(.vertical, 2)
+                        .accessibilityHidden(true)
+                }
             }
             .accessibilityLabel(categoryAccessibilityLabel(for: issue))
     }
